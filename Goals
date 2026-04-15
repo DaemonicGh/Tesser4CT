@@ -1,0 +1,79 @@
+
+# (Optional: if time allows)
+# [Optional: if speed allows/requires]
+# {Optional: if time and speed allows/requires}
+
+- Full 3D Simulation
+
+Map Capabilities:
+	- Custom block shapes through Octree (voxel style)
+	- Dynamic map boundaries
+	- Hot loading
+	- [Free wall textures (grafitis, bullet holes...)]
+	- {Mesh blocks}
+
+Visuals:
+	- Skylight Shadows
+	- Skybox
+	- Anisotropic filtering (castless)
+	- [Transparency]
+	- [Point lights] > Needs room/distance culling
+	- [Bloom]
+	- [Specular reflections]
+	- {Refraction}
+
+Collisions:
+	- AABB
+	- stepping
+
+#---
+
+Gameplay:
+	- 3D Camera with bobbing
+	- Walking, running, strafing
+	- Dynamic jumps
+	- (Ledge climbing)
+	- Placing/breaking/Carving blocks
+	- Creative Flying
+	- (Placing/removing wall textures)
+
+UI:
+	- Minimap
+	- Pause menu
+	- Build Menu/Inventory
+	- (Text response/Chat bar)
+
+#---
+
+# ?> Might not work
+Optimisations:
+	- Modifiable resolution
+	- Octree ray traveral
+	- Threading
+	- UI culling
+	- [Cross flooding] ?> trading ray casts for more color merges
+	- (Shadow LOD)
+	- (LOD)
+
+About baking:
+	- Shadow effects become way cheaper
+	- Free wall textures can be baked at a greatly reduced cost
+
+	- Prevents moving lights and moving light occluders
+	- Huge memory cost (one separate texture per face)
+	- Memory costs may me mitigated by caching common textures
+
+#---
+
+Map file format debate:
+MLEM:
+	readable,
+	modifiable,
+	slower to parse and write,
+	update safe,
+	generally unsafe
+Binary:
+	fast,
+	requires pointer dereferencing,
+	harder to update automatically,
+	requires a full in-game editor
