@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/15 17:01:00 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/17 17:51:54 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 typedef struct s_tsr
 {
 	t_vec2i		size;
-	t_mbx_atlas	font;
 	t_vec3		pos;
 	t_vec3		vel;
 	t_vec2		ang;
 	t_world		world;
+	t_vec3		light;
+	t_mbx_atlas	*font;
+	t_mbx_region	*tex;
 }	t_tsr;
 
 #endif

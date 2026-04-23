@@ -6,7 +6,7 @@
 #    By: rprieur <rprieur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/24 19:51:36 by rprieur           #+#    #+#              #
-#    Updated: 2026/04/15 16:53:45 by emarrot          ###   ########.fr        #
+#    Updated: 2026/04/20 17:51:35 by emarrot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # V5.3
@@ -15,7 +15,8 @@
 
 NAMES					:=	tesser4ct
 
-common_files			:=	main world renderer/utils.c renderer/renderer.c
+common_files			:=	\
+	main world renderer/utils.c renderer/renderer.c renderer/shader.c
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a
 OTHER_LIBRARIES			:=	m
 GIT_LIBRARIES			:=
