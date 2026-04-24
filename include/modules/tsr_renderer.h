@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:33:47 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/23 17:36:05 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/24 17:15:16 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ typedef struct s_uniform
 
 void	vec3_yaw_rot(t_vec3 *v, double ang);
 void	vec3_pitch_rot(t_vec3 *v, double ang);
-void	setup_frag(t_mbx_region *buffer, t_tsr *tsr);
 void	fragment_shader(t_mbx_region *buffer,
 	t_mbx_color (*f)(t_vec2, void *), void *data);
 t_mbx_color rt_shader(t_vec2 uv, void *uniform);

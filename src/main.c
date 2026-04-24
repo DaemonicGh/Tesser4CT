@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/06 16:38:53 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/23 17:59:30 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/24 18:27:00 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,28 +46,32 @@ void	mouse_cam(t_mbx *mbx, t_vec2 *ang)
 	ang->y += (double)mbx->cursor_delta.y / 256;
 }
 
-t_mbx_color	shader(t_vec2 uv, void* data)
+void	place_and_destroy_logic(t_tsr *tsr, t_mbx *mbx,
+	t_uniform *uniform, t_type *type)
 {
-	size_t	i;
-	t_vec2	z;
-	t_vec2	c;
-	int		gray;
-	t_vec3	pos;
+	t_traversal		traversal;
 
-	pos = *(t_vec3 *)data;
-	uv = vec2_sub_d(vec2_mult_d(uv, 2.0), 1.0);
-	z = vec2_zero();
-	c = vec2_add(vec2_mult(uv, vec2(16.0 / 9 * pos.y, pos.y)),
-		vec2(pos.x, -pos.z));
-	i = 0;
-	while (i < 255 && vec2_dot(z, z) < 4)
+	if (mbx_key_pressed(mbx, MBX_MOUSE_LEFT))
 	{
-		z = vec2(z.x * z.x - z.y * z.y, 2 * z.x * z.y);
-		z = vec2_add(z, c);
-		i++;
+		traversal = ray_traversal(uniform->forward_dir, tsr->pos, tsr);
+		block_set(&tsr->world, traversal.block, 0);
 	}
-	gray = i;
-	return (color(gray << 16 | gray << 8 | gray));
+	if (mbx_key_pressed(mbx, MBX_MOUSE_RIGHT))
+	{
+		traversal = ray_traversal(uniform->forward_dir, tsr->pos, tsr);
+		traversal.block = vec3i_sub(traversal.block,
+			vec3i_vd(get_normal(uniform->forward_dir, traversal.axis)));
+		block_set(&tsr->world, traversal.block, *type);
+	}
+	if (mbx_key_pressed(mbx, MBX_KEY_Q))
+	{
+		if (*type == 1)
+			*type = 6;
+		else
+			(*type)--;
+	}
+	if (mbx_key_pressed(mbx, MBX_KEY_E))
+		*type = *type % 6 + 1;
 }
 
 void	update(t_mbx *mbx, void *args)
@@ -80,6 +84,7 @@ void	update(t_mbx *mbx, void *args)
 	static size_t		oldframe_elapsed = 0;
 	static double		chrono = 0.0;
 	t_uniform			uniform;
+	static t_type		type = 1;
 
 	tsr = args;
 	mov = movement(mbx);
@@ -98,25 +103,14 @@ void	update(t_mbx *mbx, void *args)
 	uniform.aspect_ratio = (double)(mbx->viewport->size.y)
 		/ mbx->viewport->size.x;
 	uniform.tsr = tsr;
-	if (mbx_key_pressed(mbx, MBX_MOUSE_LEFT))
-	{
-		t_traversal	traversal = ray_traversal(
-			uniform.forward_dir, tsr->pos, tsr);
-		block_set(&tsr->world, traversal.block, 0);
-	}
-	if (mbx_key_pressed(mbx, MBX_MOUSE_RIGHT))
-	{
-		t_traversal	traversal = ray_traversal(
-			uniform.forward_dir, tsr->pos, tsr);
-		traversal.block = vec3i_sub(traversal.block,
-			vec3i_vd(get_normal(uniform.forward_dir, traversal.axis)));
-		block_set(&tsr->world, traversal.block, 1);
-	}
+	place_and_destroy_logic(tsr, mbx, &uniform, &type);
 	vec3_yaw_rot(&tsr->light, 1e-1 * mbx->delta_time);
 	mbx_clear(mbx->viewport, background);
 	fragment_shader(mbx->viewport, rt_shader, &uniform);
 	mbx_set_pixel(mbx->viewport,
 		vec2i_div_d(mbx->viewport->size, 2), color(0xffffff));
+	mbx_set_region_scaled(mbx->viewport, tsr->tex[type],
+		vec2i(8, mbx->viewport->size.y - 56), vec2_d(3));
 	if (chrono > 1.0)
 	{
 		snprintf(info, 16, "%.2f ms\n",
@@ -135,7 +129,7 @@ void	world_build(t_world *world)
 	for (size_t x = 0; x < world->width; x++)
 		for (size_t y = 0; y < world->height; y++)
 			for (size_t z = 0; z < world->depth; z++)
-				block_set(world, vec3i(x, y, z), (y == 0)
+				block_set(world, vec3i(x, y, z), (y == 0 || y == 15)
 					|| ((5 <= x && x <= 10 && 5 <= y && y <= 10 && 5 <= z && z <= 10)
 					&& !(((6 <= x && x <= 9) && (6 <= y && y <= 9))
 					|| ((6 <= y && y <= 9) && (6 <= z && z <= 9))
@@ -143,12 +137,47 @@ void	world_build(t_world *world)
 				);
 }
 
+static void	load_textures(t_tsr *tsr, t_mbx *mbx)
+{
+	static char *paths[] = {
+		"assets/stone.png", "assets/dirt.png",
+		"assets/oak_plank.png", "assets/iron_block.png",
+		"assets/moss_block.png", "assets/blue_coral_block.png"
+	};
+	size_t	i;
+
+	tsr->tex[0] = NULL;
+	i = 1;
+	while (i < 7)
+	{
+		tsr->tex[i] = mbx_make_region_from_file(mbx, paths[i - 1]);
+		if (!tsr->tex[i])
+			printf("Can't load texture '%s'\n", paths[i - 1]);
+		i++;
+	}
+	while (i < 256)
+		tsr->tex[i++] = NULL;
+}
+
+static void	unload_textures(t_tsr *tsr, t_mbx *mbx)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < 256)
+	{
+		if (tsr->tex[i])
+			mbx_destroy_region(mbx, tsr->tex[i]);
+		i++;
+	}
+}
+
 int main()
 {
-	t_mbx			*mbx;
-	t_tsr			tsr;
+	t_mbx	*mbx;
+	t_tsr	tsr;
 
-	tsr.size = vec2i(640, 360);
+	tsr.size = vec2i(1280, 720);
 	mbx = mbx_init(tsr.size, "Tesser4ct", 0);
 	if (!mbx)
 	{
@@ -158,12 +187,11 @@ int main()
 	tsr.font = mbx_make_region_from_file(
 		mbx, "lib/MacroBoX/assets/font_5x7.png");
 	tsr.font->subregion_size = vec2i(5, 7);
-	tsr.tex = mbx_make_region_from_file(
-		mbx, "assets/stone.png");
+	load_textures(&tsr, mbx);
 	tsr.pos = vec3(8.0, 8.0, 4.0);
 	tsr.vel = vec3_zero();
 	tsr.ang = vec2_zero();
-	world_create(&tsr.world, 64, 64, 64);
+	world_create(&tsr.world, 16, 16, 16);
 	world_build(&tsr.world);
 	tsr.light = vec3_normalize(vec3(0.35, 1.0, 0.55));
 	mbx->settings.show_cursor = false;
@@ -171,7 +199,7 @@ int main()
 	mbx_move_cursor(mbx, vec2i(tsr.size.x / 2, tsr.size.y / 2));
 	mbx_run(mbx, update, &tsr);
 	mbx_destroy_region(mbx, tsr.font);
-	mbx_destroy_region(mbx, tsr.tex);
+	unload_textures(&tsr, mbx);
 	mbx_exit(mbx);
 	world_destroy(&tsr.world);
 }
