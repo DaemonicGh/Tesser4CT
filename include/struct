@@ -1,0 +1,87 @@
+tsr = [
+	mbx = #
+	rendering = [
+		vfx_region			// Unused, maybe for bloom
+		ui_region
+	]
+	thread_manager = [
+		render_threads
+		#render_jobs
+		local_render_barrier	// used between render threads
+		shared_render_barrier	// used between main and render threads
+
+		loader_thread			// For parsing and loading maps seamlessly
+		loader_jobs
+	]
+	update_manager = [
+		#tasks				// Actions to do on shared data in between render passes
+	]
+	world_manager = [
+		world_sections
+		#tile_data
+		global_lights		// Array of directional lights
+		global_settings = [
+			skybox global_illumination ray_lifetime_ratio
+		]
+	]
+	ui_manager = [
+		state				// FSM
+		#ui_data			// Array containing all UI data
+	]
+	player = [
+		action				// FSM
+		position
+		right up forward	// locality vectors
+		#collider
+		velocity
+		camera
+		camera_delta
+	]
+]
+
+/// The goal is to make them as fast as possible
+so render threads don't wait for too long ///
+update_tasks = [
+	resize_viewport [size]
+	resize_world_section [section pos size]
+	link_world_section [section]
+	unlink_world_section [section]
+	place_tile [section pos tile]
+	update_light [section light new_light]
+
+	always = [
+		move_all_dynamic_objects [pos]
+		move_camera [pos]
+		create_render_jobs
+	]
+]
+
+// Test pointer vs inlined actions
+render_jobs = [
+	draw_screen_section [pos size]
+	wait_at_local_barrier [step]
+]
+
+// Test pointer vs inlined actions
+tile_data = [
+	flags [processed uv_mode lightning_mode ray_mode]
+	region			// atlas containing PBR maps and animations
+	anim_frame_count
+	anim_speed
+]
+
+ui_data = [
+	position (AABB)
+	type [sprite panel text exec choice slider]
+	state [idle hovered clicked]
+	region				// 9-split atlas for each state
+	value [int64 char* or func*]
+	range / values
+	up down left right	// keyboard support for moving in UIs ?
+]
+
+collider = [
+	position
+	size
+	delta
+]

@@ -6,41 +6,21 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/26 22:10:09 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/04/24 16:05:51 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TSR_WORLD_H
 # define TSR_WORLD_H
 
-# include "tsr_core.h"
+# include <stdlib.h>
+# include "../lib/MacroBoX/lib/VecLibC/include/veclc.h"
+# include "types/tsr_s_world.h"
 
-typedef struct s_tsr_tile_data
-{
-	t_mbx_region	*region;
-}	t_tsr_tile_data;
-
-typedef struct s_world
-{
-	size_t		width;
-	size_t		height;
-	size_t		depth;
-	t_tsr_tile	*blocks;
-}	t_world;
-
-void
-world_create(t_world *world, size_t width, size_t height, size_t depth);
-
-void
-world_destroy(t_world *world);
-
-bool
-inbound(t_world *world, t_vec3i pos);
-
-t_tsr_tile
-block_get(t_world *world, t_vec3i pos);
-
-void
-block_set(t_world *world, t_vec3i pos, t_tsr_tile type);
+void	world_create(t_world *world, size_t width, size_t height, size_t depth);
+void	world_destroy(t_world *world);
+bool	inbound(t_world *world, t_vec3i pos);
+t_tsr_tile	block_get(t_world *world, t_vec3i pos);
+void	block_set(t_world *world, t_vec3i pos, t_tsr_tile type);
 
 #endif

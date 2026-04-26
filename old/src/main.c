@@ -12,8 +12,6 @@
 
 #include "tsr.h"
 
-typedef unsigned int t_u32;
-
 t_vec3	movement(t_mbx *mbx)
 {
 	t_vec3			input;
@@ -47,7 +45,7 @@ void	mouse_cam(t_mbx *mbx, t_vec2 *ang)
 }
 
 void	place_and_destroy_logic(t_tsr *tsr, t_mbx *mbx,
-	t_uniform *uniform, t_type *type)
+	t_uniform *uniform, t_tsr_tile *type)
 {
 	t_traversal		traversal;
 
@@ -84,7 +82,7 @@ void	update(t_mbx *mbx, void *args)
 	static size_t		oldframe_elapsed = 0;
 	static double		chrono = 0.0;
 	t_uniform			uniform;
-	static t_type		type = 1;
+	static t_tsr_tile		type = 1;
 
 	tsr = args;
 	mov = movement(mbx);
@@ -131,10 +129,10 @@ void	world_build(t_world *world)
 			for (size_t z = 0; z < world->depth; z++)
 				block_set(world, vec3i(x, y, z), (y == 0 || y == 15)
 					|| ((5 <= x && x <= 10 && 5 <= y && y <= 10 && 5 <= z && z <= 10)
-					&& !(((6 <= x && x <= 9) && (6 <= y && y <= 9))
-					|| ((6 <= y && y <= 9) && (6 <= z && z <= 9))
-					|| ((6 <= x && x <= 9) && (6 <= z && z <= 9))))
-				);
+						&& !(((6 <= x && x <= 9) && (6 <= y && y <= 9))
+						|| ((6 <= y && y <= 9) && (6 <= z && z <= 9))
+						|| ((6 <= x && x <= 9) && (6 <= z && z <= 9))))
+					);
 }
 
 static void	load_textures(t_tsr *tsr, t_mbx *mbx)
@@ -195,8 +193,7 @@ int main()
 	world_build(&tsr.world);
 	tsr.light = vec3_normalize(vec3(0.35, 1.0, 0.55));
 	mbx->settings.show_cursor = false;
-	mbx_refresh_settings(mbx);
-	mbx_move_cursor(mbx, vec2i(tsr.size.x / 2, tsr.size.y / 2));
+	mbx->settings.lock_cursor = true;
 	mbx_run(mbx, update, &tsr);
 	mbx_destroy_region(mbx, tsr.font);
 	unload_textures(&tsr, mbx);

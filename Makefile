@@ -13,15 +13,20 @@
 
 # ***** PROJECT ***************
 
-NAMES					:=	tesser4ct
+NAMES					:=	Tesser4CT
 
 common_files			:=	\
-	main world renderer/utils.c renderer/renderer.c renderer/shader.c
+	app/main app/init app/init_textures app/exit								\
+	player/actions player/movement player/update								\
+	renderer/camera renderer/renderer renderer/threads							\
+	world/world																	\
+	utils/memory utils/report													\
+
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a
 OTHER_LIBRARIES			:=	m
-GIT_LIBRARIES			:=
+GIT_LIBRARIES			:=	MacroBoX
 
-INCLUDE_DIRECTORIES		:=	include lib/MacroBoX/include
+INCLUDE_DIRECTORIES		:=	include include/modules lib/MacroBoX/include
 
 # ***** FILE SETTINGS *********
 
@@ -51,7 +56,7 @@ SILENT_NAMES				:=
 COMPILER					=	cc
 COMPILER_FLAGS				=	-Wall -Wextra -Werror
 RELEASE_COMPILER_FLAGS		=	-O3 -flto -march=native -DNDEBUG
-DEBUG_COMPILER_FLAGS		=	-O1 -g
+DEBUG_COMPILER_FLAGS		=	-O1 -g -D TSR_DEBUG
 SANITIZE_COMPILER_FLAGS		=	-fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 
 LINKER_FLAGS				=
@@ -72,15 +77,13 @@ REPORT_BUILDER				:=	llvm-opt-report-14
 
 # ***** COMMAND VARIABLES *****
 
-debug						?=	0
-d							?=	$(debug)
-
 sanitize					?=	0
 san							?=	$(sanitize)
 
-ifneq ($(san),0)
-	debug					:=	1
-endif
+debug						?=	$(san)
+d							?=	$(debug)
+
+reports						?=	$(d)
 
 force						?=	0
 f							?=	$(force)
@@ -91,15 +94,10 @@ v							?=	$(verbose)
 no-dependencies				?=	0
 no-deps						?=	$(no-dependencies)
 
-no-reports					?=	0
-
-hard-reports				?=	0
-
 # ***** MAKE ******************
 
 MAKE						+=	\
-d=$(d) san=$(san) f=$(f) v=$(v) no-deps=$(no-deps)\
-no-reports=$(no-reports) hard-reports=$(hard-reports)
+d=$(d) san=$(san) f=$(f) v=$(v) no-deps=$(no-deps) reports=$(reports)
 
 ifeq ($(v),0)
 	MAKEFLAGS				+=	--silent
@@ -116,7 +114,7 @@ is_static					=	$(filter %.a,$1)
 is_not_shared 				=	$(filter-out %.so,$1)
 is_not_static				=	$(filter-out %.a,$1)
 is_zero						=	$(filter 0,$1)
-is_not_zero					=	$(filter-out 0,$1)
+is_not_zero					=	$(filter-out 0,$(if $1,$1,1))
 
 make_object					=	$(patsubst %,$($1_object_directory)%$(OBJECT_EXTENSION),$(basename $2))
 make_dependency				=	$(patsubst $($1_object_directory)%,$($1_dependency_directory)%.d,$(basename $2))
@@ -129,10 +127,6 @@ make_hard_ld_report_linker	=	$(patsubst %,$($1_report_directory)%,$1)
 get_lib_subfolder			=	$(patsubst $(LOCAL_LIBRARY_DIRECTORY)%,%,$(dir $1))
 
 # ***** PREPROCESS ************
-
-reports							:=	\
-$(if $(or $(call is_zero,$(no-reports)),\
-$(call is_not_zero,$(if $(hard-reports),$(hard-reports),1))),1,0)
 
 define NAME_BUILDER
 $1_source_directory				?=	$(SOURCE_DIRECTORY)
@@ -257,8 +251,8 @@ lib:
 	$(MAKE) all
 
 dist:
-	$(MAKE) d=0 san=0 no-reports=1 hard-reports=0 re
-	$(MAKE) d=0 san=0 no-reports=1 hard-reports=0 clean
+	$(MAKE) d=0 san=0 reports=0 re
+	$(MAKE) d=0 san=0 reports=0 clean
 
 # ***** RECIPE MACROS *********
 
@@ -275,13 +269,10 @@ $1: $(LIBRARY_FILES) $(common_objects) $$($1_objects) $(FORCE)
 		$(LINKER_FLAGS) $$(VPATH) $(common_objects) $($1_objects)\
 		$(LIB_DIR_FLAGS) $(LIB_NAME_FLAGS) -o $1
 
-		$(if $(call is_zero,$(no-reports)),
+		$(if $(call is_not_zero,$(reports)),
 			-$(REPORT_BUILDER) $(call make_hard_ld_report,$1) -o\
-			$(call make_ld_report,$1,$1) 2>/dev/null
-
-			$(if $(call is_zero,$(hard-reports)),
-				rm -f $(call make_hard_ld_report,$1)
-			,)
+			$(call make_ld_report,$1,$1)\
+			$(if $(call is_zero,$(v)),2>/dev/null,)
 		,)
 	)
 	$(if $(filter $1, $(SILENT_NAMES)),,
@@ -302,13 +293,10 @@ $$($1_object_directory)%$(OBJECT_EXTENSION): $$($1_source_directory)%$(SOURCE_EX
 
 	$(COMPILER) $(COMPILER_FLAGS) $(INCLUDES) -c $$< -o $$@
 
-	$(if $(call is_zero,$(no-reports)),
+	$(if $(call is_not_zero,$(no-reports)),
 		-$(REPORT_BUILDER) $$(call make_hard_report,$1,$$@) -o\
-		$$(call make_report,$1,$$@) 2>/dev/null
-
-		$(if $(call is_zero,$(hard-reports)),
-			rm -f $$(call make_hard_report,$1,$$@)
-		,)
+		$$(call make_report,$1,$$@)\
+		$(if $(call is_zero,$(v)),2>/dev/null,)
 	,)
 endef
 
