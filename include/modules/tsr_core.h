@@ -18,5 +18,5 @@
 #include "mbx.h"
 #include "tsr_constants.h"
 
-typedef uint8_t					t_tsr_tile;
+typedef uint8_t					t_tsr_tile_id;
 typedef struct s_tsr_context	t_tsr;

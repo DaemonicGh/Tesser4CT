@@ -34,6 +34,7 @@ void	tsr_player_movement(t_tsr *tsr)
 	mv = vec3_mult_d(vec3_normalize(mv), speed);
 	tsr->player.velocity = vec3_len_move_towards(tsr->player.velocity,
 			mv, accel * tsr->mbx->dt);
-	tsr->player.position = vec3_add(
-			tsr->player.position, tsr->player.velocity);
+	tsr->player.position = vec3_clamp(vec3_add(
+				tsr->player.position, tsr->player.velocity),
+			vec3_d(0.2), vec3_sub_d(vec3_vi(tsr->wworld.size), 0.2));
 }

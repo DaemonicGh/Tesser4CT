@@ -13,12 +13,14 @@
 #include "tsr.h"
 #include "tsr_constants.h"
 #include "tsr_utils.h"
+#include "tsr_world.h"
 #include <unistd.h>
 
 static void	init_player(t_tsr *tsr)
 {
 	tsr->player.position = vec3(8.0, 8.0, 4.0);
-	tsr->player.rotation = vec3(0, 0, 0);
+	tsr->player.rotation = vec3(M_PI, 0, 0);
+	tsr->camera.rotation = vec3(M_PI, 0, 0);
 	tsr->player.velocity = vec3_zero();
 }
 
@@ -48,6 +50,18 @@ static void	init_threads(t_tsr *tsr)
 	tsr->rendering.frag_shader = draw_ray;
 }
 
+void	init_tiles(t_tsr *tsr)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < TILE_COUNT)
+	{
+		tsr->world.tiles[i] = g_tile_data[i];
+		i++;
+	}
+}
+
 t_tsr	*tsr_init(void)
 {
 	t_tsr	*tsr;
@@ -59,6 +73,7 @@ t_tsr	*tsr_init(void)
 	tsr->mbx = mbx_init_windowless();
 	if (!tsr->mbx)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBX);
+	init_tiles(tsr);
 	init_textures(tsr);
 	init_player(tsr);
 	tsr->world.global_light = vec3_normalize(vec3(0.35, 1.0, 0.55));

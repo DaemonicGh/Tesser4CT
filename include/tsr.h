@@ -17,10 +17,8 @@
 
 #include "tsr_core.h"
 #include "tsr_context.h"
+#include "tsr_renderer.h"
 #include "tsr_utils.h"
-
-#include "../old/include/modules/tsr_renderer.h"
-
 
 void
 init_textures(t_tsr *tsr);
@@ -44,7 +42,13 @@ void
 tsr_update_player(t_tsr *tsr);
 
 t_mbx_color
-draw_ray(t_tsr *tsr, t_vec2i frag_pos);
+draw_ray(t_tsr *tsr, t_vec2 uv);
+
+void
+trace_ray(t_tsr *tsr, t_tsr_ray *ray);
+
+void
+get_ray_position(t_tsr_ray *ray);
 
 void
 tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message);

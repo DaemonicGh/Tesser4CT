@@ -16,7 +16,7 @@ static void	update_player_rotation(t_tsr *tsr)
 {
 	tsr->player.rotation.x = tsr->camera.rotation.x;
 	tsr->player.forward = vec3(
-			sin(tsr->player.rotation.x), 0, cos(tsr->player.rotation.x));
+			-sin(tsr->player.rotation.x), 0, -cos(tsr->player.rotation.x));
 	tsr->player.right = vec3(
 			-tsr->player.forward.z, 0, tsr->player.forward.x);
 	tsr->player.up = vec3(0, 1, 0);

@@ -12,63 +12,21 @@
 
 #pragma once
 
-#include "modules/tsr_world.h"
+#include "tsr_world.h"
 
-typedef struct s_traversal
+typedef struct s_tsr_render_ray
 {
-	int		axis;
-	double	dist;
-	t_vec3i	block;
-}	t_traversal;
-
-typedef struct s_shader
-{
-	t_mbx_region	*buffer;
-	t_mbx_color		(*f)(t_vec2, void *);
-	void			*data;
-}	t_shader;
-
-typedef struct s_job
-{
-	t_vec2i	start_coord;
-}	t_job;
-
-typedef struct s_thread_pkg
-{
-	pthread_t		thread;
-	pthread_mutex_t	*mut;
-	size_t			*job_len;
-	t_job			*jobs;
-	const t_shader	*shader;
-}	t_thread_pkg;
-
-typedef struct s_uniform
-{
-	t_vec3	forward_dir;
-	t_vec3	right_dir;
-	t_vec3	up_dir;
-	double	aspect_ratio;
-	t_tsr	*tsr;
-}	t_uniform;
-
-void
-vec3_yaw_rot(t_vec3 *v, double ang);
-
-void
-vec3_pitch_rot(t_vec3 *v, double ang);
-
-void
-setup_frag(t_mbx_region *buffer, t_tsr *tsr);
-
-void
-fragment_shader(t_mbx_region *buffer,
-	t_mbx_color (*f)(t_vec2, void *), void *data);
-
-t_mbx_color
-rt_shader(t_vec2 uv, void *uniform);
-
-t_traversal
-ray_traversal(t_vec3 ray_dir, t_vec3 ray_org, t_tsr *tsr);
-
-t_vec3
-get_normal(t_vec3 ray_dir, int axis);
+	t_vec3		origin;
+	t_vec3		forward;
+	t_vec3		delta;
+	t_vec3		abs_delta;
+	t_vec3		dist;
+	t_vec3		position;
+	t_vec3i		tile_position;
+	t_vec3i		delta_sign;
+	int			axis;
+	int			lifetime;
+	t_tsr_tile	*tile;
+	t_vec2		uv;
+	t_vec2i		texture_uv;
+}	t_tsr_ray;

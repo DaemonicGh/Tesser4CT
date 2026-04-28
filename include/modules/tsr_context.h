@@ -46,7 +46,7 @@ typedef struct s_tsr_context
 		size_t				job_count;
 		atomic_size_t		current_job;
 		t_vec2i				job_region_count;
-		t_mbx_color			(*frag_shader)(t_tsr * tsr, t_vec2i frag_pos);
+		t_mbx_color			(*frag_shader)(t_tsr * tsr, t_vec2 uv);
 	}	rendering;
 	struct	s_tsr_ui_manager
 	{
@@ -61,7 +61,7 @@ typedef struct s_tsr_context
 	}	updates;
 	struct s_tsr_world_manager
 	{
-		t_tsr_tile_data		tiles[TILE_COUNT];
+		t_tsr_tile			tiles[TILE_COUNT];
 		t_vec3				global_light;
 		pthread_t			loader_thread;
 		pthread_barrier_t	loader_wait_barrier;

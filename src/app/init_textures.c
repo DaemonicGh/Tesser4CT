@@ -12,6 +12,7 @@
 
 #include "tsr.h"
 #include "tsr_core.h"
+#include "tsr_world.h"
 
 static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 {
@@ -30,10 +31,6 @@ static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 
 static void	load_textures(t_tsr *tsr)
 {
-	static char	*paths[TILE_COUNT] = {NULL,
-		"assets/tiles/stone.png", "assets/tiles/dirt.png",
-		"assets/tiles/oak_plank.png", "assets/tiles/iron_block.png",
-		"assets/tiles/moss_block.png", "assets/tiles/blue_coral_block.png"};
 	size_t		i;
 
 	tsr->extras.default_region = load_texture(tsr, "assets/default.png");
@@ -42,7 +39,8 @@ static void	load_textures(t_tsr *tsr)
 	i = 0;
 	while (i < TILE_COUNT)
 	{
-		tsr->world.tiles[i].region = load_texture(tsr, paths[i]);
+		tsr->world.tiles[i].region = load_texture(tsr,
+				(char *)g_tile_data[i].texture_path);
 		i++;
 	}
 }

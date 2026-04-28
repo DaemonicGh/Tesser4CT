@@ -17,19 +17,30 @@
 
 typedef struct s_tsr_tile_data
 {
+	const char		*texture_path;
 	t_mbx_region	*region;
-}	t_tsr_tile_data;
+	bool			skip_process;
+	bool			skybox;
+}	t_tsr_tile;
+
+static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
+{.texture_path = NULL, .skip_process = true},
+{.texture_path = "assets/tiles/stone.png"},
+{.texture_path = "assets/tiles/dirt.png"},
+{.texture_path = "assets/tiles/oak_planks.png"},
+{.texture_path = "assets/tiles/iron_block.png"},
+{.texture_path = "assets/tiles/moss_block.png"},
+{.texture_path = "assets/tiles/blue_coral_block.png", .skybox = true}
+};
 
 typedef struct s_world
 {
-	size_t		width;
-	size_t		height;
-	size_t		depth;
-	t_tsr_tile	*blocks;
+	t_vec3i			size;
+	t_tsr_tile_id	*blocks;
 }	t_world;
 
 void
-world_create(t_world *world, size_t width, size_t height, size_t depth);
+world_create(t_world *world, t_vec3i size);
 
 void
 world_destroy(t_world *world);
@@ -37,10 +48,10 @@ world_destroy(t_world *world);
 bool
 inbound(t_world *world, t_vec3i pos);
 
-t_tsr_tile
+t_tsr_tile_id
 block_get(t_world *world, t_vec3i pos);
 
 void
-block_set(t_world *world, t_vec3i pos, t_tsr_tile type);
+block_set(t_world *world, t_vec3i pos, t_tsr_tile_id type);
 
 #endif
