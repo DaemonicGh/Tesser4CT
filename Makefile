@@ -18,7 +18,8 @@ NAMES					:=	Tesser4CT
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
 	player/actions player/movement player/update								\
-	renderer/camera renderer/renderer renderer/threads renderer/trace_ray		\
+	renderer/camera renderer/renderer renderer/threads renderer/tile			\
+	renderer/trace_ray renderer/uv												\
 	world/world																	\
 	utils/memory utils/report													\
 

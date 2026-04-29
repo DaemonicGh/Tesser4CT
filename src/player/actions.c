@@ -11,20 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_core.h"
-
-t_tsr_ray	setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward);
-
-void	trace_ray(t_tsr *tsr, t_tsr_ray *ray);
-
-static t_vec3	get_normal(t_vec3 ray_dir, int axis)
-{
-	t_vec3	normal;
-
-	normal = vec3_zero();
-	normal.comp[axis] = fsign(ray_dir.comp[axis]);
-	return (normal);
-}
 
 static void	place_and_destroy(t_tsr *tsr)
 {

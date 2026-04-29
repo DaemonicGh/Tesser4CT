@@ -32,7 +32,8 @@ static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
 {.texture_path = "assets/tiles/moss_block.png"},
 {.texture_path = "assets/tiles/testeract1.png", .skybox = true},
 {.texture_path = "assets/tiles/glass.png"},
-{.texture_path = "assets/tiles/white_glass.png"}
+{.texture_path = "assets/tiles/white_glass.png"},
+{0}
 };
 
 typedef struct s_world

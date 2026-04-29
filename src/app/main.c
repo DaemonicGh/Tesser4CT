@@ -53,8 +53,9 @@ void	update(t_mbx *mbx, void *data)
 	now = mbx_get_timestamp();
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	tsr->rendering.current_job = 0;
-	tsr->rendering.job_region_count = vec2i_div_d(
-			tsr->mbx->vp->size, RENDER_JOB_REGION_SIZE);
+	tsr->rendering.job_region_count = vec2i(
+			tsr->mbx->vp->size.x / RENDER_JOB_REGION_W,
+			tsr->mbx->vp->size.y / RENDER_JOB_REGION_H);
 	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
 			* tsr->rendering.job_region_count.y);
 	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.2f %.2f %.2f]\n"

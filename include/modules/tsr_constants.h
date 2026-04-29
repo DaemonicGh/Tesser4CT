@@ -31,7 +31,8 @@
 
 # define TILE_COUNT				256
 
-# define RENDER_JOB_REGION_SIZE	16
+# define RENDER_JOB_REGION_W	32
+# define RENDER_JOB_REGION_H	18
 
 # define CAMERA_SENSITIVITY		2
 
