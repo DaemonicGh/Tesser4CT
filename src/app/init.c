@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tsr.h"
-#include "tsr_constants.h"
-#include "tsr_utils.h"
-#include "tsr_world.h"
+#include <bits/types/struct_sched_param.h>
+#include <pthread.h>
 #include <unistd.h>
+#include <sched.h>
+
+#include "tsr.h"
 
 static void	init_player(t_tsr *tsr)
 {
@@ -26,12 +27,10 @@ static void	init_player(t_tsr *tsr)
 
 static void	init_threads(t_tsr *tsr)
 {
-	size_t	i;
+	size_t				i;
 
 	tsr->rendering.running = true;
 	tsr->rendering.thread_count = max(sysconf(_SC_NPROCESSORS_ONLN) - 1, 1);
-	if (tsr->rendering.thread_count >= 6)
-		tsr->rendering.thread_count -= 1;
 	tsr->rendering.threads = malloc(
 			tsr->rendering.thread_count * sizeof(pthread_t));
 	if (!tsr->rendering.threads)

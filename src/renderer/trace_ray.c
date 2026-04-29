@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_world.h"
 
 void	get_ray_position(t_tsr_ray *ray)
 {
@@ -18,7 +19,7 @@ void	get_ray_position(t_tsr_ray *ray)
 				ray->dist.comp[ray->axis] - ray->abs_delta.comp[ray->axis]));
 }
 
-static void	step_ray(t_tsr_ray *ray)
+static bool	step_ray(t_tsr_ray *ray)
 {
 	if (ray->dist.z < ray->dist.x && ray->dist.z < ray->dist.y)
 		ray->axis = 2;
@@ -26,6 +27,8 @@ static void	step_ray(t_tsr_ray *ray)
 		ray->axis = (ray->dist.y < ray->dist.x);
 	ray->dist.comp[ray->axis] += ray->abs_delta.comp[ray->axis];
 	ray->tile_position.comp[ray->axis] += ray->delta_sign.comp[ray->axis];
+	return (ray->tile_position.comp[ray->axis] >= 0
+		&& ray->tile_position.comp[ray->axis] < 16);
 }
 
 bool	resolve_region_collision(t_tsr *tsr, t_tsr_ray *ray)
@@ -53,8 +56,7 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 {
 	while (ray->tile->skip_process)
 	{
-		step_ray(ray);
-		if (inbound(&tsr->wworld, ray->tile_position))
+		if (step_ray(ray))
 			ray->tile = &tsr->world.tiles[
 				block_get(&tsr->wworld, ray->tile_position)];
 		else

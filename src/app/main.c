@@ -12,8 +12,12 @@
 
 #include "modules/mbx_constants.h"
 #include "modules/mbx_drawing.h"
+#include "modules/mbx_handlers.h"
+#include "modules/mbx_inputs.h"
+#include "modules/mbx_utils.h"
 #include "tsr.h"
 #include "tsr_constants.h"
+#include <stdatomic.h>
 #include <stdio.h>
 
 static void	world_build(t_world *world)
@@ -34,25 +38,30 @@ void	update(t_mbx *mbx, void *data)
 {
 	t_tsr	*tsr;
 	char	str[256];
+	double	now;
 
 	(void)mbx;
 	tsr = data;
 	tsr_update_camera(tsr);
 	tsr_update_player(tsr);
+	if (mbx_btnp(tsr->mbx, MBX_KEY_F1))
+	{
+		tsr->mbx->settings.lock_cursor = !tsr->mbx->settings.lock_cursor;
+		tsr->mbx->settings.show_cursor = !tsr->mbx->settings.show_cursor;
+		mbx_refresh_settings(tsr->mbx);
+	}
+	now = mbx_get_timestamp();
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	tsr->rendering.current_job = 0;
 	tsr->rendering.job_region_count = vec2i_div_d(
 			tsr->mbx->vp->size, RENDER_JOB_REGION_SIZE);
 	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
 			* tsr->rendering.job_region_count.y);
-	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.2f %.2f %.2f]\nROT \t[%.2f %.2f]\n"
-		"CAM \t[%.1f %.1f %.1f][%.1f %.1f %.1f][%.1f %.1f %.1f]",
-		1.0 / tsr->mbx->spf, tsr->player.position.x, tsr->player.position.y,
+	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.2f %.2f %.2f]\n"
+		"ROT \t[%.2f %.2f]\n",
+		1.0 / tsr->mbx->dt, tsr->player.position.x, tsr->player.position.y,
 		tsr->player.position.z,
-		tsr->camera.rotation.x, tsr->camera.rotation.y,
-		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z,
-		tsr->camera.right.x, tsr->camera.right.y, tsr->camera.right.z,
-		tsr->camera.up.x, tsr->camera.up.y, tsr->camera.up.z);
+		tsr->camera.rotation.x, tsr->camera.rotation.y);
 	mbx_set_text_scaled(tsr->mbx->vp, str,
 		vec2ix2_xy(5, 5, 2, 2), tsr->ui.fonts.small);
 	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
@@ -68,6 +77,7 @@ int	main(void)
 	tsr = tsr_init();
 	world_create(&tsr->wworld, vec3i_i(16));
 	world_build(&tsr->wworld);
+	tsr->mbx->settings.fps_cap = 240;
 	mbx_run(tsr->mbx, update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);
 }

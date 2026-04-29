@@ -41,7 +41,7 @@ static void	place_and_destroy(t_tsr *tsr)
 	{
 		trace_ray(tsr, &traversal);
 		traversal.tile_position = vec3i_sub(traversal.tile_position,
-			vec3i_vd(get_normal(traversal.forward, traversal.axis)));
+				vec3i_vd(get_normal(traversal.forward, traversal.axis)));
 		block_set(&tsr->wworld, traversal.tile_position, type);
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))

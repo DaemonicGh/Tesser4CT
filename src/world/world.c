@@ -35,8 +35,6 @@ bool	inbound(t_world *world, t_vec3i pos)
 
 t_tsr_tile_id	block_get(t_world *world, t_vec3i pos)
 {
-	if (!inbound(world, pos))
-		return (0);
 	return (world->blocks[
 			pos.x + world->size.x * (pos.y + world->size.y * pos.z)]);
 }

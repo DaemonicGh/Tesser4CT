@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_utils.h"
 #include "tsr.h"
+#include <stdatomic.h>
 
 static void	render_job(t_tsr *tsr, size_t job_i)
 {
@@ -56,7 +58,7 @@ static void	render_thread_loop(t_tsr *tsr)
 
 void	*tsr_render_thread_init(void *data)
 {
-	t_tsr	*tsr;
+	t_tsr		*tsr;
 
 	tsr = data;
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
