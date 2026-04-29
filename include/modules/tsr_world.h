@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/28 18:09:51 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/29 16:42:10 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
 {.texture_path = NULL, .skip_process = true},
 {.texture_path = "assets/tiles/stone.png"},
 {.texture_path = "assets/tiles/dirt.png"},
-{.texture_path = "assets/tiles/oak_planks.png", .skybox = true},
+{.texture_path = "assets/tiles/oak_planks.png"},
 {.texture_path = "assets/tiles/iron_block.png"},
 {.texture_path = "assets/tiles/moss_block.png"},
-{.texture_path = "assets/tiles/blue_coral_block.png", .skybox = true}
+{.texture_path = "assets/tiles/testeract1.png", .skybox = true},
+{.texture_path = "assets/tiles/glass.png"},
+{.texture_path = "assets/tiles/white_glass.png"}
 };
 
 typedef struct s_world

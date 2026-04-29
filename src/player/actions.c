@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:26:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/28 18:30:48 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/29 11:05:52 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ static void	place_and_destroy(t_tsr *tsr)
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))
 	{
 		if (type == 1)
-			type = 6;
+			type = 8;
 		else
 			type--;
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_E))
-		type = type % 6 + 1;
+		type = type % 8 + 1;
 }
 
 void	tsr_player_actions(t_tsr *tsr)
