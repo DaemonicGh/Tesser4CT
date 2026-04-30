@@ -6,7 +6,7 @@
 #    By: rprieur <rprieur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/24 19:51:36 by rprieur           #+#    #+#              #
-#    Updated: 2026/04/20 17:51:35 by emarrot          ###   ########.fr        #
+#    Updated: 2026/04/30 13:49:00 by emarrot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # V5.3
@@ -19,7 +19,7 @@ common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
 	player/actions player/movement player/update								\
 	renderer/camera renderer/renderer renderer/threads renderer/tile			\
-	renderer/trace_ray renderer/uv												\
+	renderer/trace_ray renderer/uv renderer/atlas								\
 	world/world																	\
 	utils/memory utils/report													\
 

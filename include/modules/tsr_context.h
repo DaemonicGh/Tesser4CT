@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tsr_tsr.h                                          :+:      :+:    :+:   */
+/*   tsr_context.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/26 22:12:13 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/04/30 14:04:17 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "tsr_world.h"
+#include "tsr_atlas.h"
 
 typedef struct s_tsr_player
 {
@@ -67,6 +68,7 @@ typedef struct s_tsr_context
 		pthread_barrier_t	loader_wait_barrier;
 	}	world;
 	t_world				wworld;
+	t_atlas				atlas;
 	t_tsr_player		player;
 	t_tsr_camera		camera;
 	struct s_tsr_extras

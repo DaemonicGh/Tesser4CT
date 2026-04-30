@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/29 23:38:55 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/04/30 15:17:25 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,19 @@ static void	get_tile_uv(t_tsr_ray *ray)
 
 void	get_hit_color(t_tsr_ray *ray)
 {
+	t_mbx_region	*region;
+
 	if (ray->tile->skybox)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	ray->texture_uv = vec2i_mult_vd(ray->tile->region->size, ray->uv);
+	region = ray->tile->region[ray->axis * 2
+		+ (ray->forward.comp[ray->axis] < 0)];
+	ray->texture_uv = vec2i_mult_vd(region->size, ray->uv);
 	ray->color = color_blend(
-			mbx_get_pixel_unsafe(ray->tile->region, ray->texture_uv),
+			mbx_get_pixel_unsafe(region, ray->texture_uv),
 			ray->color);
 	if (ray->tile->skybox && ray->color.a < 0xFF)
 		printf("%i %i\n", ray->color.a,
-			mbx_get_pixel_unsafe(ray->tile->region, ray->texture_uv).a);
+			mbx_get_pixel_unsafe(region, ray->texture_uv).a);
 }

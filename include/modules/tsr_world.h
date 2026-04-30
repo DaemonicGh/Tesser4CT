@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/29 16:42:10 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/30 17:30:31 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,46 @@
 
 # include "tsr_core.h"
 
+typedef enum e_direction
+{
+	EST,
+	WEST,
+	UP,
+	DOWN,
+	NORTH,
+	SOUTH
+}	t_direction;
+
 typedef struct s_tsr_tile_data
 {
-	const char		*texture_path;
-	t_mbx_region	*region;
+	const char		*keys[6];
+	t_mbx_region	*region[6];
 	bool			skip_process;
 	bool			skybox;
 }	t_tsr_tile;
 
 static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
-{.texture_path = NULL, .skip_process = true},
-{.texture_path = "assets/tiles/stone.png"},
-{.texture_path = "assets/tiles/dirt.png"},
-{.texture_path = "assets/tiles/oak_planks.png"},
-{.texture_path = "assets/tiles/iron_block.png"},
-{.texture_path = "assets/tiles/moss_block.png"},
-{.texture_path = "assets/tiles/testeract1.png", .skybox = true},
-{.texture_path = "assets/tiles/glass.png"},
-{.texture_path = "assets/tiles/white_glass.png"},
+{.keys = {0, 0, 0, 0, 0, 0}, .skip_process = true},
+{.keys = {"stone", "stone", "stone", "stone", "stone", "stone"}},
+{.keys = {"dirt", "dirt", "dirt", "dirt", "dirt", "dirt"}},
+{.keys = {"oak_planks", "oak_planks", "oak_planks",
+	"oak_planks", "oak_planks", "oak_planks"}},
+{.keys = {"iron_block", "iron_block", "iron_block",
+	"iron_block", "iron_block", "iron_block"}},
+{.keys = {"moss_block", "moss_block", "moss_block",
+	"moss_block", "moss_block", "moss_block"}},
+{.keys = {"skybox_est", "skybox_west", "skybox_top",
+		"skybox_down", "skybox_north", "skybox_south"
+	}, .skybox = true},
+{.keys = {"glass", "glass", "dirt", "glass", "glass", "glass"}},
+{.keys = {"white_glass", "white_glass", "white_glass",
+	"white_glass", "white_glass", "white_glass"}},
+{.keys = {"grass_block_side", "grass_block_side", "grass_block_top",
+	"dirt", "grass_block_side", "grass_block_side"}},
+{.keys = {"oak_leaves", "oak_leaves", "oak_leaves",
+	"oak_leaves", "oak_leaves", "oak_leaves"}},
+{.keys = {"oak_log_side", "oak_log_side", "oak_log_top",
+	"oak_log_top", "oak_log_side", "oak_log_side"}},
 {0}
 };
 

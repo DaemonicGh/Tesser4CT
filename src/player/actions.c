@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:26:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/29 11:05:52 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/04/30 16:44:27 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static void	place_and_destroy(t_tsr *tsr)
 {
 	t_tsr_ray				traversal;
+	static size_t 			block_nb = 11;
 	static t_tsr_tile_id	type = 1;
 
 	traversal = setup_ray(tsr, tsr->player.position, tsr->camera.forward);
@@ -33,12 +34,12 @@ static void	place_and_destroy(t_tsr *tsr)
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))
 	{
 		if (type == 1)
-			type = 8;
+			type = block_nb;
 		else
 			type--;
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_E))
-		type = type % 8 + 1;
+		type = type % block_nb + 1;
 }
 
 void	tsr_player_actions(t_tsr *tsr)
