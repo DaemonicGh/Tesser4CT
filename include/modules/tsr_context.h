@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 14:04:17 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/01 10:19:22 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef struct s_tsr_player
 {
 	t_vec3		position;
 	t_vec3		rotation;
+	t_vec3		hitbox;
 	t_vec3		right;
 	t_vec3		up;
 	t_vec3		forward;

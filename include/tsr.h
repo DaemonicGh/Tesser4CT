@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/26 22:09:11 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/01 11:49:29 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ t_tsr
 
 void
 tsr_update_camera(t_tsr *tsr);
+
+
+void
+player_collision(t_tsr *tsr);
 
 void
 tsr_player_movement(t_tsr *tsr);

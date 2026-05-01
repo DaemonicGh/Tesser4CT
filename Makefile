@@ -6,7 +6,7 @@
 #    By: rprieur <rprieur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/24 19:51:36 by rprieur           #+#    #+#              #
-#    Updated: 2026/04/30 13:49:00 by emarrot          ###   ########.fr        #
+#    Updated: 2026/05/01 11:49:53 by emarrot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # V5.3
@@ -17,7 +17,7 @@ NAMES					:=	Tesser4CT
 
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
-	player/actions player/movement player/update								\
+	player/actions player/movement player/update player/collision								\
 	renderer/camera renderer/renderer renderer/threads renderer/tile			\
 	renderer/trace_ray renderer/uv renderer/atlas								\
 	world/world																	\

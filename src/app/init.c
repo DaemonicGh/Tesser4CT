@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:02:26 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 15:52:26 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/01 12:43:43 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	init_player(t_tsr *tsr)
 	tsr->player.position = vec3(8.0, 8.0, 4.0);
 	tsr->player.rotation = vec3(M_PI, 0, 0);
 	tsr->camera.rotation = vec3(M_PI, 0, 0);
+	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
 }
 
