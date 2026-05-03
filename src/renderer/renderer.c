@@ -48,10 +48,23 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uvc)
 			vec3_add(tsr->camera.forward, vec3_add(
 					vec3_mult_d(tsr->camera.right, uvc.x * (16.0 / 9)),
 					vec3_mult_d(tsr->camera.up, -uvc.y))));
-	while (ray.color.a < 0xFF)
+	while (true)
 	{
 		trace_ray(tsr, &ray);
-		ray.color = color_blend(get_hit_color(&ray), ray.color);
+		if (ray.render_prev_tile)
+		{
+			ray.color = color_blend(
+					get_hit_color(&ray, ray.prev_tile), ray.color);
+			if (ray.color.a == 0xFF)
+				break ;
+		}
+		if (ray.render_tile)
+		{
+			ray.color = color_blend(
+					get_hit_color(&ray, ray.tile), ray.color);
+			if (ray.color.a == 0xFF)
+				break ;
+		}
 	}
 	return (ray.color);
 }

@@ -56,25 +56,24 @@ bool	resolve_region_collision(t_tsr *tsr, t_tsr_ray *ray)
 
 void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 {
-	ray->render_tile = NULL;
-	while (!ray->render_tile)
+	ray->render_tile = false;
+	ray->render_prev_tile = false;
+	while (!ray->render_tile && !ray->render_prev_tile)
 	{
 		ray->prev_tile = ray->tile;
-		if (!step_ray(tsr, ray))
-		{
-			ray->render_tile = &tsr->world.tiles[6];
-			break ;
-		}
-		ray->tile = &tsr->world.tiles[
-			tsr->wworld.blocks[ray->tile_index]];
+		if (step_ray(tsr, ray))
+			ray->tile = &tsr->world.tiles[
+				tsr->wworld.blocks[ray->tile_index]];
+		else
+			ray->tile = &tsr->world.tiles[6];
 		if (ray->tile != ray->prev_tile)
 		{
 			if (!ray->tile->skip_process)
-				ray->render_tile = ray->tile;
-			else if (ray->prev_tile->backface)
-				ray->render_tile = ray->prev_tile;
+				ray->render_tile = true;
+			if (ray->prev_tile->backface)
+				ray->render_prev_tile = true;
 		}
 		else if (ray->prev_tile->inner_backface)
-			ray->render_tile = ray->prev_tile;
+			ray->render_prev_tile = true;
 	}
 }

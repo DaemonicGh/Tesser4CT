@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/types/mbx_s_color.h"
 #include "tsr.h"
 
 static void	get_skybox_uv(t_tsr_ray *ray)
@@ -53,8 +52,6 @@ static t_mbx_color
 	const t_vec3	dir = vec3(0.98, 0.22, 0);
 	double			inc;
 
-	if (ray->render_tile->skybox)
-		return (color);
 	inc = vec3_dot(get_normal(ray->forward, ray->axis), dir) * 0.5 + 0.5;
 	color.r = min(color.r * flerp(light.x, dark.x, inc), 255);
 	color.g = min(color.g * flerp(light.y, dark.y, inc), 255);
@@ -62,17 +59,20 @@ static t_mbx_color
 	return (color);
 }
 
-t_mbx_color	get_hit_color(t_tsr_ray *ray)
+t_mbx_color	get_hit_color(t_tsr_ray *ray, t_tsr_tile *tile)
 {
 	t_mbx_region	*region;
+	t_mbx_color		color;
 
-	if (ray->render_tile->skybox)
+	if (tile->skybox)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	region = ray->render_tile->region[ray->axis * 2
+	region = tile->region[ray->axis * 2
 		+ (ray->delta_sign.comp[ray->axis] > 0)];
 	ray->texture_uv = vec2i_mult_vd(region->size, ray->uv);
-	return (perform_shadow_modifiers(ray,
-			mbx_get_pixel_unsafe(region, ray->texture_uv)));
+	color = mbx_get_pixel_unsafe(region, ray->texture_uv);
+	if (tile->skybox)
+		return (color);
+	return (perform_shadow_modifiers(ray, color));
 }

@@ -31,7 +31,8 @@ typedef struct s_tsr_render_ray
 	int			lifetime;
 	t_tsr_tile	*tile;
 	t_tsr_tile	*prev_tile;
-	t_tsr_tile	*render_tile;
+	bool		render_tile;
+	bool		render_prev_tile;
 	t_vec2		uv;
 	t_vec2i		texture_uv;
 	t_mbx_color	color;
@@ -42,7 +43,7 @@ t_vec3
 get_normal(t_vec3 ray_dir, int axis);
 
 t_mbx_color
-get_hit_color(t_tsr_ray *ray);
+get_hit_color(t_tsr_ray *ray, t_tsr_tile *tile);
 
 t_mbx_color
 draw_ray(t_tsr *tsr, t_vec2 uv);
