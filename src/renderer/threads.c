@@ -33,7 +33,7 @@ static void	render_job(t_tsr *tsr, size_t job_i)
 		uv.x = (double)start.x / tsr->mbx->vp->size.x - 0.5;
 		while (pos.x++ < RENDER_JOB_REGION_W)
 		{
-			mbx_set_pixel_raw_i(tsr->mbx->vp, i++,
+			mbx_set_pixel_raw_i(tsr->rendering.target, i++,
 				tsr->rendering.frag_shader(tsr, uv));
 			uv.x += uv_delta.x;
 		}

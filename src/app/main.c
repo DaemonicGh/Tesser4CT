@@ -15,6 +15,7 @@
 #include "modules/mbx_handlers.h"
 #include "modules/mbx_inputs.h"
 #include "modules/mbx_utils.h"
+#include "modules/types/mbx_s_region.h"
 #include "tsr.h"
 #include "tsr_constants.h"
 #include <stdatomic.h>
@@ -34,11 +35,38 @@ static void	world_build(t_world *world)
 	block_set(world, vec3i(0, 0, 0), 3);
 }
 
+static void	draw_debug(t_tsr *tsr)
+{
+	char	str[256];
+
+	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.1f %.1f %.1f]\n"
+		"ROT \t[%.2f %.2f]\nFW  \t[%.1f %.1f %.1f]",
+		1.0 / tsr->mbx->dt, tsr->player.position.x, tsr->player.position.y,
+		tsr->player.position.z,
+		tsr->camera.rotation.x, tsr->camera.rotation.y,
+		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z);
+	mbx_set_text_scaled(tsr->mbx->vp, str,
+		vec2ix2_xy(5, 5, 2, 2), tsr->ui.fonts.small);
+}
+
+static void	prepare_next_render(t_tsr *tsr)
+{
+	t_mbx_region	*tmp;
+
+	tsr->rendering.current_job = 0;
+	tsr->rendering.job_region_count = vec2i(
+			tsr->mbx->vp->size.x / RENDER_JOB_REGION_W,
+			tsr->mbx->vp->size.y / RENDER_JOB_REGION_H);
+	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
+			* tsr->rendering.job_region_count.y);
+	tmp = tsr->rendering.target;
+	tsr->rendering.target = tsr->mbx->viewport;
+	tsr->mbx->viewport = tmp;
+}
+
 void	update(t_mbx *mbx, void *data)
 {
 	t_tsr	*tsr;
-	char	str[256];
-	double	now;
 
 	(void)mbx;
 	tsr = data;
@@ -50,24 +78,12 @@ void	update(t_mbx *mbx, void *data)
 		tsr->mbx->settings.show_cursor = !tsr->mbx->settings.show_cursor;
 		mbx_refresh_settings(tsr->mbx);
 	}
-	now = mbx_get_timestamp();
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
-	tsr->rendering.current_job = 0;
-	tsr->rendering.job_region_count = vec2i(
-			tsr->mbx->vp->size.x / RENDER_JOB_REGION_W,
-			tsr->mbx->vp->size.y / RENDER_JOB_REGION_H);
-	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
-			* tsr->rendering.job_region_count.y);
-	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.2f %.2f %.2f]\n"
-		"ROT \t[%.2f %.2f]\n",
-		1.0 / tsr->mbx->dt, tsr->player.position.x, tsr->player.position.y,
-		tsr->player.position.z,
-		tsr->camera.rotation.x, tsr->camera.rotation.y);
-	mbx_set_text_scaled(tsr->mbx->vp, str,
-		vec2ix2_xy(5, 5, 2, 2), tsr->ui.fonts.small);
+	prepare_next_render(tsr);
+	pthread_barrier_wait(&tsr->rendering.wait_barrier);
+	draw_debug(tsr);
 	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
 		MBX_VIEWPORT_RENDER_KEEP);
-	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 }
 
 int	main(void)

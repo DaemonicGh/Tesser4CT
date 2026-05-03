@@ -28,7 +28,7 @@ t_tsr_ray	setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward)
 	ray.tile_index = ray.tile_position.x * iter.x
 		+ ray.tile_position.y * iter.y
 		+ ray.tile_position.z * iter.z;
-	ray.tile = &tsr->world.tiles[0];
+	ray.tile = &tsr->world.tiles[tsr->wworld.blocks[ray.tile_index]];
 	ray.prev_tile = ray.tile;
 	ray.color = color_rgba(0);
 	ray.dist = vec3_mult(vec3_sub(
@@ -51,7 +51,7 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uvc)
 	while (ray.color.a < 0xFF)
 	{
 		trace_ray(tsr, &ray);
-		get_hit_color(&ray);
+		ray.color = color_blend(get_hit_color(&ray), ray.color);
 	}
 	return (ray.color);
 }

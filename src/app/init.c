@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <sched.h>
 
+#include "modules/mbx_handlers.h"
 #include "tsr.h"
 
 static void	init_player(t_tsr *tsr)
@@ -82,6 +83,9 @@ t_tsr	*tsr_init(void)
 			vec2i(DEFAULT_VIEWPORT_W, DEFAULT_VIEWPORT_H),
 			DEFAULT_WINDOW_TITLE, DEFAULT_WINDOW_FLAGS))
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBXWIN);
+	tsr->rendering.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
+	if (!tsr->rendering.target)
+		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
 	init_threads(tsr);
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;
 	tsr->mbx->settings.show_cursor = false;

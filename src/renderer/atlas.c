@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tsr_atlas.h"
+#include "tsr.h"
 
 static int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -19,7 +19,7 @@ static int	ft_strcmp(const char *s1, const char *s2)
 	i = 0;
 	while (s1[i] && s1[i] == s2[i])
 		i++;
-	return ((uint8_t)s1[i] - (uint8_t)s2[i]);
+	return (s1[i] - s2[i]);
 }
 
 void	atlas_init(t_atlas *atlas, t_mbx *mbx)
@@ -39,7 +39,8 @@ t_mbx_region	*atlas_get(t_atlas *atlas, const char *key)
 	if (!atlas || !key)
 		return (NULL);
 	i = 0;
-	while (i < ATLAS_LENGTH && (!atlas->key[i] || ft_strcmp(atlas->key[i], key)))
+	while (i < ATLAS_LENGTH
+		&& (!atlas->key[i] || ft_strcmp(atlas->key[i], key)))
 		i++;
 	if (i == ATLAS_LENGTH)
 		return (NULL);

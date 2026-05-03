@@ -16,6 +16,8 @@
 void	tsr_update_camera(t_tsr *tsr)
 {
 	tsr->camera.position = tsr->player.position;
+	if (!tsr->mbx->settings.lock_cursor)
+		return ;
 	tsr->camera.rotation.x = fwrap(
 			tsr->camera.rotation.x - (tsr->mbx->cursor_delta.x
 				/ tsr->mbx->vp->size.x * CAMERA_SENSITIVITY), -M_PI, M_PI);

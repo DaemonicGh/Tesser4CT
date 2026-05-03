@@ -17,10 +17,10 @@
 
 typedef enum e_direction
 {
-	EST,
 	WEST,
-	UP,
+	EST,
 	DOWN,
+	UP,
 	NORTH,
 	SOUTH
 }	t_direction;
@@ -30,29 +30,26 @@ typedef struct s_tsr_tile_data
 	const char		*keys[6];
 	t_mbx_region	*region[6];
 	bool			skip_process;
+	bool			backface;
+	bool			inner_backface;
 	bool			skybox;
 }	t_tsr_tile;
 
 static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
 {.keys = {0, 0, 0, 0, 0, 0}, .skip_process = true},
-{.keys = {"stone", "stone", "stone", "stone", "stone", "stone"}},
-{.keys = {"dirt", "dirt", "dirt", "dirt", "dirt", "dirt"}},
-{.keys = {"oak_planks", "oak_planks", "oak_planks",
-	"oak_planks", "oak_planks", "oak_planks"}},
-{.keys = {"iron_block", "iron_block", "iron_block",
-	"iron_block", "iron_block", "iron_block"}},
-{.keys = {"moss_block", "moss_block", "moss_block",
-	"moss_block", "moss_block", "moss_block"}},
-{.keys = {"skybox_est", "skybox_west", "skybox_top",
-		"skybox_down", "skybox_north", "skybox_south"
-	}, .skybox = true},
-{.keys = {"glass", "glass", "dirt", "glass", "glass", "glass"}},
-{.keys = {"white_glass", "white_glass", "white_glass",
-	"white_glass", "white_glass", "white_glass"}},
+{.keys = {"stone"}},
+{.keys = {"dirt"}},
+{.keys = {"oak_planks"}},
+{.keys = {"iron_block"}},
+{.keys = {"moss_block"}},
+{.keys = {"skybox_west", "skybox_east", "skybox_down",
+	"skybox_up", "skybox_north", "skybox_south"}, .skybox = true},
+{.keys = {"glass", "glass", "dirt", "glass", "glass", "glass"},
+	.backface = true},
+{.keys = {"white_glass"}, .backface = true},
 {.keys = {"grass_block_side", "grass_block_side", "grass_block_top",
 	"dirt", "grass_block_side", "grass_block_side"}},
-{.keys = {"oak_leaves", "oak_leaves", "oak_leaves",
-	"oak_leaves", "oak_leaves", "oak_leaves"}},
+{.keys = {"oak_leaves"}, .backface = true, .inner_backface = true},
 {.keys = {"oak_log_side", "oak_log_side", "oak_log_top",
 	"oak_log_top", "oak_log_side", "oak_log_side"}},
 {0}

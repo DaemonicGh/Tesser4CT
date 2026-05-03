@@ -41,6 +41,7 @@ typedef struct s_tsr_context
 	t_mbx				*mbx;
 	struct	s_tsr_rendering_manager
 	{
+		t_mbx_region		*target;
 		size_t				thread_count;
 		pthread_t			*threads;
 		pthread_barrier_t	wait_barrier;

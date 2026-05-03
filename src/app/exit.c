@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_handlers.h"
 #include "tsr.h"
 #include "tsr_core.h"
 #include <pthread.h>
@@ -55,8 +56,8 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 		exit(!tsr_report(status, message));
 	cancel_threads(tsr);
 	unload_textures(tsr);
-	if (tsr->wworld.blocks)
-		free(tsr->wworld.blocks);
+	free(tsr->wworld.blocks);
+	mbx_destroy_region(tsr->mbx, tsr->rendering.target);
 	if (tsr->mbx)
 		mbx_exit(tsr->mbx);
 	free(tsr);
