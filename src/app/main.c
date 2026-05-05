@@ -10,14 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_constants.h"
-#include "modules/mbx_drawing.h"
-#include "modules/mbx_handlers.h"
-#include "modules/mbx_inputs.h"
-#include "modules/mbx_utils.h"
-#include "modules/types/mbx_s_region.h"
 #include "tsr.h"
-#include "tsr_constants.h"
 #include <stdatomic.h>
 #include <stdio.h>
 
@@ -82,8 +75,6 @@ void	update(t_mbx *mbx, void *data)
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	draw_debug(tsr);
-	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
-		MBX_VIEWPORT_RENDER_KEEP);
 }
 
 int	main(void)

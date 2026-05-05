@@ -31,7 +31,7 @@ typedef enum e_tsr_report_status
 #define ANSI_DEBUG			"\x1B[30m"
 #define ANSI_WARNING		"\x1B[1;33m"
 #define ANSI_ERROR			"\x1B[1;31m"
-#define ANSI_RESET			"\x1B[22;39m"
+#define ANSI_RESET			"\x1B[0m"
 
 #define REPORT_SUCCESS		"Exited successfully"
 

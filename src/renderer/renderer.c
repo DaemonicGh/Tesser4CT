@@ -18,8 +18,7 @@ t_tsr_ray	setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward)
 			tsr->wworld.size.x * tsr->wworld.size.y);
 	t_tsr_ray		ray;
 
-	ray.origin = origin;
-	ray.forward = forward;
+	ray = (t_tsr_ray){.origin = origin, .forward = forward};
 	ray.delta = vec3_div_rd(1, forward);
 	ray.abs_delta = vec3_abs(ray.delta);
 	ray.delta_sign = vec3i_vd(vec3_sign(ray.delta));
@@ -54,14 +53,14 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uvc)
 		if (ray.render_prev_tile)
 		{
 			ray.color = color_blend(
-					get_hit_color(&ray, ray.prev_tile), ray.color);
+					get_hit_color(tsr, &ray, ray.prev_tile), ray.color);
 			if (ray.color.a == 0xFF)
 				break ;
 		}
 		if (ray.render_tile)
 		{
 			ray.color = color_blend(
-					get_hit_color(&ray, ray.tile), ray.color);
+					get_hit_color(tsr, &ray, ray.tile), ray.color);
 			if (ray.color.a == 0xFF)
 				break ;
 		}

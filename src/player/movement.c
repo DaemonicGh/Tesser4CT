@@ -37,5 +37,5 @@ void	tsr_player_movement(t_tsr *tsr)
 	tsr->player.position = vec3_clamp(vec3_add(
 				tsr->player.position, tsr->player.velocity),
 			vec3_d(0.2), vec3_sub_d(vec3_vi(tsr->wworld.size), 0.2));
-	player_collision(tsr);
+	//player_collision(tsr);
 }

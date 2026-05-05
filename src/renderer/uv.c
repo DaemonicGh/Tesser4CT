@@ -45,11 +45,59 @@ static void	get_tile_uv(t_tsr_ray *ray)
 }
 
 static t_mbx_color
+	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
+{
+	const t_vec2i	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
+	const t_vec3	dir = vec3(0.98, 0.22, 0.05);
+	t_vec3			position;
+	t_tsr_ray		shadow_ray;
+
+	position = vec3_add(ray->position, vec3_mult_d(dir, -1e-8));
+	position.comp[axis.x] = (floor(position.comp[axis.x]
+				* ray->region->size.x) + 0.5) / ray->region->size.x;
+	position.comp[axis.y] = (floor(position.comp[axis.y]
+				* ray->region->size.y) + 0.5) / ray->region->size.y;
+	shadow_ray = setup_ray(tsr, position, dir);
+	shadow_ray.is_shadow = true;
+	shadow_ray.tile = &tsr->world.tiles[0];
+	shadow_ray.prev_tile = shadow_ray.tile;
+	while (true)
+	{
+		trace_ray(tsr, &shadow_ray);
+		if (shadow_ray.render_tile)
+		{
+			if (shadow_ray.tile->skybox)
+				break ;
+			shadow_ray.color = color_blend(
+					get_hit_color(tsr, &shadow_ray, shadow_ray.tile),
+					shadow_ray.color);
+			if (shadow_ray.color.a == 0xFF)
+				break ;
+		}
+		if (shadow_ray.render_prev_tile)
+		{
+			if (shadow_ray.prev_tile->skybox)
+				break ;
+			shadow_ray.color = color_blend(
+					get_hit_color(tsr, &shadow_ray, shadow_ray.prev_tile),
+					shadow_ray.color);
+			if (shadow_ray.color.a == 0xFF)
+				break ;
+		}
+	}
+	return (color_r_g_b_a(
+			shadow_ray.color.r * (255 - shadow_ray.color.a) >> 8,
+			shadow_ray.color.g * (255 - shadow_ray.color.a) >> 8,
+			shadow_ray.color.b * (255 - shadow_ray.color.a) >> 8,
+			shadow_ray.color.a / 2));
+}
+
+static t_mbx_color
 	perform_shadow_modifiers(t_tsr_ray *ray, t_mbx_color color)
 {
 	const t_vec3	light = vec3(1.8, 1.2, 0.8);
 	const t_vec3	dark = vec3(0.4, 0.5, 0.6);
-	const t_vec3	dir = vec3(0.98, 0.22, 0);
+	const t_vec3	dir = vec3(0.98, 0.22, 0.05);
 	double			inc;
 
 	inc = vec3_dot(get_normal(ray->forward, ray->axis), dir) * 0.5 + 0.5;
@@ -59,20 +107,21 @@ static t_mbx_color
 	return (color);
 }
 
-t_mbx_color	get_hit_color(t_tsr_ray *ray, t_tsr_tile *tile)
+t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
-	t_mbx_region	*region;
 	t_mbx_color		color;
 
 	if (tile->skybox)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	region = tile->region[ray->axis * 2
+	ray->region = tile->region[ray->axis * 2
 		+ (ray->delta_sign.comp[ray->axis] > 0)];
-	ray->texture_uv = vec2i_mult_vd(region->size, ray->uv);
-	color = mbx_get_pixel_unsafe(region, ray->texture_uv);
-	if (tile->skybox)
+	ray->texture_uv = vec2i_mult_vd(ray->region->size, ray->uv);
+	color = mbx_get_pixel_unsafe(ray->region, ray->texture_uv);
+	if (tile->skybox || ray->is_shadow)
 		return (color);
-	return (perform_shadow_modifiers(ray, color));
+	color = color_blend(color, cast_shadows(tsr, ray));
+	color = perform_shadow_modifiers(ray, color);
+	return (color);
 }

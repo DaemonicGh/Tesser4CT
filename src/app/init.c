@@ -90,6 +90,5 @@ t_tsr	*tsr_init(void)
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;
 	tsr->mbx->settings.show_cursor = false;
 	tsr->mbx->settings.lock_cursor = true;
-	tsr->mbx->settings.viewport_render = MBX_VIEWPORT_RENDER_SKIP;
 	return (tsr);
 }
