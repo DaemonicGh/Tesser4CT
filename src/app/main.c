@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 16:27:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/26 16:55:39 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/07 18:45:02 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,17 @@ static void	prepare_next_render(t_tsr *tsr)
 void	update(t_mbx *mbx, void *data)
 {
 	t_tsr	*tsr;
+	double cosa = 0.999998477;
+	double sina = 0.001745328;
 
 	(void)mbx;
 	tsr = data;
 	tsr_update_camera(tsr);
 	tsr_update_player(tsr);
+	tsr->world.global_light = vec3(
+		tsr->world.global_light.x * cosa - tsr->world.global_light.z * sina,
+		tsr->world.global_light.y,
+		tsr->world.global_light.x * sina + tsr->world.global_light.z * cosa);
 	if (mbx_btnp(tsr->mbx, MBX_KEY_F1))
 	{
 		tsr->mbx->settings.lock_cursor = !tsr->mbx->settings.lock_cursor;

@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/01 10:19:22 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 17:39:23 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_tsr_context
 	}	world;
 	t_world				wworld;
 	t_atlas				atlas;
+	t_mbx_region		*nmap;
 	t_tsr_player		player;
 	t_tsr_camera		camera;
 	struct s_tsr_extras

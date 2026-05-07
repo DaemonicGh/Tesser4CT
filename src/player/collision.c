@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 09:03:50 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/01 12:55:54 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 16:07:02 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,18 @@ static void		player_to_tile(t_tsr_player* player, t_vec3i tile)
 		dist.z = d;
 	if (fabs(dist.x) < fabs(dist.y) && fabs(dist.x) < fabs(dist.z))
 	{
-		player->position.x += dist.x - player->velocity.x;
+		player->position.x += dist.x;
+		player->velocity.x *= 0.5;
 		return ;
 	}
 	if (fabs(dist.y) < fabs(dist.z))
 	{
-		player->position.y += dist.y - player->velocity.y;
+		player->position.y += dist.y;
+		player->velocity.y *= 0.5;
 		return ;
 	}
-	player->position.z += dist.z - player->velocity.z;
+	player->position.z += dist.z;
+	player->velocity.z *= 0.5;
 }
 
 void	player_collision(t_tsr *tsr)

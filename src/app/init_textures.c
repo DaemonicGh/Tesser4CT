@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 16:57:44 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 17:40:23 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 17:45:03 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static void	load_textures(t_tsr *tsr)
 	tsr->extras.default_region = load_texture(tsr, "assets/default.png");
 	tsr->ui.fonts.small = load_texture(tsr, "assets/fonts/small.png");
 	tsr->ui.fonts.small->subregion_size = vec2i(5, 7);
+	tsr->nmap = load_texture(tsr, "assets/tiles/iron_block_n.png");
 	i = 0;
 	while (i < TILE_COUNT)
 	{

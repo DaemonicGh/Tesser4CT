@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:26:30 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/01 11:46:59 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 16:02:50 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,5 @@ void	tsr_player_movement(t_tsr *tsr)
 	tsr->player.position = vec3_clamp(vec3_add(
 				tsr->player.position, tsr->player.velocity),
 			vec3_d(0.2), vec3_sub_d(vec3_vi(tsr->wworld.size), 0.2));
-	//player_collision(tsr);
+	player_collision(tsr);
 }

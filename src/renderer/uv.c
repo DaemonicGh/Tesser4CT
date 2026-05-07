@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 15:17:25 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 18:44:02 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static t_mbx_color
 	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
 {
 	const t_vec2i	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
-	const t_vec3	dir = vec3(0.98, 0.22, 0.05);
+	const t_vec3	dir = tsr->world.global_light;
 	t_vec3			position;
 	t_tsr_ray		shadow_ray;
 
@@ -93,14 +93,15 @@ static t_mbx_color
 }
 
 static t_mbx_color
-	perform_shadow_modifiers(t_tsr_ray *ray, t_mbx_color color)
+	perform_shadow_modifiers(t_tsr_ray *ray, t_vec3 normal, t_tsr *tsr, t_mbx_color color)
 {
 	const t_vec3	light = vec3(1.8, 1.2, 0.8);
 	const t_vec3	dark = vec3(0.4, 0.5, 0.6);
-	const t_vec3	dir = vec3(0.98, 0.22, 0.05);
+	const t_vec3	dir = tsr->world.global_light;
 	double			inc;
 
-	inc = vec3_dot(get_normal(ray->forward, ray->axis), dir) * 0.5 + 0.5;
+	(void)ray;
+	inc = vec3_dot(normal, dir) * 0.5 + 0.5;
 	color.r = min(color.r * flerp(light.x, dark.x, inc), 255);
 	color.g = min(color.g * flerp(light.y, dark.y, inc), 255);
 	color.b = min(color.b * flerp(light.z, dark.z, inc), 255);
@@ -109,7 +110,9 @@ static t_mbx_color
 
 t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
-	t_mbx_color		color;
+	t_mbx_color	color;
+	t_mbx_color color_n;
+	t_vec3		normal;
 
 	if (tile->skybox)
 		get_skybox_uv(ray);
@@ -122,6 +125,10 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 	if (tile->skybox || ray->is_shadow)
 		return (color);
 	color = color_blend(color, cast_shadows(tsr, ray));
-	color = perform_shadow_modifiers(ray, color);
+	ray->texture_uv = vec2i_mult_vd(tsr->nmap->size, ray->uv);
+	color_n = mbx_get_pixel_unsafe(tsr->nmap, ray->texture_uv);
+	normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
+		vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
+	color = perform_shadow_modifiers(ray, normal, tsr, color);
 	return (color);
 }

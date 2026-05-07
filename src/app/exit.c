@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 19:15:43 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 15:04:35 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/07 17:42:40 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static void	unload_textures(t_tsr *tsr)
 	if (tsr->ui.fonts.small != tsr->extras.default_region)
 		mbx_destroy_region(tsr->mbx, tsr->ui.fonts.small);
 	mbx_destroy_region(tsr->mbx, tsr->extras.default_region);
+	mbx_destroy_region(tsr->mbx, tsr->nmap);
 }
 
 static void	cancel_threads(t_tsr *tsr)
