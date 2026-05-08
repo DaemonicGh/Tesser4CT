@@ -78,12 +78,12 @@ static void draw_hotbar(t_tsr *tsr) {
 
 	centered_x = (tsr->mbx->viewport->size.x - tsr->ui.gui.hotbar->size.x) / 2;
 	bottom_y = tsr->mbx->viewport->size.y - tsr->ui.gui.hotbar->size.y;
-	selection_x = (centered_x - 1) + ((tsr->player.tile_id - 1) * (tsr->ui.gui.hotbar->size.x - 1) / 9);
+	selection_x = (centered_x - 1) + (4 * (tsr->ui.gui.hotbar->size.x - 1) / 9);
 	tile_width = tsr->ui.gui.hotbar->size.x / 9;
 	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar, vec2i(centered_x, bottom_y));
 	i = 1;
-	while (i <= TILE_COUNT) {
-		mbx_set_subregion(tsr->mbx->vp, tsr->world.tiles[i].region[0],
+	while (i <= 9) {
+		mbx_set_subregion(tsr->mbx->vp, tsr->world.tiles[wrap(tsr->player.tile_id + i - 5, 1, TILE_COUNT + 1)].region[0],
 			vec2i(centered_x + ((i - 1) * tile_width) + (tile_width - 16) / 2 + 1,
 				bottom_y + (tsr->ui.gui.hotbar->size.y - 16) /2),
 			vec2ix2_xy(0, 0, 16, 16));
