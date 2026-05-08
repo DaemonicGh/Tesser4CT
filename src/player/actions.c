@@ -43,6 +43,8 @@ static void	place_and_destroy(t_tsr *tsr)
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_E))
 		tsr->player.tile_id = tsr->player.tile_id % TILE_COUNT + 1;
+
+	tsr->player.tile_id = wrap((tsr->player.tile_id + tsr->mbx->scroll_delta), 1, TILE_COUNT + 1);
 }
 
 void	tsr_player_actions(t_tsr *tsr)
