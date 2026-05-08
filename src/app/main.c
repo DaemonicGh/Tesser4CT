@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 16:27:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 18:45:02 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/08 16:28:50 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,15 @@ static void	world_build(t_world *world)
 	for (int x = 0; x < world->size.x; x++)
 		for (int y = 0; y < world->size.y; y++)
 			for (int z = 0; z < world->size.z; z++)
-				block_set(world, vec3i(x, y, z), (y == 0 || y == 15)
+				block_set(world, vec3i(x, y, z), y == 15
 					|| ((5 <= x && x <= 10 && 5 <= y && y <= 10 && 5 <= z && z <= 10)
 						&& !(((6 <= x && x <= 9) && (6 <= y && y <= 9))
 							|| ((6 <= y && y <= 9) && (6 <= z && z <= 9))
 							|| ((6 <= x && x <= 9) && (6 <= z && z <= 9))))
 					);
+	for (int x = 0; x < world->size.x; x++)
+		for (int z = 0; z < world->size.z; z++)
+			block_set(world, vec3i(x, 0, z), 9);
 	block_set(world, vec3i(0, 0, 0), 3);
 }
 
@@ -40,6 +43,30 @@ static void	draw_debug(t_tsr *tsr)
 		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z);
 	mbx_set_text_scaled(tsr->mbx->vp, str,
 		vec2ix2_xy(5, 5, 2, 2), tsr->ui.fonts.small);
+}
+
+static void draw_crosshair(t_mbx *mbx)
+{
+	t_mbx_color	color;
+	t_vec2i		pos;
+	int			x;
+	int			y;
+
+	pos = vec2i_div_d(mbx->viewport->size, 2);
+	x = -1;
+	while (x < 1)
+	{
+		y = -1;
+		while (y < 1)
+		{
+			color = mbx_get_pixel(mbx->viewport, vec2i_add(pos, vec2i(x, y)));
+			color = color_r_g_b_a(
+				255 - color.r, 255 - color.g, 255 - color.b, 255);
+			mbx_set_pixel(mbx->viewport, vec2i_add(pos, vec2i(x, y)), color);
+			y++;
+		}
+		x++;
+	}
 }
 
 static void	prepare_next_render(t_tsr *tsr)
@@ -81,6 +108,7 @@ void	update(t_mbx *mbx, void *data)
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	draw_debug(tsr);
+	draw_crosshair(tsr->mbx);	
 }
 
 int	main(void)

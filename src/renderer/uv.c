@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 18:44:02 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/08 14:44:40 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,19 +92,41 @@ static t_mbx_color
 			shadow_ray.color.a / 2));
 }
 
+static t_vec3 normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
+{
+	if (ray->axis == 0 && ray->forward.x < 0)
+		normal = vec3(-normal.z, normal.y, normal.x);
+	if (ray->axis == 0 && ray->forward.x >= 0)
+		normal = vec3(normal.z, normal.y, -normal.x);
+	if (ray->axis == 1 && ray->forward.y < 0)
+		normal = vec3(normal.x, -normal.z, normal.y);
+	if (ray->axis == 1 && ray->forward.y >= 0)
+		normal = vec3(normal.x, normal.z, -normal.y);
+	if (ray->axis == 2 && ray->forward.z < 0)
+		normal = vec3(-normal.x, normal.y, -normal.z);
+	return (normal);
+}
+
 static t_mbx_color
-	perform_shadow_modifiers(t_tsr_ray *ray, t_vec3 normal, t_tsr *tsr, t_mbx_color color)
+	perform_shadow_modifiers(t_vec3 normal, t_tsr *tsr, t_mbx_color color)
 {
 	const t_vec3	light = vec3(1.8, 1.2, 0.8);
-	const t_vec3	dark = vec3(0.4, 0.5, 0.6);
+	const t_vec3	dark = vec3(0.8, 1.0, 1.2);
 	const t_vec3	dir = tsr->world.global_light;
-	double			inc;
+	double			diffuse;
+	t_vec3			fcolor;
 
-	(void)ray;
-	inc = vec3_dot(normal, dir) * 0.5 + 0.5;
-	color.r = min(color.r * flerp(light.x, dark.x, inc), 255);
-	color.g = min(color.g * flerp(light.y, dark.y, inc), 255);
-	color.b = min(color.b * flerp(light.z, dark.z, inc), 255);
+	fcolor = vec3(
+		color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
+	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.4));
+	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.8;
+	fcolor = vec3_mult(fcolor, vec3_add(
+		vec3_mult_d(dark, 0.25),
+		vec3_mult_d(light, diffuse)));
+	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.416666667));
+	color.r = min((int)(fcolor.x * 255), 255);
+	color.g = min((int)(fcolor.y * 255), 255);
+	color.b = min((int)(fcolor.z * 255), 255);
 	return (color);
 }
 
@@ -124,11 +146,12 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 	color = mbx_get_pixel_unsafe(ray->region, ray->texture_uv);
 	if (tile->skybox || ray->is_shadow)
 		return (color);
-	color = color_blend(color, cast_shadows(tsr, ray));
 	ray->texture_uv = vec2i_mult_vd(tsr->nmap->size, ray->uv);
 	color_n = mbx_get_pixel_unsafe(tsr->nmap, ray->texture_uv);
 	normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
 		vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
-	color = perform_shadow_modifiers(ray, normal, tsr, color);
+	normal = normal_map_transform(normal, ray);
+	color = perform_shadow_modifiers(normal, tsr, color);
+	color = color_blend(color, cast_shadows(tsr, ray));
 	return (color);
 }

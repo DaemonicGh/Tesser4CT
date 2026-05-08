@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:26:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/30 16:44:27 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/08 15:10:00 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ static void	place_and_destroy(t_tsr *tsr)
 		traversal.tile_position = vec3i_sub(traversal.tile_position,
 				vec3i_vd(get_normal(traversal.forward, traversal.axis)));
 		block_set(&tsr->wworld, traversal.tile_position, type);
+	}
+	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
+	{
+		trace_ray(tsr, &traversal);
+		type = block_get(&tsr->wworld, traversal.tile_position);
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))
 	{
