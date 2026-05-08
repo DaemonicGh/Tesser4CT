@@ -43,9 +43,11 @@ static void	load_textures(t_tsr *tsr)
 	tsr->extras.default_region = load_texture(tsr, "assets/default.png");
 	tsr->ui.fonts.small = load_texture(tsr, "assets/fonts/small.png");
 	tsr->ui.fonts.small->subregion_size = vec2i(5, 7);
+	tsr->ui.gui.hotbar = load_texture(tsr, "assets/hotbar.png");
+	tsr->ui.gui.hotbar_selection = load_texture(tsr, "assets/hotbar_selection.png");
 	tsr->nmap = load_texture(tsr, "assets/tiles/iron_block_n.png");
 	i = 0;
-	while (i < TILE_COUNT)
+	while (i < TILE_BUFFER_COUNT)
 	{
 		j = 0;
 		while (j < 6)

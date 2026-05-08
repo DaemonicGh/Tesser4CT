@@ -29,7 +29,8 @@
 
 # define DEFAULT_REGION_PATH	"assets/default.png"
 
-# define TILE_COUNT				256
+# define TILE_BUFFER_COUNT      256
+# define TILE_COUNT			    11
 
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18

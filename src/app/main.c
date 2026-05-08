@@ -69,6 +69,29 @@ static void draw_crosshair(t_mbx *mbx)
 	}
 }
 
+static void draw_hotbar(t_tsr *tsr) {
+	int			i;
+	int			centered_x;
+	int			bottom_y;
+	int			selection_x;
+	int			tile_width;
+
+	centered_x = (tsr->mbx->viewport->size.x - tsr->ui.gui.hotbar->size.x) / 2;
+	bottom_y = tsr->mbx->viewport->size.y - tsr->ui.gui.hotbar->size.y;
+	selection_x = (centered_x - 1) + ((tsr->player.tile_id - 1) * (tsr->ui.gui.hotbar->size.x - 1) / 9);
+	tile_width = tsr->ui.gui.hotbar->size.x / 9;
+	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar, vec2i(centered_x, bottom_y));
+	i = 1;
+	while (i <= TILE_COUNT) {
+		mbx_set_subregion(tsr->mbx->vp, tsr->world.tiles[i].region[0],
+			vec2i(centered_x + ((i - 1) * tile_width) + (tile_width - 16) / 2 + 1,
+				bottom_y + (tsr->ui.gui.hotbar->size.y - 16) /2),
+			vec2ix2_xy(0, 0, 16, 16));
+		i++;
+	}
+	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar_selection, vec2i(selection_x, bottom_y - 1));
+}
+
 static void	prepare_next_render(t_tsr *tsr)
 {
 	t_mbx_region	*tmp;
@@ -108,7 +131,8 @@ void	update(t_mbx *mbx, void *data)
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	draw_debug(tsr);
-	draw_crosshair(tsr->mbx);	
+	draw_crosshair(tsr->mbx);
+	draw_hotbar(tsr);
 }
 
 int	main(void)

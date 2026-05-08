@@ -35,7 +35,7 @@ typedef struct s_tsr_tile_data
 	bool			skybox;
 }	t_tsr_tile;
 
-static const t_tsr_tile		g_tile_data[TILE_COUNT] = {
+static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {
 {.keys = {0, 0, 0, 0, 0, 0}, .skip_process = true},
 {.keys = {"stone"}},
 {.keys = {"dirt"}},

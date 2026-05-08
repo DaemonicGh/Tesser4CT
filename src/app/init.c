@@ -25,6 +25,7 @@ static void	init_player(t_tsr *tsr)
 	tsr->camera.rotation = vec3(M_PI, 0, 0);
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
+	tsr->player.tile_id = 1;
 }
 
 static void	init_threads(t_tsr *tsr)
@@ -56,7 +57,7 @@ void	init_tiles(t_tsr *tsr)
 	size_t	i;
 
 	i = 0;
-	while (i < TILE_COUNT)
+	while (i < TILE_BUFFER_COUNT)
 	{
 		tsr->world.tiles[i] = g_tile_data[i];
 		i++;
