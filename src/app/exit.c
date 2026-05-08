@@ -30,6 +30,10 @@ static void	unload_textures(t_tsr *tsr)
 	}
 	if (tsr->ui.fonts.small != tsr->extras.default_region)
 		mbx_destroy_region(tsr->mbx, tsr->ui.fonts.small);
+	if (tsr->ui.gui.hotbar != tsr->extras.default_region)
+		mbx_destroy_region(tsr->mbx, tsr->ui.gui.hotbar);
+	if (tsr->ui.gui.hotbar_selection != tsr->extras.default_region)
+		mbx_destroy_region(tsr->mbx, tsr->ui.gui.hotbar_selection);
 	mbx_destroy_region(tsr->mbx, tsr->extras.default_region);
 	mbx_destroy_region(tsr->mbx, tsr->nmap);
 }

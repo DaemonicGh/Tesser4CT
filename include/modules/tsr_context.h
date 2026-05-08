@@ -17,13 +17,14 @@
 
 typedef struct s_tsr_player
 {
-	t_vec3		position;
-	t_vec3		rotation;
-	t_vec3		hitbox;
-	t_vec3		right;
-	t_vec3		up;
-	t_vec3		forward;
-	t_vec3		velocity;
+	t_vec3			position;
+	t_vec3			rotation;
+	t_vec3			hitbox;
+	t_vec3			right;
+	t_vec3			up;
+	t_vec3			forward;
+	t_vec3			velocity;
+	t_tsr_tile_id	tile_id;
 }	t_tsr_player;
 
 typedef struct s_tsr_camera
@@ -57,6 +58,11 @@ typedef struct s_tsr_context
 		{
 			t_mbx_atlas			*small;
 		}					fonts;
+		struct s_tsr_gui
+		{
+			t_mbx_region			*hotbar;
+			t_mbx_region			*hotbar_selection;
+		}					gui;
 	}	ui;
 	struct s_tsr_update_manager
 	{
@@ -64,7 +70,7 @@ typedef struct s_tsr_context
 	}	updates;
 	struct s_tsr_world_manager
 	{
-		t_tsr_tile			tiles[TILE_COUNT];
+		t_tsr_tile			tiles[TILE_BUFFER_COUNT];
 		t_vec3				global_light;
 		pthread_t			loader_thread;
 		pthread_barrier_t	loader_wait_barrier;

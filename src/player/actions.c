@@ -15,8 +15,6 @@
 static void	place_and_destroy(t_tsr *tsr)
 {
 	t_tsr_ray				traversal;
-	static size_t 			block_nb = 11;
-	static t_tsr_tile_id	type = 1;
 
 	traversal = setup_ray(tsr, tsr->player.position, tsr->camera.forward);
 	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_LEFT))
@@ -29,22 +27,24 @@ static void	place_and_destroy(t_tsr *tsr)
 		trace_ray(tsr, &traversal);
 		traversal.tile_position = vec3i_sub(traversal.tile_position,
 				vec3i_vd(get_normal(traversal.forward, traversal.axis)));
-		block_set(&tsr->wworld, traversal.tile_position, type);
+		block_set(&tsr->wworld, traversal.tile_position, tsr->player.tile_id);
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
 	{
 		trace_ray(tsr, &traversal);
-		type = block_get(&tsr->wworld, traversal.tile_position);
+		tsr->player.tile_id = block_get(&tsr->wworld, traversal.tile_position);
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))
 	{
-		if (type == 1)
-			type = block_nb;
+		if (tsr->player.tile_id == 1)
+			tsr->player.tile_id = TILE_COUNT;
 		else
-			type--;
+			tsr->player.tile_id--;
 	}
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_E))
-		type = type % block_nb + 1;
+		tsr->player.tile_id = tsr->player.tile_id % TILE_COUNT + 1;
+
+	tsr->player.tile_id = wrap((tsr->player.tile_id + tsr->mbx->scroll_delta), 1, TILE_COUNT + 1);
 }
 
 void	tsr_player_actions(t_tsr *tsr)
