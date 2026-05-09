@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:33:47 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/25 13:32:29 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/09 15:12:09 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ typedef struct s_tsr_render_ray
 
 t_vec3
 get_normal(t_vec3 ray_dir, int axis);
+
+t_vec3
+reflect(t_vec3 ray_dir, t_vec3 normal);
 
 t_mbx_color
 get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);

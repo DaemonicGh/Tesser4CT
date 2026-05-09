@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/09 10:51:04 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/09 16:04:02 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,21 +108,27 @@ static t_vec3 normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
 }
 
 static t_mbx_color
-	perform_shadow_modifiers(t_vec3 normal, t_tsr *tsr, t_mbx_color color)
+	perform_shadow_modifiers(t_vec3 forward, t_vec3 normal,
+	t_tsr *tsr, t_mbx_color color)
 {
 	const t_vec3	light = vec3(1.8, 1.2, 0.8);
 	const t_vec3	dark = vec3(0.8, 1.0, 1.2);
 	const t_vec3	dir = tsr->world.global_light;
 	double			diffuse;
+	double			specular;
 	t_vec3			fcolor;
 
 	fcolor = vec3(
 		color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.4));
-	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.8;
-	fcolor = vec3_mult(fcolor, vec3_add(
-		vec3_mult_d(dark, 0.25),
-		vec3_mult_d(light, diffuse)));
+	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.7;
+	specular = pow(fclamp(
+		vec3_dot(forward, reflect(dir, normal)),
+		0.0, 1.0), 16) * 1.8;
+	fcolor = vec3_mult(fcolor, vec3_add(vec3_add(
+		vec3_mult_d(dark, 0.2),
+		vec3_mult_d(light, diffuse)),
+		vec3_mult_d(vec3_d(1.0), specular)));
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.416666667));
 	color.r = min((int)(fcolor.x * 255), 255);
 	color.g = min((int)(fcolor.y * 255), 255);
@@ -148,7 +154,6 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 	color = mbx_get_pixel_unsafe(ray->region, ray->texture_uv);
 	if (tile->skybox || ray->is_shadow)
 		return (color);
-	normal = get_normal(ray->forward, ray->axis);
 	nrm = tile->pbr[ray->axis * 2
 		+ (ray->delta_sign.comp[ray->axis] > 0)].nrm_tex;
 	if (nrm)
@@ -159,7 +164,9 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 			vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
 		normal = normal_map_transform(normal, ray);
 	}
-	color = perform_shadow_modifiers(normal, tsr, color);
+	else
+		normal = get_normal(ray->forward, ray->axis);
+	color = perform_shadow_modifiers(ray->forward, normal, tsr, color);
 	color = color_blend(color, cast_shadows(tsr, ray));
 	return (color);
 }
