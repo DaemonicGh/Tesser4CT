@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/08 14:44:40 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/09 10:51:04 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,25 +132,33 @@ static t_mbx_color
 
 t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
-	t_mbx_color	color;
-	t_mbx_color color_n;
-	t_vec3		normal;
+	t_mbx_color		color;
+	t_mbx_color 	color_n;
+	t_vec3			normal;
+	t_mbx_region	*nrm;
+	t_vec2i			uv;
 
 	if (tile->skybox)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	ray->region = tile->region[ray->axis * 2
-		+ (ray->delta_sign.comp[ray->axis] > 0)];
+	ray->region = tile->pbr[ray->axis * 2
+		+ (ray->delta_sign.comp[ray->axis] > 0)].col_tex;
 	ray->texture_uv = vec2i_mult_vd(ray->region->size, ray->uv);
 	color = mbx_get_pixel_unsafe(ray->region, ray->texture_uv);
 	if (tile->skybox || ray->is_shadow)
 		return (color);
-	ray->texture_uv = vec2i_mult_vd(tsr->nmap->size, ray->uv);
-	color_n = mbx_get_pixel_unsafe(tsr->nmap, ray->texture_uv);
-	normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
-		vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
-	normal = normal_map_transform(normal, ray);
+	normal = get_normal(ray->forward, ray->axis);
+	nrm = tile->pbr[ray->axis * 2
+		+ (ray->delta_sign.comp[ray->axis] > 0)].nrm_tex;
+	if (nrm)
+	{
+		uv = vec2i_mult_vd(nrm->size, ray->uv);
+		color_n = mbx_get_pixel_unsafe(nrm, uv);
+		normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
+			vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
+		normal = normal_map_transform(normal, ray);
+	}
 	color = perform_shadow_modifiers(normal, tsr, color);
 	color = color_blend(color, cast_shadows(tsr, ray));
 	return (color);

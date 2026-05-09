@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/30 17:30:31 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/09 10:19:15 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define TSR_WORLD_H
 
 # include "tsr_core.h"
+# include "tsr_pbr.h"
 
 typedef enum e_direction
 {
@@ -27,12 +28,12 @@ typedef enum e_direction
 
 typedef struct s_tsr_tile_data
 {
-	const char		*keys[6];
-	t_mbx_region	*region[6];
-	bool			skip_process;
-	bool			backface;
-	bool			inner_backface;
-	bool			skybox;
+	const char	*keys[6];
+	t_pbr		pbr[6];
+	bool		skip_process;
+	bool		backface;
+	bool		inner_backface;
+	bool		skybox;
 }	t_tsr_tile;
 
 static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {

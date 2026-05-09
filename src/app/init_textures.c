@@ -6,17 +6,17 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 16:57:44 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 17:45:03 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/09 10:41:53 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tsr.h"
 
-static t_mbx_region	*fallback(t_tsr *tsr)
+static t_pbr	fallback(t_tsr *tsr)
 {
 	if (!tsr->extras.default_region)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLDEFIMGF);
-	return (tsr->extras.default_region);
+	return ((t_pbr){tsr->extras.default_region, NULL});
 }
 
 static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
@@ -39,13 +39,14 @@ static void	load_textures(t_tsr *tsr)
 	const char	*key;
 	size_t		i;
 	size_t		j;
+	t_pbr		*pbr;
 
 	tsr->extras.default_region = load_texture(tsr, "assets/default.png");
 	tsr->ui.fonts.small = load_texture(tsr, "assets/fonts/small.png");
 	tsr->ui.fonts.small->subregion_size = vec2i(5, 7);
 	tsr->ui.gui.hotbar = load_texture(tsr, "assets/hotbar.png");
-	tsr->ui.gui.hotbar_selection = load_texture(tsr, "assets/hotbar_selection.png");
-	tsr->nmap = load_texture(tsr, "assets/tiles/iron_block_n.png");
+	tsr->ui.gui.hotbar_selection = load_texture(tsr,
+		"assets/hotbar_selection.png");
 	i = 0;
 	while (i < TILE_BUFFER_COUNT)
 	{
@@ -54,14 +55,16 @@ static void	load_textures(t_tsr *tsr)
 		{
 			if (tsr->world.tiles[i].keys[j])
 				key = tsr->world.tiles[i].keys[j];
-			tsr->world.tiles[i].region[j] = atlas_get(&tsr->atlas, key);
-			if (!tsr->world.tiles[i].region[j])
+			pbr = atlas_get(&tsr->atlas, key);
+			if (!pbr)
 			{
 				if (tsr->world.tiles[i].keys[j])
 					tsr_report_m(STATUS_WARNING, REPORT_NULLIMGF,
 						tsr->world.tiles[i].keys[j]);
-				tsr->world.tiles[i].region[j] = fallback(tsr);
+				tsr->world.tiles[i].pbr[j] = fallback(tsr);
 			}
+			else
+				tsr->world.tiles[i].pbr[j] = *pbr;
 			j++;
 		}
 		i++;

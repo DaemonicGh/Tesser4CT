@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:15:03 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/26 17:11:58 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/08 17:47:43 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,3 +55,10 @@ void
 
 void
 *tsr_memreport(void *pointer);
+
+size_t
+ft_strlen(const char *s);
+int
+ft_strcmp(const char *s1, const char *s2);
+char
+*ft_strcat(char *dst, const char *src);

@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 16:27:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/08 16:28:50 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/09 11:39:51 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,20 @@ static void draw_hotbar(t_tsr *tsr) {
 	bottom_y = tsr->mbx->viewport->size.y - tsr->ui.gui.hotbar->size.y;
 	selection_x = (centered_x - 1) + (4 * (tsr->ui.gui.hotbar->size.x - 1) / 9);
 	tile_width = tsr->ui.gui.hotbar->size.x / 9;
-	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar, vec2i(centered_x, bottom_y));
+	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar,
+		vec2i(centered_x, bottom_y));
 	i = 1;
 	while (i <= 9) {
-		mbx_set_subregion(tsr->mbx->vp, tsr->world.tiles[wrap(tsr->player.tile_id + i - 5, 1, TILE_COUNT + 1)].region[0],
-			vec2i(centered_x + ((i - 1) * tile_width) + (tile_width - 16) / 2 + 1,
+		mbx_set_subregion(tsr->mbx->vp, tsr->world.tiles[wrap(
+			tsr->player.tile_id + i - 5, 1, TILE_COUNT + 1)].pbr[0].col_tex,
+			vec2i(
+				centered_x + ((i - 1) * tile_width) + (tile_width - 16) / 2 + 1,
 				bottom_y + (tsr->ui.gui.hotbar->size.y - 16) /2),
 			vec2ix2_xy(0, 0, 16, 16));
 		i++;
 	}
-	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar_selection, vec2i(selection_x, bottom_y - 1));
+	mbx_set_region(tsr->mbx->vp, tsr->ui.gui.hotbar_selection,
+		vec2i(selection_x, bottom_y - 1));
 }
 
 static void	prepare_next_render(t_tsr *tsr)

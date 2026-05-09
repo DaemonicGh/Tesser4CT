@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 19:15:43 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 17:42:40 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/08 18:05:36 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,19 @@
 
 static void	unload_textures(t_tsr *tsr)
 {
-	size_t			i;
-	t_mbx_region	*region;
+	size_t	i;
+	t_pbr	*pbr;
 
 	i = 0;
 	while (i < ATLAS_LENGTH)
 	{
-		region = atlas_index(&tsr->atlas, i);
-		if (region)
-			mbx_destroy_region(tsr->mbx, region);
+		pbr = atlas_index(&tsr->atlas, i);
+		if (pbr)
+		{
+			mbx_destroy_region(tsr->mbx, pbr->col_tex);
+			if (pbr->nrm_tex)
+				mbx_destroy_region(tsr->mbx, pbr->nrm_tex);
+		}
 		i++;
 	}
 	if (tsr->ui.fonts.small != tsr->extras.default_region)
