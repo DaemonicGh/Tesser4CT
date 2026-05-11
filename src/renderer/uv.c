@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/09 16:04:02 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/11 10:52:44 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	get_tile_uv(t_tsr_ray *ray)
 	ray->uv.y = ceil(ray->uv.y) - ray->uv.y;
 }
 
-static t_mbx_color
+/*static t_mbx_color
 	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
 {
 	const t_vec2i	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
@@ -90,7 +90,7 @@ static t_mbx_color
 			shadow_ray.color.g * (255 - shadow_ray.color.a) >> 8,
 			shadow_ray.color.b * (255 - shadow_ray.color.a) >> 8,
 			shadow_ray.color.a / 2));
-}
+}*/
 
 static t_vec3 normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
 {
@@ -120,16 +120,15 @@ static t_mbx_color
 
 	fcolor = vec3(
 		color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
-	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.4));
-	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.7;
+	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.2));
+	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.8;
 	specular = pow(fclamp(
-		vec3_dot(forward, reflect(dir, normal)),
-		0.0, 1.0), 16) * 1.8;
-	fcolor = vec3_mult(fcolor, vec3_add(vec3_add(
-		vec3_mult_d(dark, 0.2),
-		vec3_mult_d(light, diffuse)),
-		vec3_mult_d(vec3_d(1.0), specular)));
-	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.416666667));
+		vec3_dot(vec3_normalize(forward), reflect(dir, normal)),
+		0.0, 1.0), 32) * 1.1;
+	fcolor = vec3_mult(fcolor, vec3_add(
+		vec3_mult_d(dark, 0.25),
+		vec3_mult_d(light, diffuse + specular)));
+	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.45));
 	color.r = min((int)(fcolor.x * 255), 255);
 	color.g = min((int)(fcolor.y * 255), 255);
 	color.b = min((int)(fcolor.z * 255), 255);
@@ -167,6 +166,6 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 	else
 		normal = get_normal(ray->forward, ray->axis);
 	color = perform_shadow_modifiers(ray->forward, normal, tsr, color);
-	color = color_blend(color, cast_shadows(tsr, ray));
+	//color = color_blend(color, cast_shadows(tsr, ray));
 	return (color);
 }
