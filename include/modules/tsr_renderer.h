@@ -23,6 +23,7 @@ typedef struct s_tsr_render_ray
 	t_vec3			delta;
 	t_vec3			abs_delta;
 	t_vec3			dist;
+	double			distance;
 	t_vec3			position;
 	t_vec3i			tile_position;
 	t_vec3i			delta_sign;

@@ -22,7 +22,7 @@ static void	draw_debug(t_tsr *tsr)
 		tsr->player.position.z,
 		tsr->camera.rotation.x, tsr->camera.rotation.y,
 		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z);
-	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->ui.fonts.small);
+	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
 }
 
 static void	draw_crosshair(t_tsr *tsr)

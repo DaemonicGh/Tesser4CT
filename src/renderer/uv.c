@@ -92,7 +92,7 @@ static void	get_tile_uv(t_tsr_ray *ray)
 			shadow_ray.color.a / 2));
 }*/
 
-static t_vec3 normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
+static t_vec3	normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
 {
 	if (ray->axis == 0 && ray->forward.x < 0)
 		normal = vec3(-normal.z, normal.y, normal.x);
@@ -119,15 +119,15 @@ static t_mbx_color
 	t_vec3			fcolor;
 
 	fcolor = vec3(
-		color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
+			color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.2));
 	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.8;
 	specular = pow(fclamp(
-		vec3_dot(vec3_normalize(forward), reflect(dir, normal)),
-		0.0, 1.0), 32) * 1.1;
+				vec3_dot(vec3_normalize(forward), reflect(dir, normal)),
+				0.0, 1.0), 32) * 1.1;
 	fcolor = vec3_mult(fcolor, vec3_add(
-		vec3_mult_d(dark, 0.25),
-		vec3_mult_d(light, diffuse + specular)));
+				vec3_mult_d(dark, 0.25),
+				vec3_mult_d(light, diffuse + specular)));
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.45));
 	color.r = min((int)(fcolor.x * 255), 255);
 	color.g = min((int)(fcolor.y * 255), 255);
@@ -151,7 +151,18 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 		+ (ray->delta_sign.comp[ray->axis] > 0)].col_tex;
 	ray->texture_uv = vec2i_mult_vd(ray->region->size, ray->uv);
 	color = mbx_get_pixel_unsafe(ray->region, ray->texture_uv);
-	if (tile->skybox || ray->is_shadow)
+	if (tile->skybox)
+		return (color);
+	if (vec3i_eq(ray->tile_position, tsr->world.tile_highlight_pos))
+	{
+		if (ray->axis == tsr->world.tile_highlight_axis)
+			color = color_blend(color, mbx_get_pixel_unsafe(
+						tsr->textures.tile_face_highlight, ray->texture_uv));
+		else
+			color = color_blend(color, mbx_get_pixel_unsafe(
+						tsr->textures.tile_highlight, ray->texture_uv));
+	}
+	if (ray->is_shadow)
 		return (color);
 	nrm = tile->pbr[ray->axis * 2
 		+ (ray->delta_sign.comp[ray->axis] > 0)].nrm_tex;
@@ -160,7 +171,7 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 		uv = vec2i_mult_vd(nrm->size, ray->uv);
 		color_n = mbx_get_pixel_unsafe(nrm, uv);
 		normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
-			vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
+						vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
 		normal = normal_map_transform(normal, ray);
 	}
 	else

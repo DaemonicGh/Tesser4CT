@@ -86,7 +86,7 @@ t_tsr	*tsr_init(void)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBXWIN);
 	tsr->rendering.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
 	tsr->ui.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
-	tsr->ui.gui.hotbar_offset = 1;
+	tsr->ui.hotbar.offset = 1;
 	if (!tsr->rendering.target || !tsr->ui.target)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
 	init_threads(tsr);

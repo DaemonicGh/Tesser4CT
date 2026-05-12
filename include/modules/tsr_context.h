@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "modules/types/mbx_s_region.h"
 #include "tsr_world.h"
 #include "tsr_atlas.h"
 
@@ -37,9 +38,23 @@ typedef struct s_tsr_camera
 	t_vec3		velocity;
 }	t_tsr_camera;
 
+#define TSR_TEXTURE_COUNT	5
+
 typedef struct s_tsr_context
 {
 	t_mbx				*mbx;
+	union	u_tsr_texture_manager
+	{
+		struct
+		{
+			t_mbx_region		*_default;
+			t_mbx_region		*tile_highlight;
+			t_mbx_region		*tile_face_highlight;
+			t_mbx_region		*hotbar_selection;
+			t_mbx_atlas			*font_small;
+		};
+		t_mbx_region		*regions[TSR_TEXTURE_COUNT];
+	}	textures;
 	struct	s_tsr_rendering_manager
 	{
 		t_mbx_region		*target;
@@ -55,22 +70,18 @@ typedef struct s_tsr_context
 	struct	s_tsr_ui_manager
 	{
 		t_mbx_region		*target;
-		struct s_tsr_fonts
+		struct s_tsr_hotbar
 		{
-			t_mbx_atlas			*small;
-		}					fonts;
-		struct s_tsr_gui
-		{
-			t_mbx_region			*hotbar;
-			t_mbx_region			*hotbar_selection;
-			double					hotbar_offset;
-			double					hotbar_delta;
-		}					gui;
+			double					offset;
+			double					delta;
+		}					hotbar;
 	}	ui;
 	struct s_tsr_world_manager
 	{
 		t_tsr_tile			tiles[TILE_BUFFER_COUNT];
 		t_vec3				global_light;
+		t_vec3i				tile_highlight_pos;
+		int					tile_highlight_axis;
 		pthread_t			loader_thread;
 		pthread_barrier_t	loader_wait_barrier;
 	}	world;
@@ -81,7 +92,6 @@ typedef struct s_tsr_context
 	t_tsr_camera		camera;
 	struct s_tsr_extras
 	{
-		t_mbx_region		*default_region;
 		double				aspect_ratio;
 	}	extras;
 }	t_tsr;

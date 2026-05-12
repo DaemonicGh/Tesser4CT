@@ -12,6 +12,7 @@
 
 #include "modules/mbx_handlers.h"
 #include "tsr.h"
+#include "tsr_context.h"
 #include "tsr_core.h"
 #include <pthread.h>
 
@@ -32,13 +33,14 @@ static void	unload_textures(t_tsr *tsr)
 		}
 		i++;
 	}
-	if (tsr->ui.fonts.small != tsr->extras.default_region)
-		mbx_destroy_region(tsr->mbx, tsr->ui.fonts.small);
-	if (tsr->ui.gui.hotbar != tsr->extras.default_region)
-		mbx_destroy_region(tsr->mbx, tsr->ui.gui.hotbar);
-	if (tsr->ui.gui.hotbar_selection != tsr->extras.default_region)
-		mbx_destroy_region(tsr->mbx, tsr->ui.gui.hotbar_selection);
-	mbx_destroy_region(tsr->mbx, tsr->extras.default_region);
+	i = 0;
+	while (i < TSR_TEXTURE_COUNT)
+	{
+		if (tsr->textures.regions[i] != tsr->textures._default)
+			mbx_destroy_region(tsr->mbx, tsr->textures.regions[i]);
+		i++;
+	}
+	mbx_destroy_region(tsr->mbx, tsr->textures._default);
 	mbx_destroy_region(tsr->mbx, tsr->nmap);
 }
 

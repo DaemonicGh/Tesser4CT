@@ -28,27 +28,72 @@ static void	item_select(t_tsr *tsr)
 			1, TILE_COUNT + 1);
 }
 
+static bool	place_tile(t_tsr *tsr, t_tsr_ray *ray)
+{
+	static t_vec3i			prev_tile = {
+		.x = INT32_MIN, .y = INT32_MIN, .z = INT32_MIN};
+
+	if (mbx_key_held(tsr->mbx, MBX_MOUSE_RIGHT)
+		&& (tsr->mbx->keys[MBX_MOUSE_RIGHT].press == 0
+			|| tsr->mbx->keys[MBX_MOUSE_RIGHT].press > 0.1))
+	{
+		if (!vec3i_eq(ray->tile_position, prev_tile))
+		{
+			prev_tile = vec3i_sub(ray->tile_position,
+					vec3i_vd(get_normal(ray->forward, ray->axis)));
+			block_set(&tsr->wworld, prev_tile, tsr->player.tile_id);
+			return (true);
+		}
+	}
+	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_RIGHT))
+		prev_tile = vec3i_i(INT32_MIN);
+	return (false);
+}
+
+static bool	break_tile(t_tsr *tsr, t_tsr_ray *ray)
+{
+	const double	break_time = 0.166;
+	static double	break_timer = 0.0;
+
+	if (mbx_key_held(tsr->mbx, MBX_MOUSE_LEFT)
+		&& (tsr->mbx->keys[MBX_MOUSE_LEFT].press == 0
+			|| tsr->mbx->keys[MBX_MOUSE_LEFT].press > break_time * 2))
+	{
+		if (break_timer <= 0)
+		{
+			block_set(&tsr->wworld, ray->tile_position, 0);
+			break_timer = break_time;
+			return (true);
+		}
+		else
+			break_timer -= tsr->mbx->delta_time;
+	}
+	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_LEFT))
+		break_timer = 0.0;
+	return (false);
+}
+
 static void	place_and_destroy(t_tsr *tsr)
 {
-	t_tsr_ray				traversal;
+	t_tsr_ray	ray;
+	bool		ret;
 
-	traversal = setup_ray(tsr, tsr->player.position, tsr->camera.forward);
-	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_LEFT))
+	ray = setup_ray(tsr, tsr->player.position, tsr->camera.forward);
+	trace_ray(tsr, &ray);
+	ret = true;
+	if (ray.distance < 16.0)
 	{
-		trace_ray(tsr, &traversal);
-		block_set(&tsr->wworld, traversal.tile_position, 0);
+		if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
+			tsr->player.tile_id = block_get(&tsr->wworld, ray.tile_position);
+		ret = break_tile(tsr, &ray);
+		ret |= place_tile(tsr, &ray);
 	}
-	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_RIGHT))
+	if (ret)
+		tsr->world.tile_highlight_pos = vec3i_i(INT32_MIN);
+	else
 	{
-		trace_ray(tsr, &traversal);
-		traversal.tile_position = vec3i_sub(traversal.tile_position,
-				vec3i_vd(get_normal(traversal.forward, traversal.axis)));
-		block_set(&tsr->wworld, traversal.tile_position, tsr->player.tile_id);
-	}
-	if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
-	{
-		trace_ray(tsr, &traversal);
-		tsr->player.tile_id = block_get(&tsr->wworld, traversal.tile_position);
+		tsr->world.tile_highlight_pos = ray.tile_position;
+		tsr->world.tile_highlight_axis = ray.axis;
 	}
 }
 

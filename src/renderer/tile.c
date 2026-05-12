@@ -24,5 +24,5 @@ t_vec3	get_normal(t_vec3 ray_dir, int axis)
 t_vec3	reflect(t_vec3 ray_dir, t_vec3 normal)
 {
 	return (vec3_sub(ray_dir, vec3_mult_d(
-		normal, 2.0 * vec3_dot(normal, ray_dir))));
+				normal, 2.0 * vec3_dot(normal, ray_dir))));
 }

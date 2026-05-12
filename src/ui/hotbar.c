@@ -14,7 +14,7 @@
 
 static void	set_hotbar_offset(t_tsr *tsr)
 {
-	const double	diff = tsr->player.tile_id - tsr->ui.gui.hotbar_offset;
+	const double	diff = tsr->player.tile_id - tsr->ui.hotbar.offset;
 	double			delta;
 
 	if (fabs(diff) < TILE_COUNT / 2.)
@@ -23,13 +23,13 @@ static void	set_hotbar_offset(t_tsr *tsr)
 		delta = 0.2 * fsign(diff) * (fabs(diff) - TILE_COUNT);
 	if (fabs(delta) < 0.01)
 	{
-		tsr->ui.gui.hotbar_offset = tsr->player.tile_id;
+		tsr->ui.hotbar.offset = tsr->player.tile_id;
 		return ;
 	}
-	tsr->ui.gui.hotbar_delta += delta;
-	tsr->ui.gui.hotbar_delta *= 0.5;
-	tsr->ui.gui.hotbar_offset = fwrap(
-			tsr->ui.gui.hotbar_offset + tsr->ui.gui.hotbar_delta,
+	tsr->ui.hotbar.delta += delta;
+	tsr->ui.hotbar.delta *= 0.5;
+	tsr->ui.hotbar.offset = fwrap(
+			tsr->ui.hotbar.offset + tsr->ui.hotbar.delta,
 			1, TILE_COUNT + 1);
 }
 
@@ -47,14 +47,14 @@ void	draw_hotbar(t_tsr *tsr)
 	i = -6;
 	while (i <= 6)
 	{
-		off = i - tsr->ui.gui.hotbar_offset + (int)(tsr->ui.gui.hotbar_offset);
+		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
 		mbx_set_subregion(tsr->ui.target, tsr->world.tiles[
-			wrap((int)(tsr->ui.gui.hotbar_offset) + i, 1, TILE_COUNT + 1)]
+			wrap((int)(tsr->ui.hotbar.offset) + i, 1, TILE_COUNT + 1)]
 			.pbr[0].col_tex, vec2i(pos.x - 8 + 20 * off,
 				pos.y - 20 * (cos(off * off / 22.3) - 1)),
 			vec2ix2_xy(0, 0, 16, 16));
 		i++;
 	}
-	mbx_set_region(tsr->ui.target, tsr->ui.gui.hotbar_selection,
+	mbx_set_region(tsr->ui.target, tsr->textures.hotbar_selection,
 		vec2i(pos.x - 12, pos.y - 4));
 }

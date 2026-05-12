@@ -15,7 +15,7 @@
 void	get_ray_position(t_tsr_ray *ray)
 {
 	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->forward,
-				ray->dist.comp[ray->axis] - ray->abs_delta.comp[ray->axis]));
+				ray->distance - ray->abs_delta.comp[ray->axis]));
 }
 
 static bool	step_ray(t_tsr *tsr, t_tsr_ray *ray)
@@ -75,4 +75,5 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 		else if (ray->prev_tile->inner_backface)
 			ray->render_prev_tile = true;
 	}
+	ray->distance = ray->dist.comp[ray->axis];
 }

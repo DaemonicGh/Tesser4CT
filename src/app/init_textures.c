@@ -14,9 +14,9 @@
 
 static t_pbr	fallback(t_tsr *tsr)
 {
-	if (!tsr->extras.default_region)
+	if (!tsr->textures._default)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLDEFIMGF);
-	return ((t_pbr){tsr->extras.default_region, NULL});
+	return ((t_pbr){tsr->textures._default, NULL});
 }
 
 static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
@@ -28,10 +28,10 @@ static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 	region = mbx_make_region_from_file(tsr->mbx, path);
 	if (region)
 		return (region);
-	if (!tsr->extras.default_region)
+	if (!tsr->textures._default)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLDEFIMGF);
 	tsr_report_m(STATUS_WARNING, REPORT_NULLIMGF, path);
-	return (tsr->extras.default_region);
+	return (tsr->textures._default);
 }
 
 static void	load_textures(t_tsr *tsr)
@@ -41,12 +41,15 @@ static void	load_textures(t_tsr *tsr)
 	size_t		j;
 	t_pbr		*pbr;
 
-	tsr->extras.default_region = load_texture(tsr, "assets/default.png");
-	tsr->ui.fonts.small = load_texture(tsr, "assets/fonts/small.png");
-	tsr->ui.fonts.small->subregion_size = vec2i(5, 7);
-	tsr->ui.gui.hotbar = load_texture(tsr, "assets/hotbar.png");
-	tsr->ui.gui.hotbar_selection = load_texture(tsr,
-		"assets/hotbar_selection.png");
+	tsr->textures._default = load_texture(tsr, "assets/default.png");
+	tsr->textures.font_small = load_texture(tsr, "assets/fonts/small.png");
+	tsr->textures.font_small->subregion_size = vec2i(5, 7);
+	tsr->textures.tile_highlight = load_texture(
+			tsr, "assets/tile_highlight.png");
+	tsr->textures.tile_face_highlight = load_texture(
+			tsr, "assets/tile_face_highlight.png");
+	tsr->textures.hotbar_selection = load_texture(
+			tsr, "assets/hotbar_selection.png");
 	i = 0;
 	key = NULL;
 	while (i < TILE_BUFFER_COUNT)
