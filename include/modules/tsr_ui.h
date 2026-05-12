@@ -1,22 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tsr_core.h                                         :+:      :+:    :+:   */
+/*   tsr_ui.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Created: 2026/05/12 02:45:41 by rprieur           #+#    #+#             */
+/*   Updated: 2026/05/12 02:46:34 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <pthread.h>
-#include <stdatomic.h>
+#include "tsr_core.h"
 
-#include "mbx.h"
-#include "tsr_constants.h"
+void
+draw_hotbar(t_tsr *tsr);
 
-typedef uint8_t					t_tsr_tile_id;
-typedef struct s_tsr_context	t_tsr;
+void
+draw_ui(t_tsr *tsr);

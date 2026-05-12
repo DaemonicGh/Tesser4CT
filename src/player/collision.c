@@ -12,7 +12,7 @@
 
 #include "tsr.h"
 
-static bool	tile_collision(t_tsr_player* player, t_vec3i tile)
+static bool	tile_collision(t_tsr_player *player, t_vec3i tile)
 {
 	return ((player->position.x - player->hitbox.x < tile.x + 1)
 		&& (player->position.x + player->hitbox.x > tile.x)
@@ -23,7 +23,7 @@ static bool	tile_collision(t_tsr_player* player, t_vec3i tile)
 	);
 }
 
-static void		player_to_tile(t_tsr_player* player, t_vec3i tile)
+static void	player_to_tile(t_tsr_player *player, t_vec3i tile)
 {
 	t_vec3	dist;
 	double	d;
@@ -58,10 +58,10 @@ static void		player_to_tile(t_tsr_player* player, t_vec3i tile)
 
 void	player_collision(t_tsr *tsr)
 {
-	const t_vec3i		player = vec3i_vd(vec3_exec(
-		floor, tsr->player.position));
+	const t_vec3i		player = vec3i_vd(
+			vec3_exec(floor, tsr->player.position));
 	static const int	size = 2;
-	t_vec3i	pos;
+	t_vec3i				pos;
 
 	pos.x = player.x - size;
 	while (pos.x <= player.x + size)
@@ -73,7 +73,7 @@ void	player_collision(t_tsr *tsr)
 			while (pos.z <= player.z + size)
 			{
 				if (block_get(&tsr->wworld, pos)
-						&& tile_collision(&tsr->player, pos))
+					&& tile_collision(&tsr->player, pos))
 					player_to_tile(&tsr->player, pos);
 				pos.z++;
 			}

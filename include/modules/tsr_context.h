@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 17:39:23 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct s_tsr_context
 	}	rendering;
 	struct	s_tsr_ui_manager
 	{
+		t_mbx_region		*target;
 		struct s_tsr_fonts
 		{
 			t_mbx_atlas			*small;
@@ -62,12 +63,10 @@ typedef struct s_tsr_context
 		{
 			t_mbx_region			*hotbar;
 			t_mbx_region			*hotbar_selection;
+			double					hotbar_offset;
+			double					hotbar_delta;
 		}					gui;
 	}	ui;
-	struct s_tsr_update_manager
-	{
-		bool					a;
-	}	updates;
 	struct s_tsr_world_manager
 	{
 		t_tsr_tile			tiles[TILE_BUFFER_COUNT];

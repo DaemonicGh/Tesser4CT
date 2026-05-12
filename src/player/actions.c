@@ -12,6 +12,22 @@
 
 #include "tsr.h"
 
+static void	item_select(t_tsr *tsr)
+{
+	int	i;
+
+	i = 0;
+	while (i <= TILE_COUNT / 10)
+	{
+		if (mbx_key_pressed(tsr->mbx, 30 + i))
+			tsr->player.tile_id = i * 10 + 1;
+		i++;
+	}
+	tsr->player.tile_id = wrap(
+			(tsr->player.tile_id - tsr->mbx->scroll_delta),
+			1, TILE_COUNT + 1);
+}
+
 static void	place_and_destroy(t_tsr *tsr)
 {
 	t_tsr_ray				traversal;
@@ -34,20 +50,10 @@ static void	place_and_destroy(t_tsr *tsr)
 		trace_ray(tsr, &traversal);
 		tsr->player.tile_id = block_get(&tsr->wworld, traversal.tile_position);
 	}
-	if (mbx_key_pressed(tsr->mbx, MBX_KEY_Q))
-	{
-		if (tsr->player.tile_id == 1)
-			tsr->player.tile_id = TILE_COUNT;
-		else
-			tsr->player.tile_id--;
-	}
-	if (mbx_key_pressed(tsr->mbx, MBX_KEY_E))
-		tsr->player.tile_id = tsr->player.tile_id % TILE_COUNT + 1;
-
-	tsr->player.tile_id = wrap((tsr->player.tile_id + tsr->mbx->scroll_delta), 1, TILE_COUNT + 1);
 }
 
 void	tsr_player_actions(t_tsr *tsr)
 {
 	place_and_destroy(tsr);
+	item_select(tsr);
 }

@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/01 11:49:29 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/12 02:47:10 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 
 #include "tsr_core.h"
 #include "tsr_context.h"
+#include "tsr_player.h"
 #include "tsr_renderer.h"
+#include "tsr_ui.h"
 #include "tsr_utils.h"
 
 void
@@ -29,18 +31,11 @@ t_tsr
 void
 tsr_update_camera(t_tsr *tsr);
 
+void
+tsr_update_game(t_tsr *tsr);
 
 void
-player_collision(t_tsr *tsr);
-
-void
-tsr_player_movement(t_tsr *tsr);
-
-void
-tsr_player_actions(t_tsr *tsr);
-
-void
-tsr_update_player(t_tsr *tsr);
+tsr_draw_game(t_tsr *tsr);
 
 void
 tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message);

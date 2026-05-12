@@ -29,12 +29,13 @@ t_pbr	*atlas_get(t_atlas *atlas, const char *key)
 	if (!atlas || !key)
 		return (NULL);
 	i = 0;
-	while (i < ATLAS_LENGTH
-		&& (!atlas->key[i] || ft_strcmp(atlas->key[i], key)))
+	while (i < ATLAS_LENGTH && atlas->key[i])
+	{
+		if (!ft_strcmp(atlas->key[i], key))
+			return (&atlas->pbr[i]);
 		i++;
-	if (i == ATLAS_LENGTH)
-		return (NULL);
-	return (&atlas->pbr[i]);
+	}
+	return (NULL);
 }
 
 t_pbr	*atlas_index(t_atlas *atlas, size_t i)

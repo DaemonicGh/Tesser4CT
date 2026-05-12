@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_world.h"
 
 void	get_ray_position(t_tsr_ray *ray)
 {

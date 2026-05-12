@@ -67,6 +67,7 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 	unload_textures(tsr);
 	free(tsr->wworld.blocks);
 	mbx_destroy_region(tsr->mbx, tsr->rendering.target);
+	mbx_destroy_region(tsr->mbx, tsr->ui.target);
 	if (tsr->mbx)
 		mbx_exit(tsr->mbx);
 	free(tsr);

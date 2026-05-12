@@ -17,11 +17,13 @@ NAMES					:=	Tesser4CT
 
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
-	player/actions player/movement player/update player/collision								\
+	app/update/game																\
+	player/actions player/movement player/update player/collision				\
 	renderer/camera renderer/renderer renderer/threads renderer/tile			\
 	renderer/trace_ray renderer/uv renderer/atlas								\
 	world/world																	\
-	utils/memory utils/report													\
+	ui/draw	ui/hotbar															\
+	utils/memory utils/report utils/string													\
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a
 OTHER_LIBRARIES			:=	m

@@ -14,9 +14,31 @@
 
 void	world_create(t_world *world, t_vec3i size)
 {
+	t_vec3i	xyz;
+
 	world->size = size;
-	world->blocks = malloc(world->size.x * world->size.y * world->size.z
-			* sizeof(t_tsr_tile));
+	world->blocks = malloc(sizeof(t_tsr_tile)
+			* world->size.x * world->size.y * world->size.z);
+	if (!world->blocks)
+		return ;
+
+	xyz.x = 0;
+	while (xyz.x < world->size.x)
+	{
+		xyz.y = 0;
+		while (xyz.y < world->size.y)
+		{
+			xyz.z = 0;
+			while (xyz.z < world->size.z)
+			{
+				block_set(world, xyz, xyz.y == 0);
+				xyz.z++;
+			}
+			xyz.y++;
+		}
+		xyz.x++;
+	}
+	block_set(world, vec3i(world->size.x / 2, 0, world->size.z / 2), 3);
 }
 
 void	world_destroy(t_world *world)

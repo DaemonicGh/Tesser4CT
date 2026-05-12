@@ -48,6 +48,7 @@ static void	load_textures(t_tsr *tsr)
 	tsr->ui.gui.hotbar_selection = load_texture(tsr,
 		"assets/hotbar_selection.png");
 	i = 0;
+	key = NULL;
 	while (i < TILE_BUFFER_COUNT)
 	{
 		j = 0;
