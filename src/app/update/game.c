@@ -25,6 +25,14 @@ static void	update_light(t_tsr *tsr)
 			+ tsr->world.global_light.z * cosa);
 }
 
+void	tsr_init_game(t_tsr *tsr)
+{
+	tsr->mbx->settings.show_cursor = false;
+	tsr->mbx->settings.lock_cursor = true;
+	mbx_refresh_settings(tsr->mbx);
+	tsr->rendering.frag_shader = draw_ray;
+}
+
 void	tsr_update_game(t_tsr *tsr)
 {
 	tsr_update_player(tsr);
@@ -35,13 +43,8 @@ void	tsr_update_game(t_tsr *tsr)
 		tsr->mbx->settings.show_cursor = !tsr->mbx->settings.show_cursor;
 		mbx_refresh_settings(tsr->mbx);
 	}
-}
-
-void	tsr_draw_game(t_tsr *tsr)
-{
+	if (mbx_btnp(tsr->mbx, MBX_KEY_ESCAPE))
+		tsr->ui.state = UI_STATE_PAUSE;
+	mbx_clear(tsr->ui.target, color_rgba(0x0));
 	draw_ui(tsr);
-	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
-		MBX_VIEWPORT_RENDER_KEEP);
-	mbx_render_region_as_viewport(tsr->mbx, tsr->ui.target,
-		MBX_VIEWPORT_RENDER_KEEP);
 }

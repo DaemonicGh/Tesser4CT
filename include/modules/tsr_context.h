@@ -38,7 +38,7 @@ typedef struct s_tsr_camera
 	t_vec3		velocity;
 }	t_tsr_camera;
 
-#define TSR_TEXTURE_COUNT	5
+#define TSR_TEXTURE_COUNT	6
 
 typedef struct s_tsr_context
 {
@@ -52,6 +52,7 @@ typedef struct s_tsr_context
 			t_mbx_region		*tile_face_highlight;
 			t_mbx_region		*hotbar_selection;
 			t_mbx_atlas			*font_small;
+			t_mbx_atlas			*font_title;
 		};
 		t_mbx_region		*regions[TSR_TEXTURE_COUNT];
 	}	textures;
@@ -66,11 +67,18 @@ typedef struct s_tsr_context
 		atomic_size_t		current_job;
 		t_vec2i				job_region_count;
 		t_mbx_color			(*frag_shader)(t_tsr * tsr, t_vec2 uv);
+		t_mbx_color			(*current_frag_shader)(t_tsr * tsr, t_vec2 uv);
 	}	rendering;
 	struct	s_tsr_ui_manager
 	{
 		t_mbx_region		*target;
-		struct s_tsr_hotbar
+		enum	e_tsr_ui_state: int
+		{
+			UI_STATE_GAME = 0,
+			UI_STATE_MAIN,
+			UI_STATE_PAUSE
+		}					state;
+		struct	s_tsr_hotbar
 		{
 			double					offset;
 			double					delta;

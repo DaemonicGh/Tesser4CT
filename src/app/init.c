@@ -16,7 +16,9 @@
 #include <sched.h>
 
 #include "modules/mbx_handlers.h"
+#include "modules/mbx_scancodes.h"
 #include "tsr.h"
+#include "tsr_context.h"
 
 static void	init_player(t_tsr *tsr)
 {
@@ -49,7 +51,6 @@ static void	init_threads(t_tsr *tsr)
 			tsr_exit(tsr, STATUS_ERROR, REPORT_NULLTHREAD);
 		i++;
 	}
-	tsr->rendering.frag_shader = draw_ray;
 }
 
 void	init_tiles(t_tsr *tsr)
@@ -57,7 +58,7 @@ void	init_tiles(t_tsr *tsr)
 	size_t	i;
 
 	i = 0;
-	while (i < TILE_BUFFER_COUNT)
+	while (i < TILE_COUNT + 1)
 	{
 		tsr->world.tiles[i] = g_tile_data[i];
 		i++;
@@ -75,6 +76,7 @@ t_tsr	*tsr_init(void)
 	tsr->mbx = mbx_init_windowless();
 	if (!tsr->mbx)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBX);
+	tsr->mbx->settings.exit_key = MBX_KEY_NONE;
 	init_tiles(tsr);
 	atlas_init(&tsr->atlas, tsr->mbx);
 	init_textures(tsr);
@@ -85,13 +87,12 @@ t_tsr	*tsr_init(void)
 			DEFAULT_WINDOW_TITLE, DEFAULT_WINDOW_FLAGS))
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBXWIN);
 	tsr->rendering.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
+	tsr->ui.state = UI_STATE_MAIN;
 	tsr->ui.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
 	tsr->ui.hotbar.offset = 1;
 	if (!tsr->rendering.target || !tsr->ui.target)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
 	init_threads(tsr);
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;
-	tsr->mbx->settings.show_cursor = false;
-	tsr->mbx->settings.lock_cursor = true;
 	return (tsr);
 }

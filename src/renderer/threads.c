@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_utils.h"
 #include "tsr.h"
-#include <stdatomic.h>
 
 static void	render_job(t_tsr *tsr, size_t job_i)
 {
@@ -26,15 +24,15 @@ static void	render_job(t_tsr *tsr, size_t job_i)
 
 	pos.y = 0;
 	i = start.y * tsr->mbx->vp->size.x + start.x;
-	uv.y = (double)start.y / tsr->mbx->vp->size.y - 0.5;
+	uv.y = (double)start.y / tsr->mbx->vp->size.y;
 	while (pos.y++ < RENDER_JOB_REGION_H)
 	{
 		pos.x = 0;
-		uv.x = (double)start.x / tsr->mbx->vp->size.x - 0.5;
+		uv.x = (double)start.x / tsr->mbx->vp->size.x;
 		while (pos.x++ < RENDER_JOB_REGION_W)
 		{
 			mbx_set_pixel_raw_i(tsr->rendering.target, i++,
-				tsr->rendering.frag_shader(tsr, uv));
+				tsr->rendering.current_frag_shader(tsr, uv));
 			uv.x += uv_delta.x;
 		}
 		uv.y += uv_delta.y;

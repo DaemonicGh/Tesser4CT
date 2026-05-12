@@ -44,6 +44,8 @@ static void	load_textures(t_tsr *tsr)
 	tsr->textures._default = load_texture(tsr, "assets/default.png");
 	tsr->textures.font_small = load_texture(tsr, "assets/fonts/small.png");
 	tsr->textures.font_small->subregion_size = vec2i(5, 7);
+	tsr->textures.font_title = load_texture(tsr, "assets/fonts/title.png");
+	tsr->textures.font_title->subregion_size = vec2i(10, 12);
 	tsr->textures.tile_highlight = load_texture(
 			tsr, "assets/tile_highlight.png");
 	tsr->textures.tile_face_highlight = load_texture(

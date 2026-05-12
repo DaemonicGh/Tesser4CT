@@ -39,13 +39,14 @@ t_tsr_ray	setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward)
 	return (ray);
 }
 
-t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uvc)
+t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
 {
-	t_tsr_ray	ray;
+	const t_vec2	uvc = vec2((uv.x - 0.5) * 16 / 9, uv.y - 0.5);
+	t_tsr_ray		ray;
 
 	ray = setup_ray(tsr, tsr->camera.position,
 			vec3_add(tsr->camera.forward, vec3_add(
-					vec3_mult_d(tsr->camera.right, uvc.x * (16.0 / 9)),
+					vec3_mult_d(tsr->camera.right, uvc.x),
 					vec3_mult_d(tsr->camera.up, -uvc.y))));
 	while (true)
 	{

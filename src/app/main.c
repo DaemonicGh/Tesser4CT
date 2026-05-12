@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_context.h"
 
 static void	prepare_next_render(t_tsr *tsr)
 {
@@ -25,7 +26,34 @@ static void	prepare_next_render(t_tsr *tsr)
 	tmp = tsr->rendering.target;
 	tsr->rendering.target = tsr->mbx->viewport;
 	tsr->mbx->viewport = tmp;
+	tsr->rendering.current_frag_shader = tsr->rendering.frag_shader;
 	tsr_update_camera(tsr);
+}
+
+
+static void	init_state(t_tsr *tsr)
+{
+	static int	prev_state = -1;
+
+	if (prev_state == tsr->ui.state)
+		return ;
+	prev_state = tsr->ui.state;
+	if (tsr->ui.state == UI_STATE_GAME)
+		tsr_init_game(tsr);
+	else if (tsr->ui.state == UI_STATE_MAIN)
+		tsr_init_main_menu(tsr);
+	else if (tsr->ui.state == UI_STATE_PAUSE)
+		tsr_init_pause_menu(tsr);
+}
+
+static void	update_state(t_tsr *tsr)
+{
+	if (tsr->ui.state == UI_STATE_GAME)
+		tsr_update_game(tsr);
+	else if (tsr->ui.state == UI_STATE_MAIN)
+		tsr_update_main_menu(tsr);
+	else if (tsr->ui.state == UI_STATE_PAUSE)
+		tsr_update_pause_menu(tsr);
 }
 
 void	main_update(t_mbx *mbx, void *data)
@@ -34,11 +62,15 @@ void	main_update(t_mbx *mbx, void *data)
 
 	(void)mbx;
 	tsr = data;
-	tsr_update_game(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
-	tsr_draw_game(tsr);
+	update_state(tsr);
+	init_state(tsr);
+	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
+		MBX_VIEWPORT_RENDER_KEEP);
+	mbx_render_region_as_viewport(tsr->mbx, tsr->ui.target,
+		MBX_VIEWPORT_RENDER_KEEP);
 }
 
 int	main(void)
@@ -49,6 +81,7 @@ int	main(void)
 	tsr = tsr_init();
 	world_create(&tsr->wworld, vec3i(33, 16, 33));
 	tsr->mbx->settings.fps_cap = 120;
+	init_state(tsr);
 	mbx_run(tsr->mbx, main_update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);
 }

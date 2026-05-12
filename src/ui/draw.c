@@ -49,7 +49,6 @@ static void	draw_crosshair(t_tsr *tsr)
 
 void	draw_ui(t_tsr *tsr)
 {
-	mbx_clear(tsr->ui.target, color_rgba(0x0));
 	draw_debug(tsr);
 	draw_crosshair(tsr);
 	draw_hotbar(tsr);

@@ -32,10 +32,22 @@ void
 tsr_update_camera(t_tsr *tsr);
 
 void
+tsr_init_game(t_tsr *tsr);
+
+void
 tsr_update_game(t_tsr *tsr);
 
 void
-tsr_draw_game(t_tsr *tsr);
+tsr_init_pause_menu(t_tsr *tsr);
+
+void
+tsr_update_pause_menu(t_tsr *tsr);
+
+void
+tsr_init_main_menu(t_tsr *tsr);
+
+void
+tsr_update_main_menu(t_tsr *tsr);
 
 void
 tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message);

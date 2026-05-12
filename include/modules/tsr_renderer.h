@@ -66,3 +66,6 @@ get_ray_position(t_tsr_ray *ray);
 
 void
 *tsr_render_thread_init(void *data);
+
+void
+draw_title(t_tsr *tsr, char *str, t_vec2i pos, t_vec2 scale);
