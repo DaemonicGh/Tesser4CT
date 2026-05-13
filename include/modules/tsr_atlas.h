@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:02:47 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:34:04 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_atlas
 void	atlas_init(t_atlas *atlas, t_mbx *mbx);
 t_pbr	*atlas_get(t_atlas *atlas, const char *key);
 t_pbr	*atlas_index(t_atlas *atlas, size_t i);
-void	atlas_add(t_atlas *atlas, const char *key, const char *path);
+void	atlas_add(t_atlas *atlas, const char *path);
 void	atlas_pop(t_atlas *atlas, const char *key);
 
 #endif

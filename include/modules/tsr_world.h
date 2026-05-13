@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/13 10:41:18 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:54:00 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,26 @@ typedef struct s_tsr_tile_data
 
 static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {
 {.keys = {0, 0, 0, 0, 0, 0}, .skip_process = true},
-{.keys = {"stone"}},
-{.keys = {"dirt"}},
-{.keys = {"oak_planks"}},
-{.keys = {"iron_block"}},
-{.keys = {"moss_block"}},
 {.keys = {"skybox_west", "skybox_east", "skybox_down",
 	"skybox_up", "skybox_north", "skybox_south"}, .skybox = true},
-{.keys = {"glass", "glass", "glass", "glass", "glass", "glass"},
-	.backface = true},
-{.keys = {"white_glass"}, .backface = true},
+{.keys = {"stone"}},
+{.keys = {"dirt"}},
 {.keys = {"grass_block_side", "grass_block_side", "grass_block_top",
 	"dirt", "grass_block_side", "grass_block_side"}},
 {.keys = {"oak_leaves"}, .backface = true, .inner_backface = true},
-{.keys = {"oak_log_side", "oak_log_side", "oak_log_top",
-	"oak_log_top", "oak_log_side", "oak_log_side"}},
+{.keys = {"oak_log", "oak_log", "oak_log_top",
+	"oak_log_top", "oak_log", "oak_log"}},
+{.keys = {"oak_planks"}},
+{.keys = {"stone_bricks"}},
+{.keys = {"cobblestone"}},
+{.keys = {"iron_block"}},
+{.keys = {"moss"}},
+{.keys = {"glass"},
+	.backface = true},
+{.keys = {"white_stained_glass"}, .backface = true},
+{.keys = {"red_stained_glass"}, .backface = true},
+{.keys = {"green_stained_glass"}, .backface = true},
+{.keys = {"blue_stained_glass"}, .backface = true},
 {0}
 };
 

@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:11:23 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/09 13:08:24 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:38:27 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,30 +47,82 @@ t_pbr	*atlas_index(t_atlas *atlas, size_t i)
 	return (&atlas->pbr[i]);
 }
 
-void	atlas_add(t_atlas *atlas, const char *key, const char *path)
+static char *get_extension(const char *path)
+{
+	char	*ext;
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	while (path[i] && path[i] != '.')
+		i++;
+	if (!path[i])
+		return (NULL);
+	len = ft_strlen(path + i);
+	ext = malloc(len + 1);
+	if (!ext)
+		return (NULL);
+	ext[len] = 0;
+	while (len--)
+		ext[len] = path[i + len];
+	return (ext);
+}
+
+static char *get_name(const char *path)
+{
+	char	*name;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+
+	i = 0;
+	while (path[i] && path[i] != '.')
+		i++;
+	j = i;
+	while (j > 0 && path[j - 1] != '/')
+		j--;
+	len = i - j;
+	name = malloc(len + 1);
+	if (!name)
+		return (NULL);
+	name[len] = 0;
+	while (len--)
+		name[len] = path[j + len];
+	return (name);
+}
+
+void	atlas_add(t_atlas *atlas, const char *path)
 {
 	size_t	i;
 	char	*path_n;
+	char	*ext;
+	char	*key;
 
-	if (!atlas || !key || !path)
+	if (!atlas || !path)
 		return ;
 	i = 0;
 	while (i < ATLAS_LENGTH && atlas->key[i])
 		i++;
 	if (i == ATLAS_LENGTH)
 		return ;
+	key = get_name(path);
+	if (!key)
+		return ;
 	atlas->pbr[i].col_tex = mbx_make_region_from_file(atlas->mbx, (char *)path);
 	if (atlas->pbr[i].col_tex)
-		atlas->key[i] = (char *)key;
+		atlas->key[i] = key;
+	ext = get_extension(path);
 	path_n = malloc(ft_strlen(path) + 3);
 	path_n[0] = 0;
 	ft_strcat(path_n, path);
 	path_n[ft_strlen(path) - 4] = 0;
 	ft_strcat(path_n, "_n");
-	ft_strcat(path_n, ".png");
+	if (ext)
+		ft_strcat(path_n, ext);
 	atlas->pbr[i].nrm_tex = NULL;
-	if (!access(path_n, F_OK))
+	if (!access(path_n, F_OK) && ext)
 		atlas->pbr[i].nrm_tex = mbx_make_region_from_file(atlas->mbx, path_n);
+	free(ext);
 	free(path_n);
 }
 
@@ -88,5 +140,6 @@ void	atlas_pop(t_atlas *atlas, const char *key)
 	mbx_destroy_region(atlas->mbx, atlas->pbr[i].col_tex);
 	if (atlas->pbr[i].nrm_tex)
 		mbx_destroy_region(atlas->mbx, atlas->pbr[i].nrm_tex);
+	free(atlas->key[i]);
 	atlas->key[i] = NULL;
 }

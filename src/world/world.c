@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:31:58 by emarrot           #+#    #+#             */
-/*   Updated: 2026/04/26 16:34:36 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:49:36 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	world_create(t_world *world, t_vec3i size)
 			xyz.z = 0;
 			while (xyz.z < world->size.z)
 			{
-				block_set(world, xyz, xyz.y == 0);
+				block_set(world, xyz, (xyz.y == 0) * 2);
 				xyz.z++;
 			}
 			xyz.y++;

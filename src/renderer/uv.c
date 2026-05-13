@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 17:27:58 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:03:30 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,8 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 		uv = vec2i_mult_vd(nrm->size, ray->uv);
 		color_n = mbx_get_pixel_unsafe(nrm, uv);
 		normal = vec3_sub_d(vec3_mult_d(vec3_mult_d(
-			vec3(color_n.r, color_n.g, color_n.b), 3.921569e-3), 2.0), 1.0);
+			vec3(255 - color_n.r, color_n.g, color_n.b),
+			3.921569e-3), 2.0), 1.0);
 		normal = normal_map_transform(normal, ray);
 	}
 	else

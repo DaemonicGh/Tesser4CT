@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 16:57:44 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/09 10:41:53 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:55:03 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,26 +81,23 @@ void	init_textures(t_tsr *tsr)
 {
 	static const char	*path[] = {"assets/tiles/stone.png",
 		"assets/tiles/dirt.png", "assets/tiles/oak_planks.png",
-		"assets/tiles/iron_block.png", "assets/tiles/moss_block.png",
+		"assets/tiles/iron_block.png", "assets/tiles/moss.png",
 		"assets/tiles/blue_coral_block.png", "assets/tiles/glass.png",
-		"assets/tiles/white_glass.png", "assets/tiles/grass_block_top.png",
+		"assets/tiles/white_stained_glass.png",
+		"assets/tiles/grass_block_top.png",
 		"assets/tiles/grass_block_side.png", "assets/tiles/oak_leaves.png",
-		"assets/tiles/oak_log_side.png", "assets/tiles/oak_log_top.png",
+		"assets/tiles/oak_log.png", "assets/tiles/oak_log_top.png",
 		"assets/tiles/skybox_up.png", "assets/tiles/skybox_down.png",
 		"assets/tiles/skybox_east.png", "assets/tiles/skybox_west.png",
-		"assets/tiles/skybox_north.png", "assets/tiles/skybox_south.png", 0};
-	static const char	*key[] = {"stone", "dirt", "oak_planks", "iron_block",
-		"moss_block", "blue_coral_block", "glass", "white_glass",
-		"grass_block_top", "grass_block_side", "oak_leaves", "oak_log_side",
-		"oak_log_top", "skybox_up", "skybox_down", "skybox_east", "skybox_west",
-		"skybox_north", "skybox_south", 0};
+		"assets/tiles/skybox_north.png", "assets/tiles/skybox_south.png",
+		"assets/tiles/red_stained_glass.png",
+		"assets/tiles/green_stained_glass.png",
+		"assets/tiles/blue_stained_glass.png", 
+		"assets/tiles/stone_bricks.png", "assets/tiles/cobblestone.png", 0};
 	size_t				i;
 
 	i = 0;
-	while (key[i] && path[i])
-	{
-		atlas_add(&tsr->atlas, key[i], path[i]);
-		i++;
-	}
+	while (path[i])
+		atlas_add(&tsr->atlas, path[i++]);
 	load_textures(tsr);
 }

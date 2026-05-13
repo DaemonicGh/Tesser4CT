@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:59:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/04/29 23:28:57 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/13 18:48:43 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 			ray->tile = &tsr->world.tiles[
 				tsr->wworld.blocks[ray->tile_index]];
 		else
-			ray->tile = &tsr->world.tiles[6];
+			ray->tile = &tsr->world.tiles[1];
 		if (ray->tile != ray->prev_tile)
 		{
 			if (!ray->tile->skip_process)
