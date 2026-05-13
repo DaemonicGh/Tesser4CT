@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/11 10:52:44 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 17:27:58 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,24 @@ static void	get_tile_uv(t_tsr_ray *ray)
 	ray->uv.y = ceil(ray->uv.y) - ray->uv.y;
 }
 
-/*static t_mbx_color
+static t_mbx_color
 	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
 {
-	const t_vec2i	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
+	//const t_vec2i	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
 	const t_vec3	dir = tsr->world.global_light;
 	t_vec3			position;
 	t_tsr_ray		shadow_ray;
 
 	position = vec3_add(ray->position, vec3_mult_d(dir, -1e-8));
-	position.comp[axis.x] = (floor(position.comp[axis.x]
-				* ray->region->size.x) + 0.5) / ray->region->size.x;
-	position.comp[axis.y] = (floor(position.comp[axis.y]
-				* ray->region->size.y) + 0.5) / ray->region->size.y;
+	//position.comp[axis.x] = (floor(position.comp[axis.x]
+	//			* ray->region->size.x) + 0.5) / ray->region->size.x;
+	//position.comp[axis.y] = (floor(position.comp[axis.y]
+	//			* ray->region->size.y) + 0.5) / ray->region->size.y;
 	shadow_ray = setup_ray(tsr, position, dir);
 	shadow_ray.is_shadow = true;
 	shadow_ray.tile = &tsr->world.tiles[0];
 	shadow_ray.prev_tile = shadow_ray.tile;
+	shadow_ray.color = color_rgba(0xffffff00);
 	while (true)
 	{
 		trace_ray(tsr, &shadow_ray);
@@ -89,8 +90,8 @@ static void	get_tile_uv(t_tsr_ray *ray)
 			shadow_ray.color.r * (255 - shadow_ray.color.a) >> 8,
 			shadow_ray.color.g * (255 - shadow_ray.color.a) >> 8,
 			shadow_ray.color.b * (255 - shadow_ray.color.a) >> 8,
-			shadow_ray.color.a / 2));
-}*/
+			shadow_ray.color.a * 0.5));
+}
 
 static t_vec3	normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
 {
@@ -108,7 +109,7 @@ static t_vec3	normal_map_transform(t_vec3 normal, t_tsr_ray *ray)
 }
 
 static t_mbx_color
-	perform_shadow_modifiers(t_vec3 forward, t_vec3 normal,
+	perform_shadow_modifiers(t_vec3 forward, t_vec3 normal, t_mbx_color shadow,
 	t_tsr *tsr, t_mbx_color color)
 {
 	const t_vec3	light = vec3(1.8, 1.2, 0.8);
@@ -117,17 +118,20 @@ static t_mbx_color
 	double			diffuse;
 	double			specular;
 	t_vec3			fcolor;
-
-	fcolor = vec3(
-			color.r * 3.921569e-3, color.g * 3.921569e-3, color.b * 3.921569e-3);
+	t_vec3 full_shadow = vec3_mult_d(
+		vec3(shadow.r, shadow.g, shadow.b), 3.921569e-3);
+	t_vec3 lighten_shadow = vec3_add_d(vec3_mult_d(full_shadow, 0.8), 0.2);
+	
+	fcolor = vec3_mult_d(vec3(color.r, color.g, color.b), 3.921569e-3);
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(2.2));
 	diffuse = fclamp(vec3_dot(normal, dir) * -1, 0.0, 1.0) * 0.8;
-	specular = pow(fclamp(
-				vec3_dot(vec3_normalize(forward), reflect(dir, normal)),
-				0.0, 1.0), 32) * 1.1;
+	specular = pow(fclamp(vec3_dot(vec3_normalize(forward),
+		reflect(dir, normal)), 0.0, 1.0), 32) * 1.1;
 	fcolor = vec3_mult(fcolor, vec3_add(
-				vec3_mult_d(dark, 0.25),
-				vec3_mult_d(light, diffuse + specular)));
+				vec3_mult_d(dark, 0.18),
+				vec3_mult(light, vec3_add(
+				vec3_mult_d(lighten_shadow, diffuse),
+				vec3_mult_d(full_shadow, specular)))));
 	fcolor = vec3_exec2(pow, fcolor, vec3_d(0.45));
 	color.r = min((int)(fcolor.x * 255), 255);
 	color.g = min((int)(fcolor.y * 255), 255);
@@ -170,13 +174,13 @@ t_mbx_color	get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 	{
 		uv = vec2i_mult_vd(nrm->size, ray->uv);
 		color_n = mbx_get_pixel_unsafe(nrm, uv);
-		normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
-						vec3(color_n.r, color_n.g, color_n.b), 255), 2.0), 1.0);
+		normal = vec3_sub_d(vec3_mult_d(vec3_mult_d(
+			vec3(color_n.r, color_n.g, color_n.b), 3.921569e-3), 2.0), 1.0);
 		normal = normal_map_transform(normal, ray);
 	}
 	else
 		normal = get_normal(ray->forward, ray->axis);
-	color = perform_shadow_modifiers(ray->forward, normal, tsr, color);
-	//color = color_blend(color, cast_shadows(tsr, ray));
+	color = perform_shadow_modifiers(
+		ray->forward, normal, cast_shadows(tsr, ray), tsr, color);
 	return (color);
 }

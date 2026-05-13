@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:54:27 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/12 16:54:27 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/13 10:21:31 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	tsr_update_main_menu(t_tsr *tsr)
 	if (mbx_key_released(tsr->mbx, MBX_KEY_ESCAPE)
 		|| mbx_key_released(tsr->mbx, MBX_KEY_X))
 		tsr->mbx->exiting = true;
-	else if (tsr->mbx->last_release == 0)
+	else if (tsr->mbx->last_release == 0
+		|| mbx_key_released(tsr->mbx, MBX_KEY_SPACE))
 		tsr->ui.state = UI_STATE_GAME;
 }

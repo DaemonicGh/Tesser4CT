@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:02:26 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/07 18:38:39 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/13 15:38:09 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ t_tsr	*tsr_init(void)
 	atlas_init(&tsr->atlas, tsr->mbx);
 	init_textures(tsr);
 	init_player(tsr);
-	tsr->world.global_light = vec3_normalize(vec3(0.3, 0.2, 1.0));
+	tsr->world.global_light = vec3(0.0, 0.5, 0.866025);
 	if (!mbx_make_main_window(tsr->mbx,
 			vec2i(DEFAULT_VIEWPORT_W, DEFAULT_VIEWPORT_H),
 			DEFAULT_WINDOW_TITLE, DEFAULT_WINDOW_FLAGS))

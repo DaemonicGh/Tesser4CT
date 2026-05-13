@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/13 10:41:18 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {
 {.keys = {"moss_block"}},
 {.keys = {"skybox_west", "skybox_east", "skybox_down",
 	"skybox_up", "skybox_north", "skybox_south"}, .skybox = true},
-{.keys = {"glass", "glass", "dirt", "glass", "glass", "glass"},
+{.keys = {"glass", "glass", "glass", "glass", "glass", "glass"},
 	.backface = true},
 {.keys = {"white_glass"}, .backface = true},
 {.keys = {"grass_block_side", "grass_block_side", "grass_block_top",
