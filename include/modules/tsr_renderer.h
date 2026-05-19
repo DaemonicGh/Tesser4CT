@@ -49,6 +49,12 @@ get_normal(t_vec3 ray_dir, int axis);
 t_vec3
 reflect(t_vec3 ray_dir, t_vec3 normal);
 
+void
+do_lighting(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile, t_mbx_color *color);
+
+t_mbx_color
+get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile);
+
 t_mbx_color
 get_hit_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);
 

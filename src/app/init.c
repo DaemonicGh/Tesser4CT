@@ -23,8 +23,8 @@
 static void	init_player(t_tsr *tsr)
 {
 	tsr->player.position = vec3(8.0, 8.0, 4.0);
-	tsr->player.rotation = vec3(M_PI, 0, 0);
-	tsr->camera.rotation = vec3(M_PI, 0, 0);
+	tsr->player.rotation = vec3(M_PI, 0.001, 0.001);
+	tsr->camera.rotation = vec3(M_PI, 0.001, 0.001);
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
 	tsr->player.tile_id = 1;

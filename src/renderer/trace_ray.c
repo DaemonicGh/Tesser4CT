@@ -15,7 +15,7 @@
 void	get_ray_position(t_tsr_ray *ray)
 {
 	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->forward,
-				ray->distance - ray->abs_delta.comp[ray->axis]));
+				ray->distance - ray->abs_delta.v[ray->axis]));
 }
 
 static bool	step_ray(t_tsr *tsr, t_tsr_ray *ray)
@@ -24,12 +24,12 @@ static bool	step_ray(t_tsr *tsr, t_tsr_ray *ray)
 		ray->axis = 2;
 	else
 		ray->axis = (ray->dist.y < ray->dist.x);
-	ray->dist.comp[ray->axis] += ray->abs_delta.comp[ray->axis];
-	ray->tile_position.comp[ray->axis] += ray->delta_sign.comp[ray->axis];
-	ray->tile_index += ray->iter.comp[ray->axis];
-	return (ray->tile_position.comp[ray->axis] >= 0
-		&& ray->tile_position.comp[ray->axis]
-		< tsr->wworld.size.comp[ray->axis]);
+	ray->dist.v[ray->axis] += ray->abs_delta.v[ray->axis];
+	ray->tile_position.v[ray->axis] += ray->delta_sign.v[ray->axis];
+	ray->tile_index += ray->iter.v[ray->axis];
+	return (ray->tile_position.v[ray->axis] >= 0
+		&& ray->tile_position.v[ray->axis]
+		< tsr->wworld.size.v[ray->axis]);
 }
 
 bool	resolve_region_collision(t_tsr *tsr, t_tsr_ray *ray)
@@ -75,5 +75,5 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 		else if (ray->prev_tile->inner_backface)
 			ray->render_prev_tile = true;
 	}
-	ray->distance = ray->dist.comp[ray->axis];
+	ray->distance = ray->dist.v[ray->axis];
 }

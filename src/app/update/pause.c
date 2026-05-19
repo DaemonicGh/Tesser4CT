@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_inputs.h"
-#include "modules/mbx_scancodes.h"
 #include "tsr.h"
 
 static void	draw_pause_menu(t_tsr *tsr)
@@ -33,6 +31,7 @@ void	tsr_init_pause_menu(t_tsr *tsr)
 	tsr->mbx->settings.show_cursor = true;
 	tsr->mbx->settings.lock_cursor = false;
 	mbx_refresh_settings(tsr->mbx);
+	mbx_center_cursor(tsr->mbx);
 	tsr->rendering.frag_shader = draw_ray;
 }
 

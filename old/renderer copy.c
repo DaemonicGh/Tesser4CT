@@ -81,7 +81,7 @@ t_vec3	get_normal(t_vec3 ray_dir, int axis)
 	t_vec3	normal;
 
 	normal = vec3_zero();
-	normal.comp[axis] = fsign(ray_dir.comp[axis]);
+	normal.v[axis] = fsign(ray_dir.v[axis]);
 	return (normal);
 }
 

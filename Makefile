@@ -19,8 +19,9 @@ common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
 	app/update/game	app/update/main_menu app/update/pause						\
 	player/actions player/movement player/update player/collision				\
-	renderer/camera renderer/renderer renderer/threads renderer/tile			\
-	renderer/trace_ray renderer/uv renderer/atlas								\
+	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
+	renderer/lighting renderer/threads renderer/tile							\
+	renderer/trace_ray renderer/uv												\
 	world/world																	\
 	ui/draw	ui/hotbar ui/title													\
 	utils/memory utils/report utils/string										\
