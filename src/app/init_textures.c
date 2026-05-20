@@ -12,11 +12,11 @@
 
 #include "tsr.h"
 
-static t_pbr	fallback(t_tsr *tsr)
+static t_tsr_texture	fallback(t_tsr *tsr)
 {
 	if (!tsr->textures._default)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLDEFIMGF);
-	return ((t_pbr){tsr->textures._default, NULL});
+	return ((t_tsr_texture){tsr->textures._default, NULL});
 }
 
 static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
@@ -36,10 +36,10 @@ static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 
 static void	load_textures(t_tsr *tsr)
 {
-	const char	*key;
-	size_t		i;
-	size_t		j;
-	t_pbr		*pbr;
+	const char		*key;
+	size_t			i;
+	size_t			j;
+	t_tsr_texture	*texture;
 
 	tsr->textures._default = load_texture(tsr, "assets/default.png");
 	tsr->textures.font_small = load_texture(tsr, "assets/fonts/small.png");
@@ -61,16 +61,16 @@ static void	load_textures(t_tsr *tsr)
 		{
 			if (tsr->world.tiles[i].keys[j])
 				key = tsr->world.tiles[i].keys[j];
-			pbr = atlas_get(&tsr->atlas, key);
-			if (!pbr)
+			texture = atlas_get(&tsr->atlas, key);
+			if (!texture)
 			{
 				if (tsr->world.tiles[i].keys[j])
 					tsr_report_m(STATUS_WARNING, REPORT_NULLIMGF,
 						tsr->world.tiles[i].keys[j]);
-				tsr->world.tiles[i].pbr[j] = fallback(tsr);
+				tsr->world.tiles[i].texture[j] = fallback(tsr);
 			}
 			else
-				tsr->world.tiles[i].pbr[j] = *pbr;
+				tsr->world.tiles[i].texture[j] = *texture;
 			j++;
 		}
 		i++;
@@ -92,12 +92,12 @@ void	init_textures(t_tsr *tsr)
 		"assets/tiles/skybox_north.png", "assets/tiles/skybox_south.png",
 		"assets/tiles/red_stained_glass.png",
 		"assets/tiles/green_stained_glass.png",
-		"assets/tiles/blue_stained_glass.png", 
+		"assets/tiles/blue_stained_glass.png",
 		"assets/tiles/stone_bricks.png", "assets/tiles/cobblestone.png", 0};
 	size_t				i;
 
 	i = 0;
 	while (path[i])
-		atlas_add(&tsr->atlas, path[i++]);
+		atlas_add(tsr, &tsr->atlas, path[i++]);
 	load_textures(tsr);
 }

@@ -12,17 +12,16 @@
 
 #include "tsr.h"
 
-void	atlas_init(t_atlas *atlas, t_mbx *mbx)
+void	atlas_init(t_atlas *atlas)
 {
 	size_t	i;
 
-	atlas->mbx = mbx;
 	i = 0;
 	while (i < ATLAS_LENGTH)
 		atlas->key[i++] = NULL;
 }
 
-t_pbr	*atlas_get(t_atlas *atlas, const char *key)
+t_tsr_texture	*atlas_get(t_atlas *atlas, const char *key)
 {
 	size_t	i;
 
@@ -32,22 +31,13 @@ t_pbr	*atlas_get(t_atlas *atlas, const char *key)
 	while (i < ATLAS_LENGTH && atlas->key[i])
 	{
 		if (!ft_strcmp(atlas->key[i], key))
-			return (&atlas->pbr[i]);
+			return (&atlas->texture[i]);
 		i++;
 	}
 	return (NULL);
 }
 
-t_pbr	*atlas_index(t_atlas *atlas, size_t i)
-{
-	if (!atlas)
-		return (NULL);
-	if (i >= ATLAS_LENGTH)
-		return (NULL);
-	return (&atlas->pbr[i]);
-}
-
-static char *get_extension(const char *path)
+static char	*get_extension(const char *path)
 {
 	char	*ext;
 	size_t	i;
@@ -68,7 +58,7 @@ static char *get_extension(const char *path)
 	return (ext);
 }
 
-static char *get_name(const char *path)
+static char	*get_name(const char *path)
 {
 	char	*name;
 	size_t	i;
@@ -91,7 +81,7 @@ static char *get_name(const char *path)
 	return (name);
 }
 
-void	atlas_add(t_atlas *atlas, const char *path)
+void	atlas_add(t_tsr *tsr, t_atlas *atlas, const char *path)
 {
 	size_t	i;
 	char	*path_n;
@@ -108,8 +98,8 @@ void	atlas_add(t_atlas *atlas, const char *path)
 	key = get_name(path);
 	if (!key)
 		return ;
-	atlas->pbr[i].col_tex = mbx_make_region_from_file(atlas->mbx, (char *)path);
-	if (atlas->pbr[i].col_tex)
+	atlas->texture[i].tx = mbx_make_region_from_file(tsr->mbx, (char *)path);
+	if (atlas->texture[i].tx)
 		atlas->key[i] = key;
 	ext = get_extension(path);
 	path_n = malloc(ft_strlen(path) + 3);
@@ -119,27 +109,9 @@ void	atlas_add(t_atlas *atlas, const char *path)
 	ft_strcat(path_n, "_n");
 	if (ext)
 		ft_strcat(path_n, ext);
-	atlas->pbr[i].nrm_tex = NULL;
+	atlas->texture[i].nrm = NULL;
 	if (!access(path_n, F_OK) && ext)
-		atlas->pbr[i].nrm_tex = mbx_make_region_from_file(atlas->mbx, path_n);
+		atlas->texture[i].nrm = mbx_make_region_from_file(tsr->mbx, path_n);
 	free(ext);
 	free(path_n);
-}
-
-void	atlas_pop(t_atlas *atlas, const char *key)
-{
-	size_t	i;
-
-	if (!atlas || !key)
-		return ;
-	i = 0;
-	while (i < ATLAS_LENGTH && ft_strcmp(atlas->key[i], key))
-		i++;
-	if (i == ATLAS_LENGTH)
-		return ;
-	mbx_destroy_region(atlas->mbx, atlas->pbr[i].col_tex);
-	if (atlas->pbr[i].nrm_tex)
-		mbx_destroy_region(atlas->mbx, atlas->pbr[i].nrm_tex);
-	free(atlas->key[i]);
-	atlas->key[i] = NULL;
 }

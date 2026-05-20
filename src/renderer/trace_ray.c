@@ -14,8 +14,15 @@
 
 void	get_ray_position(t_tsr_ray *ray)
 {
-	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->forward,
+	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->dir,
 				ray->distance - ray->abs_delta.v[ray->axis]));
+}
+
+static bool	is_ray_inbounds(t_tsr *tsr, t_tsr_ray *ray)
+{
+	return (ray->tile_position.v[ray->axis] >= 0
+		&& ray->tile_position.v[ray->axis]
+		< tsr->wworld.size.v[ray->axis]);
 }
 
 static bool	step_ray(t_tsr *tsr, t_tsr_ray *ray)
@@ -25,39 +32,16 @@ static bool	step_ray(t_tsr *tsr, t_tsr_ray *ray)
 	else
 		ray->axis = (ray->dist.y < ray->dist.x);
 	ray->dist.v[ray->axis] += ray->abs_delta.v[ray->axis];
-	ray->tile_position.v[ray->axis] += ray->delta_sign.v[ray->axis];
+	ray->tile_position.v[ray->axis] += ray->dir_sign.v[ray->axis];
 	ray->tile_index += ray->iter.v[ray->axis];
-	return (ray->tile_position.v[ray->axis] >= 0
-		&& ray->tile_position.v[ray->axis]
-		< tsr->wworld.size.v[ray->axis]);
-}
-
-bool	resolve_region_collision(t_tsr *tsr, t_tsr_ray *ray)
-{
-	const t_vec3ix2	box = vec3ix2(vec3i_zero(), tsr->wworld.size);
-	t_vec3x2		dist;
-	t_vec2			min_max;
-	int				ray_dist;
-
-	get_ray_position(ray);
-	dist = vec3x2(
-			vec3_mult(vec3_sub(vec3_vi(box.p1), ray->position), ray->delta),
-			vec3_mult(vec3_sub(vec3_vi(box.p2), ray->position), ray->delta));
-	min_max.x = vec3_exec_xy_yz(fmax, vec3_exec2(fmin, dist.p1, dist.p2));
-	min_max.y = vec3_exec_xy_yz(fmin, vec3_exec2(fmax, dist.p1, dist.p2));
-	if (min_max.y < 1e-3 || min_max.x > min_max.y)
-		return (false);
-	ray_dist = min_max.x;
-	while (ray_dist--)
-		step_ray(tsr, ray);
-	return (true);
+	return (is_ray_inbounds(tsr, ray));
 }
 
 void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 {
-	ray->render_tile = false;
-	ray->render_prev_tile = false;
-	while (!ray->render_tile && !ray->render_prev_tile)
+	ray->draw_tile = false;
+	ray->draw_prev_tile = false;
+	while (!ray->draw_tile && !ray->draw_prev_tile)
 	{
 		ray->prev_tile = ray->tile;
 		if (step_ray(tsr, ray))
@@ -68,12 +52,12 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 		if (ray->tile != ray->prev_tile)
 		{
 			if (!ray->tile->skip_process)
-				ray->render_tile = true;
+				ray->draw_tile = true;
 			if (ray->prev_tile->backface)
-				ray->render_prev_tile = true;
+				ray->draw_prev_tile = true;
 		}
 		else if (ray->prev_tile->inner_backface)
-			ray->render_prev_tile = true;
+			ray->draw_prev_tile = true;
 	}
 	ray->distance = ray->dist.v[ray->axis];
 }

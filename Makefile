@@ -20,11 +20,11 @@ common_files			:=	\
 	app/update/game	app/update/main_menu app/update/pause						\
 	player/actions player/movement player/update player/collision				\
 	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
-	renderer/lighting renderer/threads renderer/tile							\
-	renderer/trace_ray renderer/uv												\
+	renderer/lighting renderer/normal renderer/texture renderer/threads			\
+	renderer/trace_ray															\
 	world/world																	\
 	ui/draw	ui/hotbar ui/title													\
-	utils/memory utils/report utils/string										\
+	utils/memory utils/report utils/string utils/tile							\
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a
 OTHER_LIBRARIES			:=	m

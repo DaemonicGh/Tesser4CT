@@ -13,8 +13,7 @@
 #ifndef TSR_WORLD_H
 # define TSR_WORLD_H
 
-# include "tsr_core.h"
-# include "tsr_pbr.h"
+# include "tsr_textures.h"
 
 typedef enum e_direction
 {
@@ -28,13 +27,13 @@ typedef enum e_direction
 
 typedef struct s_tsr_tile_data
 {
-	const char	*keys[6];
-	t_pbr		pbr[6];
-	bool		skip_process;
-	bool		backface;
-	bool		inner_backface;
-	bool		skybox;
-	bool		specular;
+	const char		*keys[6];
+	t_tsr_texture	texture[6];
+	bool			skip_process;
+	bool			backface;
+	bool			inner_backface;
+	bool			skybox;
+	bool			specular;
 }	t_tsr_tile;
 
 static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {

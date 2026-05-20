@@ -12,9 +12,11 @@
 
 #include <bits/types/struct_sched_param.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <sched.h>
 
+#include "modules/mbx_constants.h"
 #include "modules/mbx_handlers.h"
 #include "modules/mbx_scancodes.h"
 #include "tsr.h"
@@ -77,8 +79,9 @@ t_tsr	*tsr_init(void)
 	if (!tsr->mbx)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBX);
 	tsr->mbx->settings.exit_key = MBX_KEY_NONE;
+	tsr->mbx->settings.viewport_render = MBX_VIEWPORT_RENDER_SKIP;
 	init_tiles(tsr);
-	atlas_init(&tsr->atlas, tsr->mbx);
+	atlas_init(&tsr->atlas);
 	init_textures(tsr);
 	init_player(tsr);
 	tsr->world.global_light = vec3(0.0, 0.5, 0.866025);
@@ -86,7 +89,9 @@ t_tsr	*tsr_init(void)
 			vec2i(DEFAULT_VIEWPORT_W, DEFAULT_VIEWPORT_H),
 			DEFAULT_WINDOW_TITLE, DEFAULT_WINDOW_FLAGS))
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBXWIN);
-	tsr->rendering.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
+	tsr->rendering.target = mbx_make_region_with_image(
+			tsr->mbx, tsr->mbx->vp->size);
+	tsr->rendering.swap_target = tsr->mbx->viewport;
 	tsr->ui.state = UI_STATE_MAIN;
 	tsr->ui.target = mbx_make_region(tsr->mbx, tsr->mbx->vp->size);
 	tsr->ui.hotbar.offset = 1;

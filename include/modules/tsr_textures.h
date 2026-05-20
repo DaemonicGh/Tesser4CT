@@ -10,26 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TSR_ATLAS_H
-# define TSR_ATLAS_H
-# define ATLAS_LENGTH 256
+#pragma once
 
-# include <unistd.h>
+#define ATLAS_LENGTH 256
 
-# include "mbx.h"
-# include "tsr_pbr.h"
+#include "tsr_core.h"
+
+typedef struct s_tsr_pbr_texture_atlas
+{
+	t_mbx_region	*tx;
+	t_mbx_region	*nrm;
+}	t_tsr_texture;
 
 typedef struct s_atlas
 {
-	char	*key[ATLAS_LENGTH];
-	t_pbr	pbr[ATLAS_LENGTH];
-	t_mbx	*mbx;
+	char			*key[ATLAS_LENGTH];
+	t_tsr_texture	texture[ATLAS_LENGTH];
 }	t_atlas;
 
-void	atlas_init(t_atlas *atlas, t_mbx *mbx);
-t_pbr	*atlas_get(t_atlas *atlas, const char *key);
-t_pbr	*atlas_index(t_atlas *atlas, size_t i);
-void	atlas_add(t_atlas *atlas, const char *path);
-void	atlas_pop(t_atlas *atlas, const char *key);
-
-#endif
+void			atlas_init(t_atlas *atlas);
+t_tsr_texture	*atlas_get(t_atlas *atlas, const char *key);
+void			atlas_add(t_tsr *tsr, t_atlas *atlas, const char *path);

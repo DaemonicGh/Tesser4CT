@@ -61,7 +61,6 @@ void	tsr_init_main_menu(t_tsr *tsr)
 {
 	tsr->mbx->settings.show_cursor = true;
 	tsr->mbx->settings.lock_cursor = false;
-	mbx_refresh_settings(tsr->mbx);
 	mbx_center_cursor(tsr->mbx);
 	tsr->rendering.frag_shader = draw_main_menu_bg;
 }

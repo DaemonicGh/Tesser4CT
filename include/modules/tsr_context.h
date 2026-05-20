@@ -14,7 +14,6 @@
 
 #include "modules/types/mbx_s_region.h"
 #include "tsr_world.h"
-#include "tsr_atlas.h"
 
 typedef struct s_tsr_player
 {
@@ -59,6 +58,7 @@ typedef struct s_tsr_context
 	struct	s_tsr_rendering_manager
 	{
 		t_mbx_region		*target;
+		t_mbx_region		*swap_target;
 		size_t				thread_count;
 		pthread_t			*threads;
 		pthread_barrier_t	wait_barrier;

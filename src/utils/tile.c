@@ -12,7 +12,7 @@
 
 #include "tsr.h"
 
-t_vec3	get_normal(t_vec3 ray_dir, int axis)
+t_vec3	get_tile_normal(t_vec3 ray_dir, int axis)
 {
 	t_vec3	normal;
 

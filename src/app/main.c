@@ -24,8 +24,9 @@ static void	prepare_next_render(t_tsr *tsr)
 	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
 			* tsr->rendering.job_region_count.y);
 	tmp = tsr->rendering.target;
-	tsr->rendering.target = tsr->mbx->viewport;
-	tsr->mbx->viewport = tmp;
+	tsr->rendering.target = tsr->rendering.swap_target;
+	tsr->rendering.swap_target = tmp;
+	tsr->mbx->viewport = tsr->rendering.swap_target;
 	tsr->rendering.current_frag_shader = tsr->rendering.frag_shader;
 	tsr_update_camera(tsr);
 }
@@ -44,6 +45,7 @@ static void	init_state(t_tsr *tsr)
 		tsr_init_main_menu(tsr);
 	else if (tsr->ui.state == UI_STATE_PAUSE)
 		tsr_init_pause_menu(tsr);
+	mbx_refresh_settings(tsr->mbx);
 }
 
 static void	update_state(t_tsr *tsr)
@@ -60,16 +62,15 @@ void	main_update(t_mbx *mbx, void *data)
 {
 	t_tsr	*tsr;
 
-	(void)mbx;
 	tsr = data;
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	update_state(tsr);
 	init_state(tsr);
-	mbx_render_region_as_viewport(tsr->mbx, tsr->mbx->vp,
+	mbx_render_region_as_viewport(mbx, tsr->mbx->viewport,
 		MBX_VIEWPORT_RENDER_KEEP);
-	mbx_render_region_as_viewport(tsr->mbx, tsr->ui.target,
+	mbx_render_region_as_viewport(mbx, tsr->ui.target,
 		MBX_VIEWPORT_RENDER_KEEP);
 }
 
@@ -80,7 +81,7 @@ int	main(void)
 	tsr_report(STATUS_DEBUG, REPORT_DEBUG_ON);
 	tsr = tsr_init();
 	world_create(&tsr->wworld, vec3i(33, 16, 33));
-	tsr->mbx->settings.fps_cap = 120;
+	tsr->mbx->settings.fps_cap = 60;
 	init_state(tsr);
 	mbx_run(tsr->mbx, main_update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);

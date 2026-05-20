@@ -29,7 +29,6 @@ void	tsr_init_game(t_tsr *tsr)
 {
 	tsr->mbx->settings.show_cursor = false;
 	tsr->mbx->settings.lock_cursor = true;
-	mbx_refresh_settings(tsr->mbx);
 	tsr->rendering.frag_shader = draw_ray;
 }
 

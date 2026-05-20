@@ -18,20 +18,20 @@
 
 static void	unload_textures(t_tsr *tsr)
 {
-	size_t	i;
-	t_pbr	*pbr;
+	size_t			i;
+	t_tsr_texture	*texture;
 
 	i = 0;
 	while (i < ATLAS_LENGTH)
 	{
-		pbr = atlas_index(&tsr->atlas, i);
-		if (pbr)
+		texture = &tsr->atlas.texture[i];
+		if (texture)
 		{
 			free(tsr->atlas.key[i]);
 			tsr->atlas.key[i] = NULL;
-			mbx_destroy_region(tsr->mbx, pbr->col_tex);
-			if (pbr->nrm_tex)
-				mbx_destroy_region(tsr->mbx, pbr->nrm_tex);
+			mbx_destroy_region(tsr->mbx, texture->tx);
+			if (texture->nrm)
+				mbx_destroy_region(tsr->mbx, texture->nrm);
 		}
 		i++;
 	}
@@ -71,6 +71,8 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 	unload_textures(tsr);
 	free(tsr->wworld.blocks);
 	mbx_destroy_region(tsr->mbx, tsr->rendering.target);
+	mbx_destroy_region(tsr->mbx, tsr->rendering.swap_target);
+	tsr->mbx->vp = NULL;
 	mbx_destroy_region(tsr->mbx, tsr->ui.target);
 	if (tsr->mbx)
 		mbx_exit(tsr->mbx);

@@ -40,7 +40,7 @@ static bool	place_tile(t_tsr *tsr, t_tsr_ray *ray)
 		if (!vec3i_eq(ray->tile_position, prev_tile))
 		{
 			prev_tile = vec3i_sub(ray->tile_position,
-					vec3i_vd(get_normal(ray->forward, ray->axis)));
+					vec3i_vd(get_tile_normal(ray->dir, ray->axis)));
 			block_set(&tsr->wworld, prev_tile, tsr->player.tile_id);
 			return (true);
 		}

@@ -18,23 +18,22 @@ t_tsr_ray	setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward)
 			tsr->wworld.size.x * tsr->wworld.size.y);
 	t_tsr_ray		ray;
 
-	ray = (t_tsr_ray){.origin = origin, .forward = forward};
+	ray = (t_tsr_ray){.origin = origin, .dir = forward};
+	ray.dir_sign = vec3i_vd(vec3_sign(ray.dir));
 	ray.delta = vec3_div_rd(1, forward);
 	ray.abs_delta = vec3_abs(ray.delta);
-	ray.delta_sign = vec3i_vd(vec3_sign(ray.delta));
-	ray.iter = vec3i_mult(iter, ray.delta_sign);
+	ray.iter = vec3i_mult(iter, ray.dir_sign);
 	ray.tile_position = vec3i_vd(vec3_exec(floor, ray.origin));
 	ray.tile_index = ray.tile_position.x * iter.x
 		+ ray.tile_position.y * iter.y
 		+ ray.tile_position.z * iter.z;
 	ray.tile = &tsr->world.tiles[tsr->wworld.blocks[ray.tile_index]];
 	ray.prev_tile = ray.tile;
-	ray.color = color_rgba(0);
 	ray.dist = vec3_mult(vec3_sub(
 				vec3_vi(vec3i_add(ray.tile_position, vec3i(
-							ray.delta_sign.x > 0,
-							ray.delta_sign.y > 0,
-							ray.delta_sign.z > 0))),
+							ray.dir_sign.x > 0,
+							ray.dir_sign.y > 0,
+							ray.dir_sign.z > 0))),
 				ray.origin), ray.delta);
 	return (ray);
 }
@@ -51,20 +50,20 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
 	while (true)
 	{
 		trace_ray(tsr, &ray);
-		if (ray.render_prev_tile)
+		if (ray.draw_prev_tile)
 		{
-			ray.color = color_blend(
-					get_hit_color(tsr, &ray, ray.prev_tile), ray.color);
-			if (ray.color.a == 0xFF)
+			ray.color = vec4_blend(
+					ray_tile_color(tsr, &ray, ray.prev_tile), ray.color);
+			if (ray.color.a == 1)
 				break ;
 		}
-		if (ray.render_tile)
+		if (ray.draw_tile)
 		{
-			ray.color = color_blend(
-					get_hit_color(tsr, &ray, ray.tile), ray.color);
-			if (ray.color.a == 0xFF)
+			ray.color = vec4_blend(
+					ray_tile_color(tsr, &ray, ray.tile), ray.color);
+			if (ray.color.a == 1)
 				break ;
 		}
 	}
-	return (ray.color);
+	return (vec4_to_color(ray.color));
 }

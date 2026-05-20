@@ -44,6 +44,9 @@ typedef enum e_tsr_report_status
 #define REPORT_NULLIMGF		"Failed to load image file at "
 #define REPORT_NULLTHREAD	"Failed to create thread"
 
+t_vec3
+get_tile_normal(t_vec3 ray_dir, int axis);
+
 int
 tsr_report(t_tsr_status status, const char *message);
 
@@ -58,7 +61,9 @@ void
 
 size_t
 ft_strlen(const char *s);
+
 int
 ft_strcmp(const char *s1, const char *s2);
+
 char
 *ft_strcat(char *dst, const char *src);

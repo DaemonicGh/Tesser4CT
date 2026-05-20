@@ -50,7 +50,7 @@ void	draw_hotbar(t_tsr *tsr)
 		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
 		mbx_set_subregion(tsr->ui.target, tsr->world.tiles[
 			wrap((int)(tsr->ui.hotbar.offset) + i, 1, TILE_COUNT + 1)]
-			.pbr[0].col_tex, vec2i(pos.x - 8 + 20 * off,
+			.texture[0].tx, vec2i(pos.x - 8 + 20 * off,
 				pos.y - 20 * (cos(off * off / 22.3) - 1)),
 			vec2ix2_xy(0, 0, 16, 16));
 		i++;

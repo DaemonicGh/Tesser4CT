@@ -14,7 +14,7 @@
 
 static void	get_skybox_uv(t_tsr_ray *ray)
 {
-	const t_vec3	abs_fw = vec3_abs(ray->forward);
+	const t_vec3	abs_fw = vec3_abs(ray->dir);
 	t_vec2i			axis;
 
 	if (abs_fw.z > abs_fw.x && abs_fw.z > abs_fw.y)
@@ -22,9 +22,9 @@ static void	get_skybox_uv(t_tsr_ray *ray)
 	else
 		ray->axis = (abs_fw.y > abs_fw.x);
 	axis = vec2i((ray->axis == 0) * 2, (ray->axis == 1) + 1);
-	ray->uv = vec2(ray->forward.v[axis.x], ray->forward.v[axis.y]);
+	ray->uv = vec2(ray->dir.v[axis.x], ray->dir.v[axis.y]);
 	ray->uv = vec2_div_d(ray->uv, abs_fw.v[ray->axis]);
-	if ((ray->forward.v[ray->axis] > 0) == !(ray->axis & 2))
+	if ((ray->dir.v[ray->axis] > 0) == !(ray->axis & 2))
 		ray->uv.x = ray->uv.x * 0.5 + 0.5;
 	else
 		ray->uv.x = -ray->uv.x * 0.5 + 0.5;
@@ -37,7 +37,7 @@ static void	get_tile_uv(t_tsr_ray *ray)
 
 	get_ray_position(ray);
 	ray->uv = vec2(ray->position.v[axis.x], ray->position.v[axis.y]);
-	if ((ray->forward.v[ray->axis] < 0) == !(ray->axis & 2))
+	if ((ray->dir.v[ray->axis] < 0) == !(ray->axis & 2))
 		ray->uv.x = ray->uv.x - floor(ray->uv.x);
 	else
 		ray->uv.x = ceil(ray->uv.x) - ray->uv.x;
@@ -50,8 +50,8 @@ t_mbx_color	get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	ray->region = tile->pbr[ray->axis * 2
-		+ (ray->delta_sign.v[ray->axis] > 0)].col_tex;
-	ray->texture_uv = vec2i_mult_vd(ray->region->size, ray->uv);
-	return (mbx_get_pixel_unsafe(ray->region, ray->texture_uv));
+	ray->texture = tile->texture[ray->axis * 2
+		+ (ray->dir_sign.v[ray->axis] > 0)];
+	ray->texture_uv = vec2i_mult_vd(ray->texture.tx->size, ray->uv);
+	return (mbx_get_pixel_unsafe(ray->texture.tx, ray->texture_uv));
 }
