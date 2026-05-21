@@ -18,6 +18,7 @@ NAMES					:=	Tesser4CT
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
 	app/update/game	app/update/main_menu app/update/pause app/update/setting	\
+	parser/tiles																\
 	player/actions player/movement player/update player/collision				\
 	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
 	renderer/lighting renderer/normal renderer/texture renderer/threads			\
