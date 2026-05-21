@@ -78,7 +78,7 @@ static void	place_and_destroy(t_tsr *tsr)
 	t_tsr_ray	ray;
 	bool		ret;
 
-	ray = setup_ray(tsr, tsr->player.position, tsr->camera.forward);
+	ray = setup_ray(tsr, tsr->camera.position, tsr->camera.forward);
 	trace_ray(tsr, &ray);
 	ret = true;
 	if (ray.distance < 16.0)

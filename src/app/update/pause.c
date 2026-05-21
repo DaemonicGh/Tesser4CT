@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 17:49:09 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/12 17:49:09 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/21 14:36:37 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@ static void	draw_pause_menu(t_tsr *tsr)
 	draw_title(tsr, "PAUSED",
 		vec2i(tsr->ui.target->size.x / 2 - 95, 50), vec2(3, 3));
 	mbx_set_text_scaled(tsr->ui.target,
-		"[ESC] Back to Game\n[X]   Exit",
+		"[ESC] Back to Game\n[X]   Exit\n[C] Setting",
 		vec2ix2_xy(tsr->ui.target->size.x / 2 - 100, 120, 2, 2),
 		tsr->textures.font_small);
+	
 }
 
 static t_mbx_color	pause_background(t_tsr *tsr, t_vec2 uv)
@@ -60,4 +61,6 @@ void	tsr_update_pause_menu(t_tsr *tsr)
 		tsr->ui.state = UI_STATE_GAME;
 	else if (mbx_key_released(tsr->mbx, MBX_KEY_X))
 		tsr->ui.state = UI_STATE_MAIN;
+	else if (mbx_key_released(tsr->mbx, MBX_KEY_C))
+		tsr->ui.state = UI_STATE_SETTING;
 }
