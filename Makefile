@@ -18,6 +18,7 @@ NAMES					:=	Tesser4CT
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
 	app/update/game	app/update/main_menu app/update/pause						\
+	parser/tiles																\
 	player/actions player/movement player/update player/collision				\
 	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
 	renderer/lighting renderer/normal renderer/texture renderer/threads			\
@@ -26,11 +27,12 @@ common_files			:=	\
 	ui/draw	ui/hotbar ui/title													\
 	utils/memory utils/report utils/string utils/tile							\
 
-LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a
+LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a MLEM/libmlem.a
 OTHER_LIBRARIES			:=	m
-GIT_LIBRARIES			:=	MacroBoX
+GIT_LIBRARIES			:=	MacroBoX MLEM
 
-INCLUDE_DIRECTORIES		:=	include include/modules lib/MacroBoX/include
+INCLUDE_DIRECTORIES		:=	include include/modules \
+	lib/MacroBoX/include lib/MLEM/include
 
 # ***** FILE SETTINGS *********
 

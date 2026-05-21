@@ -55,18 +55,6 @@ static void	init_threads(t_tsr *tsr)
 	}
 }
 
-void	init_tiles(t_tsr *tsr)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < TILE_COUNT + 1)
-	{
-		tsr->world.tiles[i] = g_tile_data[i];
-		i++;
-	}
-}
-
 t_tsr	*tsr_init(void)
 {
 	t_tsr	*tsr;
@@ -80,7 +68,7 @@ t_tsr	*tsr_init(void)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLMBX);
 	tsr->mbx->settings.exit_key = MBX_KEY_NONE;
 	tsr->mbx->settings.viewport_render = MBX_VIEWPORT_RENDER_SKIP;
-	init_tiles(tsr);
+	load_tile_data(tsr);
 	atlas_init(&tsr->atlas);
 	init_textures(tsr);
 	init_player(tsr);

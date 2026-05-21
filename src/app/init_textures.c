@@ -36,32 +36,33 @@ static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 
 static void	load_textures(t_tsr *tsr)
 {
-	const char		*key;
 	size_t			i;
 	size_t			j;
 	t_tsr_texture	*texture;
 
-	tsr->textures._default = load_texture(tsr, "assets/default.png");
-	tsr->textures.font_small = load_texture(tsr, "assets/fonts/small.png");
+	tsr->textures._default = load_texture(tsr,
+			"assets/textures/default.png");
+	tsr->textures.font_small = load_texture(tsr,
+			"assets/textures/fonts/small.png");
 	tsr->textures.font_small->subregion_size = vec2i(5, 7);
-	tsr->textures.font_title = load_texture(tsr, "assets/fonts/title.png");
+	tsr->textures.font_title = load_texture(tsr,
+			"assets/textures/fonts/title.png");
 	tsr->textures.font_title->subregion_size = vec2i(10, 12);
-	tsr->textures.tile_highlight = load_texture(
-			tsr, "assets/tile_highlight.png");
-	tsr->textures.tile_face_highlight = load_texture(
-			tsr, "assets/tile_face_highlight.png");
-	tsr->textures.hotbar_selection = load_texture(
-			tsr, "assets/hotbar_selection.png");
+	tsr->textures.tile_highlight = load_texture(tsr,
+			"assets/textures/tile_highlight.png");
+	tsr->textures.tile_face_highlight = load_texture(tsr,
+			"assets/textures/tile_face_highlight.png");
+	tsr->textures.hotbar_selection = load_texture(tsr,
+			"assets/textures/hotbar_selection.png");
 	i = 0;
-	key = NULL;
 	while (i < TILE_BUFFER_COUNT)
 	{
 		j = 0;
 		while (j < 6)
 		{
+			texture = NULL;
 			if (tsr->world.tiles[i].keys[j])
-				key = tsr->world.tiles[i].keys[j];
-			texture = atlas_get(&tsr->atlas, key);
+				texture = atlas_get(&tsr->atlas, tsr->world.tiles[i].keys[j]);
 			if (!texture)
 			{
 				if (tsr->world.tiles[i].keys[j])
@@ -79,21 +80,31 @@ static void	load_textures(t_tsr *tsr)
 
 void	init_textures(t_tsr *tsr)
 {
-	static const char	*path[] = {"assets/tiles/stone.png",
-		"assets/tiles/dirt.png", "assets/tiles/oak_planks.png",
-		"assets/tiles/iron_block.png", "assets/tiles/moss.png",
-		"assets/tiles/blue_coral_block.png", "assets/tiles/glass.png",
-		"assets/tiles/white_stained_glass.png",
-		"assets/tiles/grass_block_top.png",
-		"assets/tiles/grass_block_side.png", "assets/tiles/oak_leaves.png",
-		"assets/tiles/oak_log.png", "assets/tiles/oak_log_top.png",
-		"assets/tiles/skybox_up.png", "assets/tiles/skybox_down.png",
-		"assets/tiles/skybox_east.png", "assets/tiles/skybox_west.png",
-		"assets/tiles/skybox_north.png", "assets/tiles/skybox_south.png",
-		"assets/tiles/red_stained_glass.png",
-		"assets/tiles/green_stained_glass.png",
-		"assets/tiles/blue_stained_glass.png",
-		"assets/tiles/stone_bricks.png", "assets/tiles/cobblestone.png", 0};
+	static const char	*path[] = {
+		"assets/textures/tiles/stone.png",
+		"assets/textures/tiles/dirt.png",
+		"assets/textures/tiles/oak_planks.png",
+		"assets/textures/tiles/iron_block.png",
+		"assets/textures/tiles/moss.png",
+		"assets/textures/tiles/blue_coral_block.png",
+		"assets/textures/tiles/glass.png",
+		"assets/textures/tiles/white_stained_glass.png",
+		"assets/textures/tiles/grass_block_top.png",
+		"assets/textures/tiles/grass_block_side.png",
+		"assets/textures/tiles/oak_leaves.png",
+		"assets/textures/tiles/oak_log.png",
+		"assets/textures/tiles/oak_log_top.png",
+		"assets/textures/tiles/skybox_up.png",
+		"assets/textures/tiles/skybox_down.png",
+		"assets/textures/tiles/skybox_east.png",
+		"assets/textures/tiles/skybox_west.png",
+		"assets/textures/tiles/skybox_north.png",
+		"assets/textures/tiles/skybox_south.png",
+		"assets/textures/tiles/red_stained_glass.png",
+		"assets/textures/tiles/green_stained_glass.png",
+		"assets/textures/tiles/blue_stained_glass.png",
+		"assets/textures/tiles/stone_bricks.png",
+		"assets/textures/tiles/cobblestone.png", 0};
 	size_t				i;
 
 	i = 0;

@@ -51,7 +51,7 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 			ray->tile = &tsr->world.tiles[1];
 		if (ray->tile != ray->prev_tile)
 		{
-			if (!ray->tile->skip_process)
+			if (!ray->tile->skip)
 				ray->draw_tile = true;
 			if (ray->prev_tile->backface)
 				ray->draw_prev_tile = true;

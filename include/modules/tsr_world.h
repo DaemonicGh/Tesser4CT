@@ -29,36 +29,12 @@ typedef struct s_tsr_tile_data
 {
 	const char		*keys[6];
 	t_tsr_texture	texture[6];
-	bool			skip_process;
+	bool			skip;
 	bool			backface;
 	bool			inner_backface;
 	bool			skybox;
 	bool			specular;
 }	t_tsr_tile;
-
-static const t_tsr_tile		g_tile_data[TILE_BUFFER_COUNT] = {
-{.keys = {0, 0, 0, 0, 0, 0}, .skip_process = true},
-{.keys = {"skybox_west", "skybox_east", "skybox_down",
-	"skybox_up", "skybox_north", "skybox_south"}, .skybox = true},
-{.keys = {"stone"}},
-{.keys = {"dirt"}},
-{.keys = {"grass_block_side", "grass_block_side", "grass_block_top",
-	"dirt", "grass_block_side", "grass_block_side"}},
-{.keys = {"oak_leaves"}, .backface = true, .inner_backface = true},
-{.keys = {"oak_log", "oak_log", "oak_log_top",
-	"oak_log_top", "oak_log", "oak_log"}},
-{.keys = {"oak_planks"}},
-{.keys = {"stone_bricks"}},
-{.keys = {"cobblestone"}},
-{.keys = {"iron_block"}, .specular = true},
-{.keys = {"moss"}},
-{.keys = {"glass"}, .backface = true, .specular = true},
-{.keys = {"white_stained_glass"}, .backface = true, .specular = true},
-{.keys = {"red_stained_glass"}, .backface = true, .specular = true},
-{.keys = {"green_stained_glass"}, .backface = true, .specular = true},
-{.keys = {"blue_stained_glass"}, .backface = true, .specular = true},
-{0}
-};
 
 typedef struct s_world
 {

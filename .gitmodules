@@ -1,3 +1,6 @@
 [submodule "lib/MacroBoX"]
 	path = lib/MacroBoX
 	url = git@github.com:DaemonicGh/MacroBoX.git
+[submodule "lib/MLEM"]
+	path = lib/MLEM
+	url = git@github.com:DaemonicGh/MLEM.git

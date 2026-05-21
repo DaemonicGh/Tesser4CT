@@ -26,6 +26,9 @@
 void
 init_textures(t_tsr *tsr);
 
+void
+load_tile_data(t_tsr *tsr);
+
 t_tsr
 *tsr_init(void);
 

@@ -16,6 +16,24 @@
 
 #include "tsr_core.h"
 
+typedef struct s_tsr_pbr_texture_atlas_n
+{
+	enum: uint8_t
+	{
+		TX_NONE			= 0x00,
+		TX_NORMAL		= 0x01,
+		TX_EMISSIVE		= 0x02,
+		TX_SPECULAR		= 0x04,
+		TX_ANIMATED		= 0x10
+	}				flags;
+	uint8_t			emissive_channel;
+	uint8_t			specular_channel;
+	int				normal_v;
+	int				emissive_v;
+	int				specular_v;
+	t_mbx_atlas		*texture;
+}	t_tsr_texture_n;
+
 typedef struct s_tsr_pbr_texture_atlas
 {
 	t_mbx_region	*tx;
