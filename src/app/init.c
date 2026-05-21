@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:02:26 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 15:38:09 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/21 16:27:16 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ t_tsr	*tsr_init(void)
 	init_textures(tsr);
 	init_player(tsr);
 	tsr->world.global_light = vec3(0.0, 0.5, 0.866025);
+	tsr->world.global_light_col = vec4(1.8, 1.2, 0.8, 1.0);
 	if (!mbx_make_main_window(tsr->mbx,
 			vec2i(DEFAULT_VIEWPORT_W, DEFAULT_VIEWPORT_H),
 			DEFAULT_WINDOW_TITLE, DEFAULT_WINDOW_FLAGS))
@@ -87,5 +88,7 @@ t_tsr	*tsr_init(void)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
 	init_threads(tsr);
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;
+	tsr->extras.fov = 90.0;
+	tsr->extras.focal_length = 1.0;
 	return (tsr);
 }

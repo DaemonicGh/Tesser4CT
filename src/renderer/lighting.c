@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 15:55:17 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/18 15:55:17 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/21 11:36:49 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static t_vec4
 	get_shadow_modifiers(t_tsr *tsr, t_tsr_ray *ray,
 		t_vec4 shadow, t_tsr_tile *tile)
 {
-	const t_vec4	light = vec4(1.2, 1.0, 0.6, 1.0);
+	const t_vec4	light = tsr->world.global_light_col;
 	const t_vec4	dark = vec4(0.4, 0.6, 1.0, 1.0);
 	double			diffuse;
 	double			specular;

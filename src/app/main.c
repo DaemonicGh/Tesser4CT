@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 16:27:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 10:17:13 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/21 14:00:53 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static void	init_state(t_tsr *tsr)
 		tsr_init_main_menu(tsr);
 	else if (tsr->ui.state == UI_STATE_PAUSE)
 		tsr_init_pause_menu(tsr);
+	else if (tsr->ui.state == UI_STATE_SETTING)
+		tsr_init_setting_menu(tsr);
 	mbx_refresh_settings(tsr->mbx);
 }
 
@@ -56,6 +58,8 @@ static void	update_state(t_tsr *tsr)
 		tsr_update_main_menu(tsr);
 	else if (tsr->ui.state == UI_STATE_PAUSE)
 		tsr_update_pause_menu(tsr);
+	else if (tsr->ui.state == UI_STATE_SETTING)
+		tsr_update_setting_menu(tsr);
 }
 
 void	main_update(t_mbx *mbx, void *data)

@@ -6,7 +6,7 @@
 #    By: rprieur <rprieur@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/24 19:51:36 by rprieur           #+#    #+#              #
-#    Updated: 2026/05/01 11:49:53 by emarrot          ###   ########.fr        #
+#    Updated: 2026/05/21 17:00:37 by emarrot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # V5.3
@@ -17,14 +17,13 @@ NAMES					:=	Tesser4CT
 
 common_files			:=	\
 	app/main app/init app/init_textures app/exit								\
-	app/update/game	app/update/main_menu app/update/pause						\
-	parser/tiles																\
+	app/update/game	app/update/main_menu app/update/pause app/update/setting	\
 	player/actions player/movement player/update player/collision				\
 	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
 	renderer/lighting renderer/normal renderer/texture renderer/threads			\
 	renderer/trace_ray															\
 	world/world																	\
-	ui/draw	ui/hotbar ui/title													\
+	ui/draw	ui/hotbar ui/title ui/button.c										\
 	utils/memory utils/report utils/string utils/tile							\
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a MLEM/libmlem.a

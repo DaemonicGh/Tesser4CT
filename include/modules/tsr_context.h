@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/21 16:07:56 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ typedef struct s_tsr_context
 		{
 			UI_STATE_GAME = 0,
 			UI_STATE_MAIN,
-			UI_STATE_PAUSE
+			UI_STATE_PAUSE,
+			UI_STATE_SETTING
 		}					state;
 		struct	s_tsr_hotbar
 		{
@@ -88,6 +89,7 @@ typedef struct s_tsr_context
 	{
 		t_tsr_tile			tiles[TILE_BUFFER_COUNT];
 		t_vec3				global_light;
+		t_vec4				global_light_col;
 		t_vec3i				tile_highlight_pos;
 		int					tile_highlight_axis;
 		pthread_t			loader_thread;
@@ -101,5 +103,7 @@ typedef struct s_tsr_context
 	struct s_tsr_extras
 	{
 		double				aspect_ratio;
+		double				fov;
+		double				focal_length;
 	}	extras;
 }	t_tsr;

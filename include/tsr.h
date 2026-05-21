@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:47:10 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/21 17:00:12 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "tsr_renderer.h"
 #include "tsr_ui.h"
 #include "tsr_utils.h"
+#include "tsr_ui_button.h"
 
 void
 init_textures(t_tsr *tsr);
@@ -46,6 +47,12 @@ tsr_init_pause_menu(t_tsr *tsr);
 
 void
 tsr_update_pause_menu(t_tsr *tsr);
+
+void
+tsr_init_setting_menu(t_tsr *tsr);
+
+void
+tsr_update_setting_menu(t_tsr *tsr);
 
 void
 tsr_init_main_menu(t_tsr *tsr);
