@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 16:51:50 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/19 17:13:34 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/22 11:53:20 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	get_normal(t_tsr_ray *ray, t_tsr_tile *tile)
 	t_mbx_region	*nrm;
 	t_vec2i			uv;
 	t_mbx_color		col;
+	t_vec3			normal;
 
 	nrm = tile->texture[ray->axis * 2
 		+ (ray->dir_sign.v[ray->axis] > 0)].nrm;
@@ -46,9 +47,10 @@ void	get_normal(t_tsr_ray *ray, t_tsr_tile *tile)
 	{
 		uv = vec2i_mult_vd(nrm->size, ray->uv);
 		col = mbx_get_pixel_unsafe(nrm, uv);
-		ray->tile_normal = vec3_sub_d(vec3_mult_d(vec3_div_d(
-						vec3(255 - col.r, col.g, col.b),
-						255), 2.0), 1.0);
+		normal.x = 1.0 - col.r * 2.0 / 255;
+		normal.y = col.g * 2.0 / 255 - 1.0;
+		normal.z = sqrt(1.0 - normal.x * normal.x - normal.y * normal.y);
+		ray->tile_normal = normal;
 		normal_map_transform(ray);
 	}
 	else

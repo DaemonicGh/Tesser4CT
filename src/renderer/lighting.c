@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 15:55:17 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/21 11:36:49 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/26 17:00:30 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ static t_vec4
 		{
 			if (shadow_ray.tile->skybox)
 				break ;
-			shadow_ray.color = vec4_blend(
-					ray_tile_color(tsr, &shadow_ray, shadow_ray.tile),
-					shadow_ray.color);
+			shadow_ray.color = vec4_blend(shadow_ray.color,
+					ray_tile_color(tsr, &shadow_ray, shadow_ray.tile));
 			if (shadow_ray.color.a == 1)
 				break ;
 		}
@@ -40,9 +39,8 @@ static t_vec4
 		{
 			if (shadow_ray.prev_tile->skybox)
 				break ;
-			shadow_ray.color = vec4_blend(
-					ray_tile_color(tsr, &shadow_ray, shadow_ray.prev_tile),
-					shadow_ray.color);
+			shadow_ray.color = vec4_blend(shadow_ray.color,
+					ray_tile_color(tsr, &shadow_ray, shadow_ray.prev_tile));
 			if (shadow_ray.color.a == 1)
 				break ;
 		}
@@ -83,7 +81,7 @@ void	apply_lighting_effects(
 	t_vec4	shadow;
 
 	get_normal(ray, tile);
-	ncol = vec4_square(*col);
+	ncol = vec4(col->r * col->r, col->g * col->g, col->b * col->b, col->a);
 	shadow = cast_shadows(tsr, ray);
 	ncol = vec4_mult(ncol, get_shadow_modifiers(tsr, ray, shadow, tile));
 	col->r = fmin(sqrt(ncol.x), 1);
