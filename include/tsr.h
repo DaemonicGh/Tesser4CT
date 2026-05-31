@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:46:46 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/21 17:00:12 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:02:28 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "mlem.h"
 #include "tsr_core.h"
 #include "tsr_context.h"
 #include "tsr_player.h"
@@ -25,10 +26,16 @@
 #include "tsr_ui_button.h"
 
 void
-init_textures(t_tsr *tsr);
+load_regions(t_tsr *tsr);
 
 void
-load_tile_data(t_tsr *tsr);
+load_texture_data(t_tsr *tsr, t_mlem_value textures);
+
+void
+load_tile_data(t_tsr *tsr, t_mlem_value tiles);
+
+void
+init_rendering(t_tsr *tsr);
 
 t_tsr
 *tsr_init(void);

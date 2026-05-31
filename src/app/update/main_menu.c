@@ -6,12 +6,12 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:54:27 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 10:21:31 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:40:06 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "modules/mbx_inputs.h"
-#include "modules/types/mbx_s_color.h"
+#include "modules/mbx_structs.h"
 #include "tsr.h"
 
 static t_mbx_color	draw_main_menu_bg(t_tsr *tsr, t_vec2 uv)

@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:59:03 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 18:55:19 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 23:10:37 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 
 # define DEFAULT_REGION_PATH	"assets/default.png"
 
-# define TILE_BUFFER_COUNT      256
-# define TILE_COUNT			    16
+# define TILE_BUFFER_SIZE		256
+# define TEXTURE_BUFFER_SIZE	256
 
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18

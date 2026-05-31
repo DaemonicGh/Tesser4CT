@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   uv.c                                               :+:      :+:    :+:   */
+/*   texture.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/13 18:03:30 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:09:11 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ t_mbx_color	get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile)
 		get_tile_uv(ray);
 	ray->texture = tile->texture[ray->axis * 2
 		+ (ray->dir_sign.v[ray->axis] > 0)];
-	ray->texture_uv = vec2i_mult_vd(ray->texture.tx->size, ray->uv);
-	return (mbx_get_pixel_unsafe(ray->texture.tx, ray->texture_uv));
+	ray->texture_uv = vec2i_mult_vd(ray->texture->texture->size, ray->uv);
+	return (mbx_get_pixel_unsafe(ray->texture->texture, ray->texture_uv));
 }

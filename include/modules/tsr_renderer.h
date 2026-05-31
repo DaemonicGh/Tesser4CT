@@ -6,13 +6,13 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:33:47 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:40:06 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "modules/types/mbx_s_color.h"
+#include "modules/mbx_structs.h"
 #include "tsr_world.h"
 
 typedef struct s_tsr_render_ray
@@ -35,7 +35,7 @@ typedef struct s_tsr_render_ray
 	bool			draw_tile;
 	bool			draw_prev_tile;
 	t_vec2			uv;
-	t_tsr_texture	texture;
+	t_tsr_texture	*texture;
 	t_vec2i			texture_uv;
 	t_vec3			tile_normal;
 	t_vec4			color;

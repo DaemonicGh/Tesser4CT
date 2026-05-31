@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/10 23:54:59 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/10 23:54:59 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/29 00:07:19 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ static void	set_hotbar_offset(t_tsr *tsr)
 	const double	diff = tsr->player.tile_id - tsr->ui.hotbar.offset;
 	double			delta;
 
-	if (fabs(diff) < TILE_COUNT / 2.)
+	if (fabs(diff) < tsr->world.tile_count / 2.)
 		delta = 0.2 * diff;
 	else
-		delta = 0.2 * fsign(diff) * (fabs(diff) - TILE_COUNT);
+		delta = 0.2 * fsign(diff) * (fabs(diff) - tsr->world.tile_count);
 	if (fabs(delta) < 0.01)
 	{
 		tsr->ui.hotbar.offset = tsr->player.tile_id;
@@ -30,7 +30,7 @@ static void	set_hotbar_offset(t_tsr *tsr)
 	tsr->ui.hotbar.delta *= 0.5;
 	tsr->ui.hotbar.offset = fwrap(
 			tsr->ui.hotbar.offset + tsr->ui.hotbar.delta,
-			1, TILE_COUNT + 1);
+			1, tsr->world.tile_count + 1);
 }
 
 void	draw_hotbar(t_tsr *tsr)
@@ -48,9 +48,10 @@ void	draw_hotbar(t_tsr *tsr)
 	while (i <= 6)
 	{
 		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
-		mbx_set_subregion(tsr->ui.target, tsr->world.tiles[
-			wrap((int)(tsr->ui.hotbar.offset) + i, 1, TILE_COUNT + 1)]
-			.texture[0].tx, vec2i(pos.x - 8 + 20 * off,
+		mbx_set_subregion(tsr->ui.target,
+			tsr->world.tiles[wrap((int)(tsr->ui.hotbar.offset) + i,
+				1, tsr->world.tile_count)].texture[0]->texture,
+			vec2i(pos.x - 8 + 20 * off,
 				pos.y - 20 * (cos(off * off / 22.3) - 1)),
 			vec2ix2_xy(0, 0, 16, 16));
 		i++;

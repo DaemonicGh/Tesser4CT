@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 15:20:44 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/13 18:54:00 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/27 15:37:08 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ typedef enum e_direction
 
 typedef struct s_tsr_tile_data
 {
-	const char		*keys[6];
-	t_tsr_texture	texture[6];
+	t_tsr_texture	*texture[6];
 	bool			skip;
 	bool			backface;
 	bool			inner_backface;

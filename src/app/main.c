@@ -6,12 +6,11 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 16:27:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/21 14:00:53 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/29 01:52:40 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_context.h"
 
 static void	prepare_next_render(t_tsr *tsr)
 {
@@ -30,7 +29,6 @@ static void	prepare_next_render(t_tsr *tsr)
 	tsr->rendering.current_frag_shader = tsr->rendering.frag_shader;
 	tsr_update_camera(tsr);
 }
-
 
 static void	init_state(t_tsr *tsr)
 {
@@ -84,8 +82,6 @@ int	main(void)
 
 	tsr_report(STATUS_DEBUG, REPORT_DEBUG_ON);
 	tsr = tsr_init();
-	world_create(&tsr->wworld, vec3i(33, 16, 33));
-	tsr->mbx->settings.fps_cap = 60;
 	init_state(tsr);
 	mbx_run(tsr->mbx, main_update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);

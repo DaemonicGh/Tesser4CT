@@ -6,7 +6,7 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/15 16:43:42 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/21 16:11:06 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:08:06 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
 
 	ray = setup_ray(tsr, tsr->camera.position,
 			vec3_add(vec3_mult_d(tsr->camera.forward, tsr->extras.focal_length),
-			vec3_add(vec3_mult_d(tsr->camera.right, uvc.x),
+				vec3_add(vec3_mult_d(tsr->camera.right, uvc.x),
 					vec3_mult_d(tsr->camera.up, -uvc.y))));
 	while (true)
 	{

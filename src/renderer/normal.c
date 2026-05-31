@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 16:51:50 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/22 11:53:20 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 22:08:59 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@ void	get_normal(t_tsr_ray *ray, t_tsr_tile *tile)
 	t_mbx_color		col;
 	t_vec3			normal;
 
+	ray->tile_normal = get_tile_normal(ray->dir, ray->axis);
+	return ;
 	nrm = tile->texture[ray->axis * 2
-		+ (ray->dir_sign.v[ray->axis] > 0)].nrm;
+		+ (ray->dir_sign.v[ray->axis] > 0)]->texture;
 	if (nrm)
 	{
 		uv = vec2i_mult_vd(nrm->size, ray->uv);

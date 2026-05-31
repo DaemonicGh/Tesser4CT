@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 17:15:03 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/12 02:45:47 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/27 18:00:58 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,3 +67,6 @@ ft_strcmp(const char *s1, const char *s2);
 
 char
 *ft_strcat(char *dst, const char *src);
+
+char
+*ft_strdup(const char *src);

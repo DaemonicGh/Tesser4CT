@@ -1,37 +1,37 @@
 [ skip = true ]
 [
 	textures = [
-		north	= skybox_north
-		south	= skybox_south
-		east	= skybox_east
-		west	= skybox_west
-		top		= skybox_up
-		bottom	= skybox_down
+		north	= #skybox_north
+		south	= #skybox_south
+		east	= #skybox_east
+		west	= #skybox_west
+		top		= #skybox_top
+		bottom	= #skybox_bottom
 	]
 	skybox = true
 ]
-[ texture = stone ]
-[ texture = dirt ]
+[ texture = #stone ]
+[ texture = #dirt ]
 [
-	texture = grass_block_side
+	texture = #grass_block_side
 	textures = [
-		top		= grass_block_top
-		bottom	= dirt
+		top		= #grass_block_top
+		bottom	= #dirt
 ]]
-[ texture = oak_leaves				backface = true		inner_backface = true]
+[ texture = #oak_leaves				backface = true		inner_backface = true]
 [
-	texture = oak_log
+	texture = #oak_log_side
 	textures = [
-		top		= oak_log_top
-		bottom	= oak_log_top
+		top		= #oak_log_top
+		bottom	= #oak_log_top
 ]]
-[ texture = oak_planks ]
-[ texture = stone_bricks ]
-[ texture = cobblestone ]
-[ texture = iron_block				specular = true ]
-[ texture = moss ]
-[ texture = glass			backface = false		specular = true ]
-[ texture = white_stained_glass		backface = false	specular = true ]
-[ texture = red_stained_glass		backface = false	specular = true ]
-[ texture = green_stained_glass		backface = false	specular = true ]
-[ texture = blue_stained_glass		backface = false	specular = true ]
+[ texture = #oak_planks ]
+[ texture = #stone_bricks ]
+[ texture = #cobblestone ]
+[ texture = #iron_block				specular = true ]
+[ texture = #moss ]
+[ texture = #glass					backface = false	specular = true ]
+[ texture = #white_stained_glass	backface = false	specular = true ]
+[ texture = #red_stained_glass		backface = false	specular = true ]
+[ texture = #green_stained_glass	backface = false	specular = true ]
+[ texture = #blue_stained_glass		backface = false	specular = true ]

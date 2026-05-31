@@ -15,14 +15,18 @@
 
 NAMES					:=	Tesser4CT
 
+app_files				:=	\
+	main exit																	\
+	init/init init/regions init/rendering init/textures init/tiles				\
+	update/game	update/main_menu update/pause update/setting					\
+
+renderer_files			:=	\
+	camera draw_ray get_color lighting normal texture threads trace_ray			\
+
 common_files			:=	\
-	app/main app/init app/init_textures app/exit								\
-	app/update/game	app/update/main_menu app/update/pause app/update/setting	\
-	parser/tiles																\
+	$(addprefix app/,		$(app_files))\
+	$(addprefix renderer/,	$(renderer_files))\
 	player/actions player/movement player/update player/collision				\
-	renderer/atlas renderer/camera renderer/draw_ray renderer/get_color			\
-	renderer/lighting renderer/normal renderer/texture renderer/threads			\
-	renderer/trace_ray															\
 	world/world																	\
 	ui/draw	ui/hotbar ui/title ui/button.c										\
 	utils/memory utils/report utils/string utils/tile							\

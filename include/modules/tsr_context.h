@@ -6,13 +6,13 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/26 22:12:13 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/21 16:07:56 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 21:52:53 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "modules/types/mbx_s_region.h"
+#include "tsr_constants.h"
 #include "tsr_world.h"
 
 typedef struct s_tsr_player
@@ -37,23 +37,19 @@ typedef struct s_tsr_camera
 	t_vec3		velocity;
 }	t_tsr_camera;
 
-#define TSR_TEXTURE_COUNT	6
-
 typedef struct s_tsr_context
 {
 	t_mbx				*mbx;
-	union	u_tsr_texture_manager
+	struct	s_tsr_texture_manager
 	{
-		struct
-		{
-			t_mbx_region		*_default;
-			t_mbx_region		*tile_highlight;
-			t_mbx_region		*tile_face_highlight;
-			t_mbx_region		*hotbar_selection;
-			t_mbx_atlas			*font_small;
-			t_mbx_atlas			*font_title;
-		};
-		t_mbx_region		*regions[TSR_TEXTURE_COUNT];
+		t_tsr_texture		textures[TEXTURE_BUFFER_SIZE];
+		size_t				count;
+		t_mbx_region		*_default;
+		t_mbx_region		*tile_highlight;
+		t_mbx_region		*tile_face_highlight;
+		t_mbx_region		*hotbar_selection;
+		t_mbx_atlas			*font_small;
+		t_mbx_atlas			*font_title;
 	}	textures;
 	struct	s_tsr_rendering_manager
 	{
@@ -87,7 +83,8 @@ typedef struct s_tsr_context
 	}	ui;
 	struct s_tsr_world_manager
 	{
-		t_tsr_tile			tiles[TILE_BUFFER_COUNT];
+		t_tsr_tile			tiles[TILE_BUFFER_SIZE];
+		size_t				tile_count;
 		t_vec3				global_light;
 		t_vec4				global_light_col;
 		t_vec3i				tile_highlight_pos;
@@ -96,7 +93,6 @@ typedef struct s_tsr_context
 		pthread_barrier_t	loader_wait_barrier;
 	}	world;
 	t_world				wworld;
-	t_atlas				atlas;
 	t_mbx_region		*nmap;
 	t_tsr_player		player;
 	t_tsr_camera		camera;

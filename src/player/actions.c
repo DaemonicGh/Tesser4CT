@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:26:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/08 15:10:00 by emarrot          ###   ########.fr       */
+/*   Updated: 2026/05/28 23:11:19 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static void	item_select(t_tsr *tsr)
 {
-	int	i;
+	uint32_t	i;
 
 	i = 0;
-	while (i <= TILE_COUNT / 10)
+	while (i <= tsr->world.tile_count / 10)
 	{
 		if (mbx_key_pressed(tsr->mbx, 30 + i))
 			tsr->player.tile_id = i * 10 + 1;
@@ -25,7 +25,7 @@ static void	item_select(t_tsr *tsr)
 	}
 	tsr->player.tile_id = wrap(
 			(tsr->player.tile_id - tsr->mbx->scroll_delta),
-			1, TILE_COUNT + 1);
+			1, tsr->world.tile_count + 1);
 }
 
 static bool	place_tile(t_tsr *tsr, t_tsr_ray *ray)

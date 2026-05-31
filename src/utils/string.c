@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 02:22:48 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/12 02:29:37 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/05/27 18:00:43 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,20 @@ char	*ft_strcat(char *dst, const char *src)
 	dst[i + j] = 0;
 	while (j--)
 		dst[i + j] = src[j];
+	return (dst);
+}
+
+char	*ft_strdup(const char *src)
+{
+	char	*dst;
+	size_t	len;
+
+	len = ft_strlen(src);
+	dst = malloc(len + 1);
+	if (!dst)
+		return (NULL);
+	dst[len] = 0;
+	while (len--)
+		dst[len] = src[len];
 	return (dst);
 }
