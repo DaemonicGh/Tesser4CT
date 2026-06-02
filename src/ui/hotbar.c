@@ -30,7 +30,7 @@ static void	set_hotbar_offset(t_tsr *tsr)
 	tsr->ui.hotbar.delta *= 0.5;
 	tsr->ui.hotbar.offset = fwrap(
 			tsr->ui.hotbar.offset + tsr->ui.hotbar.delta,
-			1, tsr->world.tile_count + 1);
+			1, tsr->world.tile_count);
 }
 
 void	draw_hotbar(t_tsr *tsr)

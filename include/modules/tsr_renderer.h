@@ -21,13 +21,14 @@ typedef struct s_tsr_render_ray
 	t_vec3			dir;
 	t_vec3			delta;
 	t_vec3			abs_delta;
-	t_vec3			dist;
-	double			distance;
-	t_vec3			position;
-	t_vec3i			tile_position;
 	t_vec3i			dir_sign;
 	t_vec3i			iter;
-	int				tile_index;
+	t_vec3			dist;
+	double			distance;
+	t_tsr_chunk		*chunk;
+	t_vec3			position;
+	t_vec3i			tile_chunk_position;
+	int				tile_chunk_index;
 	int				lifetime;
 	int8_t			axis;
 	t_tsr_tile		*tile;
@@ -55,8 +56,8 @@ apply_lighting_effects(
 t_mbx_color
 get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile);
 
-t_vec4
-ray_tile_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);
+bool
+set_ray_tile_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);
 
 t_mbx_color
 draw_ray(t_tsr *tsr, t_vec2 uv);
@@ -65,7 +66,7 @@ void
 trace_ray(t_tsr *tsr, t_tsr_ray *ray);
 
 t_tsr_ray
-setup_ray(t_tsr *tsr, t_vec3 origin, t_vec3 forward);
+setup_ray(t_tsr *tsr, t_vec3 origin, t_tsr_chunk *chunk, t_vec3 forward);
 
 void
 get_ray_position(t_tsr_ray *ray);

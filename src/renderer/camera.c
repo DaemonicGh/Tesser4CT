@@ -15,8 +15,8 @@
 // TODO: roll implementation
 void	tsr_update_camera(t_tsr *tsr)
 {
-	tsr->camera.position = tsr->player.position;
-	tsr->camera.position.y += tsr->player.hitbox.y * 0.9;
+	tsr->camera.chunk_position = tsr->player.chunk_position;
+	tsr->camera.chunk = tsr->player.chunk;
 	if (!tsr->mbx->settings.lock_cursor)
 		return ;
 	tsr->camera.rotation.x = fwrap(

@@ -15,9 +15,12 @@
 
 NAMES					:=	Tesser4CT
 
+app_init_files			:=	\
+	init regions rendering textures tiles map chunks							\
+
 app_files				:=	\
+	$(addprefix init/,	$(app_init_files))\
 	main exit																	\
-	init/init init/regions init/rendering init/textures init/tiles				\
 	update/game	update/main_menu update/pause update/setting					\
 
 renderer_files			:=	\
@@ -27,7 +30,7 @@ common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
 	player/actions player/movement player/update player/collision				\
-	world/world																	\
+	world/nworld																	\
 	ui/draw	ui/hotbar ui/title ui/button.c										\
 	utils/memory utils/report utils/string utils/tile							\
 

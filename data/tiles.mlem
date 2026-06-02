@@ -1,37 +1,55 @@
-[ skip = true ]
-[
+#air = [
+	skip = true ]
+#sky_sunset = [
 	textures = [
-		north	= #skybox_north
-		south	= #skybox_south
-		east	= #skybox_east
-		west	= #skybox_west
-		top		= #skybox_top
-		bottom	= #skybox_bottom
+		north	= #tx_skybox_north
+		south	= #tx_skybox_south
+		east	= #tx_skybox_east
+		west	= #tx_skybox_west
+		top		= #tx_skybox_top
+		bottom	= #tx_skybox_bottom
 	]
-	skybox = true
-]
-[ texture = #stone ]
-[ texture = #dirt ]
-[
-	texture = #grass_block_side
+	skybox = true ]
+#stone = [
+	texture = #tx_stone ]
+#dirt = [
+	texture = #tx_dirt ]
+#grass = [
+	texture = #tx_grass_block_side
 	textures = [
-		top		= #grass_block_top
-		bottom	= #dirt
-]]
-[ texture = #oak_leaves				backface = true		inner_backface = true]
-[
-	texture = #oak_log_side
+		top		= #tx_grass_block_top
+		bottom	= #tx_dirt ]]
+#oak_leaves = [
+	texture = #tx_oak_leaves
+	backface = true		inner_backface = true ]
+#oak_log = [
+	texture = #tx_oak_log_side
 	textures = [
-		top		= #oak_log_top
-		bottom	= #oak_log_top
-]]
-[ texture = #oak_planks ]
-[ texture = #stone_bricks ]
-[ texture = #cobblestone ]
-[ texture = #iron_block				specular = true ]
-[ texture = #moss ]
-[ texture = #glass					backface = false	specular = true ]
-[ texture = #white_stained_glass	backface = false	specular = true ]
-[ texture = #red_stained_glass		backface = false	specular = true ]
-[ texture = #green_stained_glass	backface = false	specular = true ]
-[ texture = #blue_stained_glass		backface = false	specular = true ]
+		top		= #tx_oak_log_top
+		bottom	= #tx_oak_log_top ]]
+#oak_planks = [
+	texture = #tx_oak_planks ]
+#stone_bricks = [
+	texture = #tx_stone_bricks ]
+#cobblestone = [
+	texture = #tx_cobblestone ]
+#iron_block = [
+	texture = #tx_iron_block
+	specular = true ]
+#moss = [
+	texture = #tx_moss ]
+#glass = [
+	texture = #tx_glass
+	backface = true		specular = true ]
+#white_glass = [
+	texture = #tx_white_glass
+	backface = true		specular = true ]
+#red_glass = [
+	texture = #tx_red_glass
+	backface = true		specular = true ]
+#green_glass = [
+	texture = #tx_green_glass
+	backface = true		specular = true ]
+#blue_glass = [
+	texture = #tx_blue_glass
+	backface = true		specular = true ]

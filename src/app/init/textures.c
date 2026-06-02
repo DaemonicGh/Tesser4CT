@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "mlem.h"
-#include "tsr_textures.h"
 
 static t_tsr_texture	load_texture(t_tsr *tsr, t_mlem_value object)
 {
@@ -29,30 +27,24 @@ static t_tsr_texture	load_texture(t_tsr *tsr, t_mlem_value object)
 	return (texture);
 }
 
-static void	setup_texture(t_tsr *tsr, t_mlem_value textures, uint32_t i)
+void	load_texture_data(t_tsr *tsr)
 {
-	char	*allocd_id_key;
+	t_mlem_value		textures;
+	t_mlem_reference	texture;
+	uint32_t			i;
 
-	allocd_id_key = ft_strdup("id");
-	if (!allocd_id_key
-		|| !mlem_object_append(&textures.object_v[i].value,
-			allocd_id_key, mlem_int(i)))
-		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
-}
-
-void	load_texture_data(t_tsr *tsr, t_mlem_value textures)
-{
-	t_mlem_value	*texture;
-	uint32_t		i;
-
+	textures = mlem_parse("data/textures.mlem", NULL, (t_mlem_value){0});
 	if (!textures.type)
 		tsr_exit(tsr, STATUS_ERROR, NULL);
 	i = 0;
 	while (i < textures.object_len && i < TEXTURE_BUFFER_SIZE)
 	{
-		texture = mlem_dereference_ptr(&textures.object_v[i].value);
-		setup_texture(tsr, textures, i);
-		tsr->textures.textures[i] = load_texture(tsr, *texture);
+		texture = textures.object_v[i].value.reference_v;
+		tsr->textures.textures[i] = load_texture(tsr, texture->value);
+		mlem_destroy(texture->value);
+		texture->value = (t_mlem_value){.type = MLEM_TYPE_USER_POINTER,
+			.pointer_v = &tsr->textures.textures[i]};
 		i++;
 	}
+	tsr->textures.textures_mlem = textures;
 }

@@ -1,72 +1,72 @@
-#default = [
+#tx_default = [
 	file = "assets/textures/default.png"
 ]
-#stone = [
+#tx_stone = [
 	file = "assets/textures/tiles/stone.png"
 ]
-#dirt = [
+#tx_dirt = [
 	file = "assets/textures/tiles/dirt.png"
 ]
-#grass_block_side = [
+#tx_grass_block_side = [
 	file = "assets/textures/tiles/grass_block_side.png"
 ]
-#grass_block_top = [
+#tx_grass_block_top = [
 	file = "assets/textures/tiles/grass_block_top.png"
 ]
-#cobblestone = [
+#tx_cobblestone = [
 	file = "assets/textures/tiles/cobblestone.png"
 ]
-#stone_bricks = [
+#tx_stone_bricks = [
 	file = "assets/textures/tiles/stone_bricks.png"
 ]
-#oak_planks = [
+#tx_oak_planks = [
 	file = "assets/textures/tiles/oak_planks.png"
 ]
-#oak_log_side = [
+#tx_oak_log_side = [
 	file = "assets/textures/tiles/oak_log.png"
 ]
-#oak_log_top = [
+#tx_oak_log_top = [
 	file = "assets/textures/tiles/oak_log_top.png"
 ]
-#oak_leaves = [
+#tx_oak_leaves = [
 	file = "assets/textures/tiles/oak_leaves.png"
 ]
-#iron_block = [
+#tx_iron_block = [
 	file = "assets/textures/tiles/iron_block.png"
 ]
-#moss = [
+#tx_moss = [
 	file = "assets/textures/tiles/moss.png"
 ]
-#glass = [
+#tx_glass = [
 	file = "assets/textures/tiles/glass.png"
 ]
-#white_stained_glass = [
+#tx_white_glass = [
 	file = "assets/textures/tiles/white_stained_glass.png"
 ]
-#red_stained_glass = [
+#tx_red_glass = [
 	file = "assets/textures/tiles/red_stained_glass.png"
 ]
-#green_stained_glass = [
+#tx_green_glass = [
 	file = "assets/textures/tiles/green_stained_glass.png"
 ]
-#blue_stained_glass = [
+#tx_blue_glass = [
 	file = "assets/textures/tiles/blue_stained_glass.png"
 ]
-#skybox_north = [
+#tx_skybox_north = [
 	file = "assets/textures/tiles/skybox_north.png"
 ]
-#skybox_south = [
+#tx_skybox_south = [
 	file = "assets/textures/tiles/skybox_south.png"
 ]
-#skybox_east = [
+#tx_skybox_east = [
 	file = "assets/textures/tiles/skybox_east.png"
 ]
-#skybox_west = [
+#tx_skybox_west = [
 	file = "assets/textures/tiles/skybox_west.png"
 ]
-#skybox_top = [
+#tx_skybox_top = [
 	file = "assets/textures/tiles/skybox_up.png"
 ]
-#skybox_bottom = [
+#tx_skybox_bottom = [
 	file = "assets/textures/tiles/skybox_down.png"
 ]

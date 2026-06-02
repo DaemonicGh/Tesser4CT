@@ -18,8 +18,8 @@ static void	draw_debug(t_tsr *tsr)
 
 	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.1f %.1f %.1f]\n"
 		"ROT \t[%.2f %.2f]\nFW  \t[%.1f %.1f %.1f]",
-		1.0 / tsr->mbx->dt, tsr->player.position.x, tsr->player.position.y,
-		tsr->player.position.z,
+		1.0 / tsr->mbx->dt, tsr->player.chunk_position.x,
+		tsr->player.chunk_position.y, tsr->player.chunk_position.z,
 		tsr->camera.rotation.x, tsr->camera.rotation.y,
 		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z);
 	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);

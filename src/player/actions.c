@@ -25,28 +25,28 @@ static void	item_select(t_tsr *tsr)
 	}
 	tsr->player.tile_id = wrap(
 			(tsr->player.tile_id - tsr->mbx->scroll_delta),
-			1, tsr->world.tile_count + 1);
+			1, tsr->world.tile_count);
 }
 
 static bool	place_tile(t_tsr *tsr, t_tsr_ray *ray)
 {
-	static t_vec3i			prev_tile = {
-		.x = INT32_MIN, .y = INT32_MIN, .z = INT32_MIN};
+	static t_vec3i			position = {.x = -1, .y = -1, .z = -1};
 
 	if (mbx_key_held(tsr->mbx, MBX_MOUSE_RIGHT)
 		&& (tsr->mbx->keys[MBX_MOUSE_RIGHT].press == 0
 			|| tsr->mbx->keys[MBX_MOUSE_RIGHT].press > 0.1))
 	{
-		if (!vec3i_eq(ray->tile_position, prev_tile))
+		if (!vec3i_eq(ray->tile_chunk_position, position))
 		{
-			prev_tile = vec3i_sub(ray->tile_position,
+			position = vec3i_sub(ray->tile_chunk_position,
 					vec3i_vd(get_tile_normal(ray->dir, ray->axis)));
-			block_set(&tsr->wworld, prev_tile, tsr->player.tile_id);
+			if (tsr_fix_tile_pos(&ray->chunk, &position))
+				*tsr_get_tile_ptr(ray->chunk, position) = tsr->player.tile_id;
 			return (true);
 		}
 	}
 	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_RIGHT))
-		prev_tile = vec3i_i(INT32_MIN);
+		position = vec3i_i(-1);
 	return (false);
 }
 
@@ -61,7 +61,7 @@ static bool	break_tile(t_tsr *tsr, t_tsr_ray *ray)
 	{
 		if (break_timer <= 0)
 		{
-			block_set(&tsr->wworld, ray->tile_position, 0);
+			ray->chunk->tiles[ray->tile_chunk_index] = 0;
 			break_timer = break_time;
 			return (true);
 		}
@@ -76,25 +76,21 @@ static bool	break_tile(t_tsr *tsr, t_tsr_ray *ray)
 static void	place_and_destroy(t_tsr *tsr)
 {
 	t_tsr_ray	ray;
-	bool		ret;
 
-	ray = setup_ray(tsr, tsr->camera.position, tsr->camera.forward);
+	ray = setup_ray(tsr, tsr->camera.chunk_position,
+			tsr->camera.chunk, tsr->camera.forward);
 	trace_ray(tsr, &ray);
-	ret = true;
-	if (ray.distance < 16.0)
+	if (ray.distance < 12.0)
 	{
 		if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
-			tsr->player.tile_id = block_get(&tsr->wworld, ray.tile_position);
-		ret = break_tile(tsr, &ray);
-		ret |= place_tile(tsr, &ray);
-	}
-	if (ret)
-		tsr->world.tile_highlight_pos = vec3i_i(INT32_MIN);
-	else
-	{
-		tsr->world.tile_highlight_pos = ray.tile_position;
+			tsr->player.tile_id = ray.chunk->tiles[ray.tile_chunk_index];
+		break_tile(tsr, &ray);
+		place_tile(tsr, &ray);
+		tsr->world.tile_highlight_pos = ray.tile_chunk_position;
 		tsr->world.tile_highlight_axis = ray.axis;
 	}
+	else
+		tsr->world.tile_highlight_pos = vec3i_i(-1);
 }
 
 void	tsr_player_actions(t_tsr *tsr)

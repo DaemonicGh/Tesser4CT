@@ -15,27 +15,20 @@
 
 static void	init_data(t_tsr *tsr)
 {
-	t_mlem_value	textures;
-	t_mlem_value	tiles;
-
-	(void)textures;
-	(void)tiles;
 	load_regions(tsr);
-	textures = mlem_parse("data/textures.mlem", NULL, (t_mlem_value){0});
-	load_texture_data(tsr, textures);
-	tiles = mlem_parse("data/tiles.mlem", NULL, textures);
-	load_tile_data(tsr, tiles);
-	mlem_destroy(textures);
-	mlem_destroy(tiles);
+	load_texture_data(tsr);
+	load_tile_data(tsr);
+	load_map_data(tsr);
 }
 
 static void	init_player(t_tsr *tsr)
 {
-	tsr->player.position = vec3(8.0, 8.0, 4.0);
 	tsr->player.rotation = vec3(M_PI, 0.001, 0.001);
 	tsr->camera.rotation = vec3(M_PI, 0.001, 0.001);
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
+	tsr->player.chunk = tsr->world.origin;
+	tsr->player.chunk_position = tsr->world.spawn_pos;
 	tsr->player.tile_id = 1;
 }
 
@@ -67,7 +60,6 @@ t_tsr	*tsr_init(void)
 	init_data(tsr);
 	init_player(tsr);
 	init_values(tsr);
-	world_create(&tsr->wworld, vec3i(33, 16, 33));
 	init_rendering(tsr);
 	return (tsr);
 }

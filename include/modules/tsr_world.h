@@ -13,6 +13,7 @@
 #ifndef TSR_WORLD_H
 # define TSR_WORLD_H
 
+#include "tsr_core.h"
 # include "tsr_textures.h"
 
 typedef enum e_direction
@@ -35,25 +36,26 @@ typedef struct s_tsr_tile_data
 	bool			specular;
 }	t_tsr_tile;
 
+typedef struct s_tsr_world_chunk	t_tsr_chunk;
+struct s_tsr_world_chunk
+{
+	t_tsr_tile_id	tiles[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
+	t_tsr_chunk		*neighbors[6];
+};
+
 typedef struct s_world
 {
 	t_vec3i			size;
 	t_tsr_tile_id	*blocks;
 }	t_world;
 
-void
-world_create(t_world *world, t_vec3i size);
-
-void
-world_destroy(t_world *world);
+t_tsr_tile_id
+*tsr_get_tile_ptr(t_tsr_chunk *chunk, t_vec3i pos);
 
 bool
-inbound(t_world *world, t_vec3i pos);
+tsr_fix_tile_pos(t_tsr_chunk **chunk, t_vec3i *pos);
 
-t_tsr_tile_id
-block_get(t_world *world, t_vec3i pos);
-
-void
-block_set(t_world *world, t_vec3i pos, t_tsr_tile_id type);
+t_tsr_tile
+*tsr_get_tile(t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i pos);
 
 #endif

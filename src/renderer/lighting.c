@@ -16,12 +16,13 @@ static t_vec4
 	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
 {
 	const t_vec3	dir = tsr->world.global_light;
-	t_vec3			position;
 	t_tsr_ray		shadow_ray;
 
-	position = vec3_add(ray->position, vec3_mult_d(dir, -1e-8));
-	shadow_ray = setup_ray(tsr, position, dir);
+	return (vec4(1, 1, 1, 1));
+	shadow_ray = setup_ray(tsr, vec3_add(ray->position,
+				vec3_mult_d(dir, -1e-4)), ray->chunk, dir);
 	shadow_ray.color = vec4(1, 1, 1, 0);
+	shadow_ray.lifetime = 20;
 	shadow_ray.is_shadow = true;
 	while (true)
 	{
@@ -30,19 +31,8 @@ static t_vec4
 		{
 			if (shadow_ray.tile->skybox)
 				break ;
-			shadow_ray.color = vec4_blend(shadow_ray.color,
-					ray_tile_color(tsr, &shadow_ray, shadow_ray.tile));
-			if (shadow_ray.color.a == 1)
-				break ;
-		}
-		if (shadow_ray.draw_prev_tile)
-		{
-			if (shadow_ray.prev_tile->skybox)
-				break ;
-			shadow_ray.color = vec4_blend(shadow_ray.color,
-					ray_tile_color(tsr, &shadow_ray, shadow_ray.prev_tile));
-			if (shadow_ray.color.a == 1)
-				break ;
+			if (set_ray_tile_color(tsr, &shadow_ray, shadow_ray.tile))
+				return (vec4(1, 1, 1, 0.5));
 		}
 	}
 	return (vec4(

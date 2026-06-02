@@ -35,6 +35,8 @@
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18
 
+# define CHUNK_SIZE				4
+
 # define CAMERA_SENSITIVITY		2
 
 #endif

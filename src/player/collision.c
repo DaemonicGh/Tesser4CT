@@ -11,7 +11,9 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_world.h"
 
+/*
 static bool	tile_collision(t_tsr_player *player, t_vec3i tile)
 {
 	return ((player->position.x - player->hitbox.x < tile.x + 1)
@@ -23,43 +25,36 @@ static bool	tile_collision(t_tsr_player *player, t_vec3i tile)
 	);
 }
 
-static void	player_to_tile(t_tsr_player *player, t_vec3i tile)
+static void	player_to_tile(t_tsr *tsr, t_vec3i tile)
 {
-	t_vec3	dist;
-	double	d;
+	t_vec3			dist;
+	double			d;
+	int				axis;
 
-	dist.x = tile.x + 1 - player->position.x + player->hitbox.x;
-	dist.y = tile.y + 1 - player->position.y + player->hitbox.y;
-	dist.z = tile.z + 1 - player->position.z + player->hitbox.z;
-	d = tile.x - player->position.x - player->hitbox.x;
+	dist.x = tile.x + 1 - tsr->player.position.x + tsr->player.hitbox.x;
+	dist.y = tile.y + 1 - tsr->player.position.y + tsr->player.hitbox.y;
+	dist.z = tile.z + 1 - tsr->player.position.z + tsr->player.hitbox.z;
+	d = tile.x - tsr->player.position.x - tsr->player.hitbox.x;
 	if (-d < dist.x)
 		dist.x = d;
-	d = tile.y - player->position.y - player->hitbox.y;
+	d = tile.y - tsr->player.position.y - tsr->player.hitbox.y;
 	if (-d < dist.y)
 		dist.y = d;
-	d = tile.z - player->position.z - player->hitbox.z;
+	d = tile.z - tsr->player.position.z - tsr->player.hitbox.z;
 	if (-d < dist.z)
 		dist.z = d;
-	if (fabs(dist.x) < fabs(dist.y) && fabs(dist.x) < fabs(dist.z))
-	{
-		player->position.x += dist.x;
-		player->velocity.x *= 0.5;
-		return ;
-	}
-	if (fabs(dist.y) < fabs(dist.z))
-	{
-		player->position.y += dist.y;
-		player->velocity.y *= 0.5;
-		return ;
-	}
-	player->position.z += dist.z;
-	player->velocity.z *= 0.5;
+	if (fabs(dist.z) < fabs(dist.x) && fabs(dist.z) < fabs(dist.y))
+		axis = 2;
+	else
+		axis = (fabs(dist.y) < fabs(dist.x));
+	tsr->player.position.v[axis] += dist.v[axis];
+	tsr->player.velocity.v[axis] *= 0.5;
 }
 
 void	player_collision(t_tsr *tsr)
 {
 	const t_vec3i		player = vec3i_vd(
-			vec3_exec(floor, tsr->player.position));
+			vec3_exec(floor, tsr->player.chunk_position));
 	static const int	size = 2;
 	t_vec3i				pos;
 
@@ -72,9 +67,9 @@ void	player_collision(t_tsr *tsr)
 			pos.z = player.z - size;
 			while (pos.z <= player.z + size)
 			{
-				if (block_get(&tsr->wworld, pos)
+				if (!tsr_get_tile(tsr, tsr->player.chunk, pos)->skip
 					&& tile_collision(&tsr->player, pos))
-					player_to_tile(&tsr->player, pos);
+					player_to_tile(tsr, pos);
 				pos.z++;
 			}
 			pos.y++;
@@ -82,3 +77,4 @@ void	player_collision(t_tsr *tsr)
 		pos.x++;
 	}
 }
+*/

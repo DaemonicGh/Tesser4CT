@@ -12,6 +12,40 @@
 
 #include "tsr.h"
 
+static void	update_chunk_dir(t_tsr *tsr, double target, int axis)
+{
+	const int	side = axis * 2;
+
+	if (target < tsr->player.hitbox.v[axis]
+		&& !tsr->player.chunk->neighbors[side])
+		tsr->player.chunk_position.v[axis] = tsr->player.hitbox.v[axis];
+	else if (target < 0)
+	{
+		tsr->player.chunk = tsr->player.chunk->neighbors[side];
+		tsr->player.chunk_position.v[axis] = target + CHUNK_SIZE;
+	}
+	else if (target >= CHUNK_SIZE - tsr->player.hitbox.v[axis]
+		&& !tsr->player.chunk->neighbors[side + 1])
+		tsr->player.chunk_position.v[axis] = CHUNK_SIZE - tsr->player.hitbox.v[axis];
+	else if (target >= CHUNK_SIZE)
+	{
+		tsr->player.chunk = tsr->player.chunk->neighbors[side + 1];
+		tsr->player.chunk_position.v[axis] = target - CHUNK_SIZE;
+	}
+	else
+		tsr->player.chunk_position.v[axis] = target;
+}
+
+void	update_player_chunk(t_tsr *tsr)
+{
+	const t_vec3	target = vec3_add(
+			tsr->player.chunk_position, tsr->player.velocity);
+
+	update_chunk_dir(tsr, target.x, 0);
+	update_chunk_dir(tsr, target.z, 2);
+	update_chunk_dir(tsr, target.y, 1);
+}
+
 void	tsr_player_movement(t_tsr *tsr)
 {
 	const double	speed = 0.3;
@@ -34,8 +68,6 @@ void	tsr_player_movement(t_tsr *tsr)
 	mv = vec3_mult_d(vec3_normalize(mv), speed);
 	tsr->player.velocity = vec3_len_move_towards(tsr->player.velocity,
 			mv, accel * tsr->mbx->dt);
-	tsr->player.position = vec3_clamp(vec3_add(
-				tsr->player.position, tsr->player.velocity),
-			vec3_d(0.2), vec3_sub_d(vec3_vi(tsr->wworld.size), 0.2));
-	player_collision(tsr);
+	update_player_chunk(tsr);
+	//player_collision(tsr);
 }

@@ -29,10 +29,16 @@ void
 load_regions(t_tsr *tsr);
 
 void
-load_texture_data(t_tsr *tsr, t_mlem_value textures);
+load_texture_data(t_tsr *tsr);
 
 void
-load_tile_data(t_tsr *tsr, t_mlem_value tiles);
+load_tile_data(t_tsr *tsr);
+
+void
+load_chunk_data(t_tsr *tsr, t_mlem_value object);
+
+void
+load_map_data(t_tsr *tsr);
 
 void
 init_rendering(t_tsr *tsr);

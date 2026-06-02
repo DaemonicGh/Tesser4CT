@@ -12,29 +12,32 @@
 
 #pragma once
 
+#include "mlem.h"
 #include "tsr_constants.h"
 #include "tsr_world.h"
 
 typedef struct s_tsr_player
 {
-	t_vec3			position;
 	t_vec3			rotation;
 	t_vec3			hitbox;
 	t_vec3			right;
 	t_vec3			up;
 	t_vec3			forward;
 	t_vec3			velocity;
+	t_tsr_chunk		*chunk;
+	t_vec3			chunk_position;
 	t_tsr_tile_id	tile_id;
 }	t_tsr_player;
 
 typedef struct s_tsr_camera
 {
-	t_vec3		position;
-	t_vec3		rotation;
-	t_vec3		right;
-	t_vec3		up;
-	t_vec3		forward;
-	t_vec3		velocity;
+	t_vec3			rotation;
+	t_vec3			right;
+	t_vec3			up;
+	t_vec3			forward;
+	t_vec3			velocity;
+	t_tsr_chunk		*chunk;
+	t_vec3			chunk_position;
 }	t_tsr_camera;
 
 typedef struct s_tsr_context
@@ -43,6 +46,7 @@ typedef struct s_tsr_context
 	struct	s_tsr_texture_manager
 	{
 		t_tsr_texture		textures[TEXTURE_BUFFER_SIZE];
+		t_mlem_value		textures_mlem;
 		size_t				count;
 		t_mbx_region		*_default;
 		t_mbx_region		*tile_highlight;
@@ -84,13 +88,17 @@ typedef struct s_tsr_context
 	struct s_tsr_world_manager
 	{
 		t_tsr_tile			tiles[TILE_BUFFER_SIZE];
+		t_mlem_value		tiles_mlem;
 		size_t				tile_count;
+		t_tsr_chunk			*chunks;
+		t_mlem_value		map_mlem;
+		t_tsr_tile			*skybox;
 		t_vec3				global_light;
 		t_vec4				global_light_col;
+		t_tsr_chunk			*origin;
+		t_vec3				spawn_pos;
 		t_vec3i				tile_highlight_pos;
 		int					tile_highlight_axis;
-		pthread_t			loader_thread;
-		pthread_barrier_t	loader_wait_barrier;
 	}	world;
 	t_world				wworld;
 	t_mbx_region		*nmap;
