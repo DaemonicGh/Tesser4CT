@@ -37,11 +37,11 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 	if (!tsr)
 		exit(!tsr_report(status, message));
 	cancel_threads(tsr);
-	free(tsr->wworld.blocks);
 	mlem_destroy(tsr->textures.textures_mlem);
 	mlem_destroy(tsr->world.tiles_mlem);
 	mlem_destroy(tsr->world.map_mlem);
 	free(tsr->world.chunks);
+	free(tsr->world.chunk_refs);
 	mbx_exit(tsr->mbx);
 	free(tsr);
 	exit(!tsr_report(status, message));

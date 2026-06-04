@@ -14,7 +14,7 @@
 
 void	tsr_init_game(t_tsr *tsr)
 {
-	tsr->mbx->settings.show_cursor = false;
+	tsr->mbx->settings.hide_cursor = true;
 	tsr->mbx->settings.lock_cursor = true;
 	tsr->rendering.frag_shader = draw_ray;
 }
@@ -25,7 +25,7 @@ void	tsr_update_game(t_tsr *tsr)
 	if (mbx_btnp(tsr->mbx, MBX_KEY_F1))
 	{
 		tsr->mbx->settings.lock_cursor = !tsr->mbx->settings.lock_cursor;
-		tsr->mbx->settings.show_cursor = !tsr->mbx->settings.show_cursor;
+		tsr->mbx->settings.hide_cursor = !tsr->mbx->settings.hide_cursor;
 		mbx_refresh_settings(tsr->mbx);
 	}
 	if (mbx_btnp(tsr->mbx, MBX_KEY_ESCAPE))

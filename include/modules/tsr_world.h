@@ -34,26 +34,41 @@ typedef struct s_tsr_tile_data
 	bool			inner_backface;
 	bool			skybox;
 	bool			specular;
+}	t_tsr_tile_data;
+
+typedef struct s_tsr_tile
+{
+	t_tsr_tile_id	type;
+	uint8_t			light;
+	uint8_t			orientation;
 }	t_tsr_tile;
 
-typedef struct s_tsr_world_chunk	t_tsr_chunk;
-struct s_tsr_world_chunk
+typedef struct s_tsr_chunk_ref
 {
-	t_tsr_tile_id	tiles[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
-	t_tsr_chunk		*neighbors[6];
-};
+	uint64_t		process;
+	uint16_t		neighbors[6];
+}	t_tsr_chunk_ref;
 
-typedef struct s_world
+typedef struct s_tsr_chunk
 {
-	t_vec3i			size;
-	t_tsr_tile_id	*blocks;
-}	t_world;
+	t_tsr_tile		tiles[64];
+	uint16_t		id;
+}	t_tsr_chunk;
 
-t_tsr_tile_id
-*tsr_get_tile_ptr(t_tsr_chunk *chunk, t_vec3i pos);
+t_tsr_chunk
+*tsr_get_chunk_neighbor(t_tsr *tsr, t_tsr_chunk *chunk, int side);
+
+t_tsr_chunk
+*tsr_relocate_chunk(t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i *pos);
+
+t_tsr_tile
+tsr_tile(t_tsr_tile_id id, uint8_t orientation);
+
+int
+tsr_get_tile_index(t_vec3i pos);
 
 bool
-tsr_fix_tile_pos(t_tsr_chunk **chunk, t_vec3i *pos);
+tsr_set_tile(t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i pos, t_tsr_tile tile);
 
 t_tsr_tile
 *tsr_get_tile(t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i pos);

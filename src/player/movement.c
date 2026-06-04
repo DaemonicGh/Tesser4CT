@@ -14,26 +14,31 @@
 
 static void	update_chunk_dir(t_tsr *tsr, double target, int axis)
 {
-	const int	side = axis * 2;
+	t_tsr_chunk		*neighbor;
 
-	if (target < tsr->player.hitbox.v[axis]
-		&& !tsr->player.chunk->neighbors[side])
-		tsr->player.chunk_position.v[axis] = tsr->player.hitbox.v[axis];
-	else if (target < 0)
+	if (target < tsr->player.hitbox.v[axis])
 	{
-		tsr->player.chunk = tsr->player.chunk->neighbors[side];
-		tsr->player.chunk_position.v[axis] = target + CHUNK_SIZE;
+		neighbor = tsr_get_chunk_neighbor(tsr, tsr->player.chunk, axis * 2);
+		if (!neighbor)
+			target = tsr->player.hitbox.v[axis];
+		else if (target < 0)
+		{
+			tsr->player.chunk = neighbor;
+			target += 4;
+		}
 	}
-	else if (target >= CHUNK_SIZE - tsr->player.hitbox.v[axis]
-		&& !tsr->player.chunk->neighbors[side + 1])
-		tsr->player.chunk_position.v[axis] = CHUNK_SIZE - tsr->player.hitbox.v[axis];
-	else if (target >= CHUNK_SIZE)
+	else if (target >= 4 - tsr->player.hitbox.v[axis])
 	{
-		tsr->player.chunk = tsr->player.chunk->neighbors[side + 1];
-		tsr->player.chunk_position.v[axis] = target - CHUNK_SIZE;
+		neighbor = tsr_get_chunk_neighbor(tsr, tsr->player.chunk, axis * 2 + 1);
+		if (!neighbor)
+			target = 4 - tsr->player.hitbox.v[axis];
+		else if (target >= 4)
+		{
+			tsr->player.chunk = neighbor;
+			target -= 4;
+		}
 	}
-	else
-		tsr->player.chunk_position.v[axis] = target;
+	tsr->player.chunk_position.v[axis] = target;
 }
 
 void	update_player_chunk(t_tsr *tsr)

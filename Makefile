@@ -30,7 +30,7 @@ common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
 	player/actions player/movement player/update player/collision				\
-	world/nworld																	\
+	world/chunk world/chunk_ref world/tile										\
 	ui/draw	ui/hotbar ui/title ui/button.c										\
 	utils/memory utils/report utils/string utils/tile							\
 

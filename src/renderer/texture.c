@@ -44,22 +44,23 @@ static void	get_tile_uv(t_tsr_ray *ray)
 	ray->uv.y = ceil(ray->uv.y) - ray->uv.y;
 }
 
-t_mbx_color	get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile)
+t_mbx_color	get_texture_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
-	if (tile->skybox)
+	(void)tsr;
+	(void)tile;
+	if (ray->tile_data->skybox)
 		get_skybox_uv(ray);
 	else
 		get_tile_uv(ray);
-	ray->texture = tile->texture[ray->axis * 2
-		+ (ray->dir_sign.v[ray->axis] < 0)];
+	ray->texture = ray->tile_data->texture[
+		ray->axis * 2 + (ray->dir_sign.v[ray->axis] < 0)];
 	if (!ray->texture
 		|| ray->uv.x < 0 || ray->uv.y < 0 || ray->uv.x >= 1 || ray->uv.y >= 1)
 	{
-		printf("PIXEL FAIL %p [%.2f %.2f]{%f %f}%i\n",
+		printf("PIXEL FAIL %p [%.2f %.2f]{%f %f}\n",
 			ray->texture, ray->uv.x, ray->uv.y,
 			ray->position.v[(ray->axis == 0) * 2],
-			ray->position.v[(ray->axis == 1) + 1],
-			tile->skybox);
+			ray->position.v[(ray->axis == 1) + 1]);
 		return (color(0xFFFFFF));
 	}
 	ray->texture_uv = vec2i_mult_vd(ray->texture->texture->size, ray->uv);

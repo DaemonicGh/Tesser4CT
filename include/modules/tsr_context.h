@@ -87,21 +87,21 @@ typedef struct s_tsr_context
 	}	ui;
 	struct s_tsr_world_manager
 	{
-		t_tsr_tile			tiles[TILE_BUFFER_SIZE];
+		t_tsr_tile_data		tiles[TILE_BUFFER_SIZE];
 		t_mlem_value		tiles_mlem;
 		size_t				tile_count;
+		t_tsr_chunk_ref		*chunk_refs;
 		t_tsr_chunk			*chunks;
 		t_mlem_value		map_mlem;
-		t_tsr_tile			*skybox;
+		t_tsr_tile			skybox;
 		t_vec3				global_light;
 		t_vec4				global_light_col;
 		t_tsr_chunk			*origin;
 		t_vec3				spawn_pos;
+		uint8_t				tile_highlight_chunk_id;
 		t_vec3i				tile_highlight_pos;
 		int					tile_highlight_axis;
 	}	world;
-	t_world				wworld;
-	t_mbx_region		*nmap;
 	t_tsr_player		player;
 	t_tsr_camera		camera;
 	struct s_tsr_extras

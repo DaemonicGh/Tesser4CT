@@ -55,7 +55,7 @@ void	draw_setting_menu(t_tsr *tsr, t_ui_button *button)
 
 void	tsr_init_setting_menu(t_tsr *tsr)
 {
-	tsr->mbx->settings.show_cursor = true;
+	tsr->mbx->settings.hide_cursor = false;
 	tsr->mbx->settings.lock_cursor = false;
 	mbx_refresh_settings(tsr->mbx);
 	tsr->rendering.frag_shader = draw_ray;

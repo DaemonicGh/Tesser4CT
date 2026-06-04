@@ -83,6 +83,7 @@ int	main(void)
 	tsr_report(STATUS_DEBUG, REPORT_DEBUG_ON);
 	tsr = tsr_init();
 	init_state(tsr);
+	tsr->mbx->settings.use_azerty = true;
 	mbx_run(tsr->mbx, main_update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);
 }

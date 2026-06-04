@@ -30,8 +30,8 @@ static t_vec3	get_as_vec3(
 
 static void	load_map_attributes(t_tsr *tsr, t_mlem_value object)
 {
-	tsr->world.origin = &tsr->world.chunks[0];
-	tsr->world.skybox = &tsr->world.tiles[1];
+	tsr->world.origin = &tsr->world.chunks[1];
+	tsr->world.skybox = (t_tsr_tile){.type = 1};
 	tsr->world.spawn_pos = get_as_vec3(object, "spawn", vec3_zero());
 	tsr->world.global_light_col = vec3_w(
 			get_as_vec3(object, "light_col", vec3_zero()), 1);

@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_drawing.h"
 #include "tsr.h"
 
 static void	check_tile_highlight(
@@ -18,7 +17,8 @@ static void	check_tile_highlight(
 {
 	t_mbx_region	*highlight;
 
-	if (!vec3i_eq(ray->tile_chunk_position, tsr->world.tile_highlight_pos))
+	if (tsr->world.tile_highlight_chunk_id != ray->chunk_id
+		|| !vec3i_eq(ray->tile_position, tsr->world.tile_highlight_pos))
 		return ;
 	if (ray->axis == tsr->world.tile_highlight_axis)
 		highlight = tsr->textures.tile_face_highlight;
@@ -32,8 +32,8 @@ bool	set_ray_tile_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
 	t_vec4		col;
 
-	col = vec4_from_color(get_texture_color(ray, tile));
-	if (!tile->skybox && !ray->is_shadow)
+	col = vec4_from_color(get_texture_color(tsr, ray, tile));
+	if (!ray->tile_data->skybox && !ray->is_shadow)
 	{
 		check_tile_highlight(tsr, ray, &col);
 		apply_lighting_effects(tsr, ray, tile, &col);

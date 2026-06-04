@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_constants.h"
 
 void	get_ray_position(t_tsr_ray *ray)
 {
@@ -19,58 +18,64 @@ void	get_ray_position(t_tsr_ray *ray)
 				ray->distance - ray->abs_delta.v[ray->axis]));
 }
 
-static bool	step_ray(t_tsr_ray *ray)
+static void	check_chunk_bounds(t_tsr *tsr, t_tsr_ray *ray)
 {
-	const t_vec3i	c_iter = vec3i_mult_d(vec3i(CHUNK_SIZE,
-				CHUNK_SIZE * CHUNK_SIZE, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE),
-			(CHUNK_SIZE - 1.) / CHUNK_SIZE);
+	const t_vec3i	c_iter = vec3i(3, 12, 48);
 
+	if (ray->tile_position.v[ray->axis] < 0)
+	{
+		ray->chunk_id = tsr->world.chunk_refs[ray->chunk_id]
+			.neighbors[ray->axis * 2];
+		ray->chunk = &tsr->world.chunks[ray->chunk_id];
+		ray->tile_position.v[ray->axis] += 4;
+		ray->tile_index += c_iter.v[ray->axis];
+	}
+	else if (ray->tile_position.v[ray->axis] >= 4)
+	{
+		ray->chunk_id = tsr->world.chunk_refs[ray->chunk_id]
+			.neighbors[ray->axis * 2 + 1];
+		ray->chunk = &tsr->world.chunks[ray->chunk_id];
+		ray->tile_position.v[ray->axis] -= 4;
+		ray->tile_index -= c_iter.v[ray->axis];
+	}
+	else
+		ray->tile_index += ray->iter.v[ray->axis];
+}
+
+static void	step_ray(t_tsr *tsr, t_tsr_ray *ray)
+{
 	if (ray->dist.z < ray->dist.x && ray->dist.z < ray->dist.y)
 		ray->axis = 2;
 	else
 		ray->axis = (ray->dist.y < ray->dist.x);
 	ray->dist.v[ray->axis] += ray->abs_delta.v[ray->axis];
-	ray->tile_chunk_position.v[ray->axis] += ray->dir_sign.v[ray->axis];
+	ray->tile_position.v[ray->axis] += ray->dir_sign.v[ray->axis];
 	if (ray->lifetime-- < 0)
-		return (false);
-	if (ray->tile_chunk_position.v[ray->axis] < 0)
 	{
-		ray->chunk = ray->chunk->neighbors[ray->axis * 2];
-		ray->tile_chunk_position.v[ray->axis] += CHUNK_SIZE;
-		ray->tile_chunk_index += c_iter.v[ray->axis];
+		ray->chunk_id = 0;
+		ray->chunk = &tsr->world.chunks[0];
+		return ;
 	}
-	else if (ray->tile_chunk_position.v[ray->axis] >= CHUNK_SIZE)
-	{
-		ray->chunk = ray->chunk->neighbors[ray->axis * 2 + 1];
-		ray->tile_chunk_position.v[ray->axis] -= CHUNK_SIZE;
-		ray->tile_chunk_index -= c_iter.v[ray->axis];
-	}
-	else
-		ray->tile_chunk_index += ray->iter.v[ray->axis];
-	return (ray->chunk);
+	check_chunk_bounds(tsr, ray);
 }
 
 void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 {
-	ray->draw_tile = false;
-	ray->draw_prev_tile = false;
-	while (!ray->draw_tile && !ray->draw_prev_tile)
+	while (true)
 	{
-		ray->prev_tile = ray->tile;
-		if (step_ray(ray))
-			ray->tile = &tsr->world.tiles[
-				ray->chunk->tiles[ray->tile_chunk_index]];
-		else
-			ray->tile = tsr->world.skybox;
-		if (ray->tile != ray->prev_tile)
+		step_ray(tsr, ray);
+		if (!ray->chunk_id)
 		{
-			if (!ray->tile->skip)
-				ray->draw_tile = true;
-			if (ray->prev_tile->backface)
-				ray->draw_prev_tile = true;
+			ray->tile = &tsr->world.skybox;
+			break ;
 		}
-		else if (ray->prev_tile->inner_backface)
-			ray->draw_prev_tile = true;
+		if (tsr->world.chunk_refs[ray->chunk_id].process
+			& (1ul << ray->tile_index))
+		{
+			ray->tile = &ray->chunk->tiles[ray->tile_index];
+			break ;
+		}
 	}
+	ray->tile_data = &tsr->world.tiles[ray->tile->type];
 	ray->distance = ray->dist.v[ray->axis];
 }

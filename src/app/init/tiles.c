@@ -25,7 +25,7 @@ static t_tsr_texture	*get_texture(t_mlem_value *reference)
 	return (value.pointer_v);
 }
 
-static void	set_textures(t_tsr_tile *tile, t_mlem_value object)
+static void	set_textures(t_tsr_tile_data *tile, t_mlem_value object)
 {
 	const t_mlem_string	keys[6] = {
 		"west", "east", "bottom", "top", "north", "south"};
@@ -54,7 +54,7 @@ static void	set_textures(t_tsr_tile *tile, t_mlem_value object)
 	}
 }
 
-static void	set_values(t_tsr_tile *tile, t_mlem_value object)
+static void	set_values(t_tsr_tile_data *tile, t_mlem_value object)
 {
 	t_mlem_value		*value;
 
@@ -75,13 +75,13 @@ static void	set_values(t_tsr_tile *tile, t_mlem_value object)
 		tile->specular = mlem_dereference(*value).bool_v;
 }
 
-static t_tsr_tile	load_tile(t_tsr *tsr, t_mlem_value object)
+static t_tsr_tile_data	load_tile(t_tsr *tsr, t_mlem_value object)
 {
-	const t_tsr_tile	def = {.texture = {
+	const t_tsr_tile_data	def = {.texture = {
 		&tsr->textures.textures[0], &tsr->textures.textures[0],
 		&tsr->textures.textures[0], &tsr->textures.textures[0],
 		&tsr->textures.textures[0], &tsr->textures.textures[0]}};
-	t_tsr_tile			tile;
+	t_tsr_tile_data			tile;
 
 	tile = def;
 	if (object.type != MLEM_TYPE_OBJECT)

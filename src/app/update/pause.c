@@ -24,7 +24,7 @@ static void	draw_pause_menu(t_tsr *tsr)
 		"[ESC] Back to Game\n[X]   Exit\n[C] Setting",
 		vec2ix2_xy(tsr->ui.target->size.x / 2 - 100, 120, 2, 2),
 		tsr->textures.font_small);
-	
+
 }
 
 static t_mbx_color	pause_background(t_tsr *tsr, t_vec2 uv)
@@ -46,7 +46,7 @@ static t_mbx_color	pause_background(t_tsr *tsr, t_vec2 uv)
 
 void	tsr_init_pause_menu(t_tsr *tsr)
 {
-	tsr->mbx->settings.show_cursor = true;
+	tsr->mbx->settings.hide_cursor = false;
 	tsr->mbx->settings.lock_cursor = false;
 	mbx_refresh_settings(tsr->mbx);
 	mbx_center_cursor(tsr->mbx);

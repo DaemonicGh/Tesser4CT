@@ -34,16 +34,17 @@ static void	normal_map_transform(t_tsr_ray *ray)
 		ray->tile_normal = vec3(-nrm.x, nrm.y, -nrm.z);
 }
 
-void	get_normal(t_tsr_ray *ray, t_tsr_tile *tile)
+void	get_normal(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 {
 	t_mbx_region	*nrm;
 	t_vec2i			uv;
 	t_mbx_color		col;
 	t_vec3			normal;
 
+	(void)tsr;
+	(void)tile;
 	ray->tile_normal = get_tile_normal(ray->dir, ray->axis);
-	return ;
-	nrm = tile->texture[ray->axis * 2
+	nrm = ray->tile_data->texture[ray->axis * 2
 		+ (ray->dir_sign.v[ray->axis] > 0)]->texture;
 	if (nrm)
 	{
