@@ -26,8 +26,8 @@ typedef struct s_tsr_render_ray
 	t_vec3			dist;
 	double			distance;
 	t_vec3			position;
-	t_tsr_chunk		*chunk;
-	uint16_t		chunk_id;
+	t_tsr_chunk_id	chunk;
+	t_tsr_chunk		*tiles;
 	t_vec3i			tile_position;
 	int				tile_index;
 	int				lifetime;
@@ -65,7 +65,7 @@ void
 trace_ray(t_tsr *tsr, t_tsr_ray *ray);
 
 t_tsr_ray
-setup_ray(t_tsr *tsr, t_vec3 origin, t_tsr_chunk *chunk, t_vec3 forward);
+setup_ray(t_tsr *tsr, t_vec3 origin, t_tsr_chunk_id chunk_id, t_vec3 forward);
 
 void
 get_ray_position(t_tsr_ray *ray);

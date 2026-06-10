@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_world.h"
 
 static t_tsr_texture	*get_texture(t_mlem_value *reference)
 {
@@ -19,10 +18,10 @@ static t_tsr_texture	*get_texture(t_mlem_value *reference)
 
 	if (!reference || reference->type != MLEM_TYPE_REFERENCE)
 		return (NULL);
-	value = reference->reference_v->value;
-	if (!value.pointer_v)
+	value = reference->refv.value->value;
+	if (!value.ptrv.value)
 		return (NULL);
-	return (value.pointer_v);
+	return (value.ptrv.value);
 }
 
 static void	set_textures(t_tsr_tile_data *tile, t_mlem_value object)
@@ -60,19 +59,19 @@ static void	set_values(t_tsr_tile_data *tile, t_mlem_value object)
 
 	value = mlem_object_get(object, "skip");
 	if (value)
-		tile->skip = mlem_dereference(*value).bool_v;
+		tile->skip = mlem_dereference(*value).boolv.value;
 	value = mlem_object_get(object, "backface");
 	if (value)
-		tile->backface = mlem_dereference(*value).bool_v;
+		tile->backface = mlem_dereference(*value).boolv.value;
 	value = mlem_object_get(object, "inner_backface");
 	if (value)
-		tile->inner_backface = mlem_dereference(*value).bool_v;
+		tile->inner_backface = mlem_dereference(*value).boolv.value;
 	value = mlem_object_get(object, "skybox");
 	if (value)
-		tile->skybox = mlem_dereference(*value).bool_v;
+		tile->skybox = mlem_dereference(*value).boolv.value;
 	value = mlem_object_get(object, "specular");
 	if (value)
-		tile->specular = mlem_dereference(*value).bool_v;
+		tile->specular = mlem_dereference(*value).boolv.value;
 }
 
 static t_tsr_tile_data	load_tile(t_tsr *tsr, t_mlem_value object)
@@ -88,7 +87,7 @@ static t_tsr_tile_data	load_tile(t_tsr *tsr, t_mlem_value object)
 		return (tile);
 	set_textures(&tile, object);
 	set_values(&tile, object);
-	tsr->world.tile_count++;
+	tsr->world_data.tile_count++;
 	return (tile);
 }
 
@@ -98,17 +97,17 @@ void	load_tile_data(t_tsr *tsr)
 	t_mlem_reference	tile;
 	uint32_t			i;
 
-	tiles = mlem_parse("data/tiles.mlem", NULL, tsr->textures.textures_mlem);
+	tiles = mlem_parse("data/tiles.mlem", NULL, tsr->textures.mlem);
 	if (!tiles.type)
 		tsr_exit(tsr, STATUS_ERROR, NULL);
 	i = 0;
-	while (i < tiles.object_len && i < TILE_BUFFER_SIZE)
+	while (i < tiles.objectv.len && i < TILE_BUFFER_SIZE)
 	{
-		tile = tiles.object_v[i].value.reference_v;
-		tsr->world.tiles[i] = load_tile(tsr, tile->value);
+		tile = tiles.objectv.value[i].value.refv.value;
+		tsr->world_data.tiles[i] = load_tile(tsr, tile->value);
 		mlem_destroy(tile->value);
 		tile->value = mlem_int(i);
 		i++;
 	}
-	tsr->world.tiles_mlem = tiles;
+	tsr->world_data.mlem = tiles;
 }

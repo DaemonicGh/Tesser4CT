@@ -24,7 +24,6 @@ static void	draw_pause_menu(t_tsr *tsr)
 		"[ESC] Back to Game\n[X]   Exit\n[C] Setting",
 		vec2ix2_xy(tsr->ui.target->size.x / 2 - 100, 120, 2, 2),
 		tsr->textures.font_small);
-
 }
 
 static t_mbx_color	pause_background(t_tsr *tsr, t_vec2 uv)

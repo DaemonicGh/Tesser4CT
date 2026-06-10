@@ -17,10 +17,10 @@ static void	check_tile_highlight(
 {
 	t_mbx_region	*highlight;
 
-	if (tsr->world.tile_highlight_chunk_id != ray->chunk_id
-		|| !vec3i_eq(ray->tile_position, tsr->world.tile_highlight_pos))
+	if (tsr->player.tile_highlight_chunk != ray->chunk
+		|| !vec3i_eq(ray->tile_position, tsr->player.tile_highlight_pos))
 		return ;
-	if (ray->axis == tsr->world.tile_highlight_axis)
+	if (ray->axis == tsr->player.tile_highlight_axis)
 		highlight = tsr->textures.tile_face_highlight;
 	else
 		highlight = tsr->textures.tile_highlight;

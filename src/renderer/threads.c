@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include "tsr.h"
 
 static void	render_job(t_tsr *tsr, size_t job_i)
@@ -32,7 +33,7 @@ static void	render_job(t_tsr *tsr, size_t job_i)
 		while (pos.x++ < RENDER_JOB_REGION_W)
 		{
 			mbx_set_pixel_raw_i(tsr->rendering.target, i++,
-				tsr->rendering.current_frag_shader(tsr, uv));
+				tsr->rendering.data.frag_shader(tsr, uv));
 			uv.x += uv_delta.x;
 		}
 		uv.y += uv_delta.y;

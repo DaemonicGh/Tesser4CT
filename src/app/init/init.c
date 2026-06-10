@@ -11,25 +11,19 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_world.h"
 
 static void	init_data(t_tsr *tsr)
 {
 	load_regions(tsr);
 	load_texture_data(tsr);
 	load_tile_data(tsr);
-	load_map_data(tsr);
 }
 
 static void	init_player(t_tsr *tsr)
 {
-	tsr->player.rotation = vec3(M_PI, 0.001, 0.001);
-	tsr->camera.rotation = vec3(M_PI, 0.001, 0.001);
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
-	tsr->player.chunk = tsr->world.origin;
-	tsr->player.chunk_position = tsr->world.spawn_pos;
-	tsr->player.tile_id = 1;
+	tsr->player.hotbar_tile = 1;
 }
 
 static void	init_values(t_tsr *tsr)
@@ -37,8 +31,6 @@ static void	init_values(t_tsr *tsr)
 	tsr->mbx->settings.fps_cap = 60;
 	tsr->mbx->settings.exit_key = MBX_KEY_NONE;
 	tsr->mbx->settings.viewport_render = MBX_VIEWPORT_RENDER_SKIP;
-	tsr->world.global_light = vec3(0.0, 0.5, 0.866025);
-	tsr->world.global_light_col = vec4(1.8, 1.2, 0.8, 1.0);
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;
 	tsr->extras.fov = 90.0;
 	tsr->extras.focal_length = 1.0;

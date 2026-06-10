@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_inputs.h"
-#include "modules/mbx_structs.h"
 #include "tsr.h"
+#include "tsr_ui.h"
 
 static t_mbx_color	draw_main_menu_bg(t_tsr *tsr, t_vec2 uv)
 {
@@ -47,14 +46,10 @@ static void	draw_main_menu(t_tsr *tsr)
 	snprintf(str, 32, "FPS \t%.1f\n", 1. / tsr->mbx->dt);
 	mbx_set_text(tsr->ui.target, str,
 		vec2i(3, 3), tsr->textures.font_small);
-	draw_title(tsr, "TESSER4CT",
-		vec2i(tsr->ui.target->size.x / 2 - 180, 50), vec2(4, 4));
-	mbx_set_text_scaled(tsr->ui.target, "[Press any key]",
-		vec2ix2_xy(tsr->ui.target->size.x / 2 - 80, 150, 2, 2),
-		tsr->textures.font_small);
-	mbx_set_text_scaled(tsr->ui.target, "[X] Exit",
-		vec2ix2_xy(tsr->ui.target->size.x / 2 - 40, 320, 2, 2),
-		tsr->textures.font_small);
+	draw_title(tsr, "TESSER4CT", vec2i(140, 50), vec2(4, 4));
+	prompt_draw(tsr);
+	mbx_set_text_scaled(tsr->ui.target, "[ESC] Exit",
+		vec2ix2_xy(280, 320, 2, 2), tsr->textures.font_small);
 }
 
 void	tsr_init_main_menu(t_tsr *tsr)
@@ -63,16 +58,41 @@ void	tsr_init_main_menu(t_tsr *tsr)
 	tsr->mbx->settings.lock_cursor = false;
 	mbx_center_cursor(tsr->mbx);
 	tsr->rendering.frag_shader = draw_main_menu_bg;
+	prompt_init(tsr, vec2i(240, 160), "Open map");
+}
+
+static void	submit_map(t_tsr *tsr)
+{
+	uint32_t	i;
+
+	if (tsr->ui.prompt.cursor == 0)
+		return ;
+	i = 0;
+	while (i < tsr->ui.prompt.cursor)
+	{
+		tsr->ui.prompt.buffer[i] = tsr_tolower(tsr->ui.prompt.buffer[i]);
+		i++;
+	}
+	tsr->ui.prompt.is_error = !load_map(tsr);
+	if (tsr->ui.prompt.is_error)
+		tsr->ui.prompt.shake = 1;
+	else
+	{
+		tsr->ui.prompt.visible = false;
+		tsr->ui.state = UI_STATE_GAME;
+	}
 }
 
 void	tsr_update_main_menu(t_tsr *tsr)
 {
+
 	mbx_clear(tsr->ui.target, color_rgba(0x0));
 	draw_main_menu(tsr);
-	if (mbx_key_released(tsr->mbx, MBX_KEY_ESCAPE)
-		|| mbx_key_released(tsr->mbx, MBX_KEY_X))
+	if (mbx_key_released(tsr->mbx, MBX_KEY_ESCAPE))
+	{
 		tsr->mbx->exiting = true;
-	else if (tsr->mbx->last_release == 0
-		|| mbx_key_released(tsr->mbx, MBX_KEY_SPACE))
-		tsr->ui.state = UI_STATE_GAME;
+		return ;
+	}
+	if (prompt_update(tsr))
+		submit_map(tsr);
 }

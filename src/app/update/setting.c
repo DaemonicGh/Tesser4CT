@@ -14,17 +14,17 @@
 
 static void	light_red_channel(t_tsr *tsr)
 {
-	tsr->world.global_light_col.x += (double)tsr->mbx->scroll_delta * 0.05;
+	tsr->world_data.skylight_color.r += (double)tsr->mbx->scroll_delta * 0.05;
 }
 
 static void	light_green_channel(t_tsr *tsr)
 {
-	tsr->world.global_light_col.y += (double)tsr->mbx->scroll_delta * 0.05;
+	tsr->world_data.skylight_color.g += (double)tsr->mbx->scroll_delta * 0.05;
 }
 
 static void	light_blue_channel(t_tsr *tsr)
 {
-	tsr->world.global_light_col.z += (double)tsr->mbx->scroll_delta * 0.05;
+	tsr->world_data.skylight_color.b += (double)tsr->mbx->scroll_delta * 0.05;
 }
 
 static void	fov_setting(t_tsr *tsr)
@@ -39,13 +39,13 @@ void	draw_setting_menu(t_tsr *tsr, t_ui_button *button)
 
 	draw_title(tsr, "SETTINGS",
 		vec2i(tsr->ui.target->size.x / 2 - 120, 50), vec2(3, 3));
-	snprintf(str, 16, "Light R: %.2f", tsr->world.global_light_col.x);
+	snprintf(str, 16, "Light R: %.2f", tsr->world_data.skylight_color.r);
 	button[0].str = str;
 	draw_button(tsr, button + 0);
-	snprintf(str, 16, "Light G: %.2f", tsr->world.global_light_col.y);
+	snprintf(str, 16, "Light G: %.2f", tsr->world_data.skylight_color.g);
 	button[1].str = str;
 	draw_button(tsr, button + 1);
-	snprintf(str, 16, "Light B: %.2f", tsr->world.global_light_col.z);
+	snprintf(str, 16, "Light B: %.2f", tsr->world_data.skylight_color.b);
 	button[2].str = str;
 	draw_button(tsr, button + 2);
 	snprintf(str, 16, "FOV: %.2f", tsr->extras.fov);

@@ -16,29 +16,17 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "mlem.h"
 #include "tsr_core.h"
-#include "tsr_context.h"
 #include "tsr_player.h"
 #include "tsr_renderer.h"
 #include "tsr_ui.h"
 #include "tsr_utils.h"
-#include "tsr_ui_button.h"
 
 void
 load_regions(t_tsr *tsr);
 
 void
 load_texture_data(t_tsr *tsr);
-
-void
-load_tile_data(t_tsr *tsr);
-
-void
-load_chunk_data(t_tsr *tsr, t_mlem_value object);
-
-void
-load_map_data(t_tsr *tsr);
 
 void
 init_rendering(t_tsr *tsr);

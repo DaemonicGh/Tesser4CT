@@ -22,7 +22,7 @@ static t_tsr_texture	load_texture(t_tsr *tsr, t_mlem_value object)
 		return (texture);
 	texture.flags = TX_NONE;
 	texture.texture = mbx_create_region_from_file(tsr->mbx,
-			mlem_object_get(object, "file")->string_v);
+			mlem_object_get(object, "file")->strv.value);
 	tsr->textures.count++;
 	return (texture);
 }
@@ -37,14 +37,14 @@ void	load_texture_data(t_tsr *tsr)
 	if (!textures.type)
 		tsr_exit(tsr, STATUS_ERROR, NULL);
 	i = 0;
-	while (i < textures.object_len && i < TEXTURE_BUFFER_SIZE)
+	while (i < textures.objectv.len && i < TEXTURE_BUFFER_SIZE)
 	{
-		texture = textures.object_v[i].value.reference_v;
+		texture = textures.objectv.value[i].value.refv.value;
 		tsr->textures.textures[i] = load_texture(tsr, texture->value);
 		mlem_destroy(texture->value);
-		texture->value = (t_mlem_value){.type = MLEM_TYPE_USER_POINTER,
-			.pointer_v = &tsr->textures.textures[i]};
+		texture->value = mlem_raw_value(MLEM_TYPE_USER_POINTER,
+				(uint64_t) & tsr->textures.textures[i]);
 		i++;
 	}
-	tsr->textures.textures_mlem = textures;
+	tsr->textures.mlem = textures;
 }

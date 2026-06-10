@@ -18,10 +18,10 @@ void
 player_collision(t_tsr *tsr);
 
 void
-tsr_player_movement(t_tsr *tsr);
-
-void
 tsr_player_actions(t_tsr *tsr);
+
+bool
+tsr_player_update_prompt(t_tsr *tsr);
 
 void
 tsr_update_player(t_tsr *tsr);

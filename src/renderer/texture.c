@@ -54,14 +54,10 @@ t_mbx_color	get_texture_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 		get_tile_uv(ray);
 	ray->texture = ray->tile_data->texture[
 		ray->axis * 2 + (ray->dir_sign.v[ray->axis] < 0)];
-	if (!ray->texture
-		|| ray->uv.x < 0 || ray->uv.y < 0 || ray->uv.x >= 1 || ray->uv.y >= 1)
+	if (ray->uv.x >= 1)
 	{
-		printf("PIXEL FAIL %p [%.2f %.2f]{%f %f}\n",
-			ray->texture, ray->uv.x, ray->uv.y,
-			ray->position.v[(ray->axis == 0) * 2],
-			ray->position.v[(ray->axis == 1) + 1]);
-		return (color(0xFFFFFF));
+		printf("PIXEL FAIL\n");
+		ray->uv.x = 0.9999;
 	}
 	ray->texture_uv = vec2i_mult_vd(ray->texture->texture->size, ray->uv);
 	return (mbx_get_pixel_unsafe(ray->texture->texture, ray->texture_uv));

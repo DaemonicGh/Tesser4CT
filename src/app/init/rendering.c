@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include "tsr.h"
 
 static void	init_threads(t_tsr *tsr)

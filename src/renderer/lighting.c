@@ -42,17 +42,17 @@ static t_vec4
 	get_shadow_modifiers(t_tsr *tsr, t_tsr_ray *ray,
 		t_vec4 shadow, t_tsr_tile *tile)
 {
-	const t_vec4	light = tsr->world.global_light_col;
+	const t_vec4	light = tsr->world.data->skylight_color;
 	const t_vec4	dark = vec4(0.4, 0.6, 1.0, 1.0);
 	double			diffuse;
 	double			specular;
 
 	(void)tile;
-	diffuse = fmax(-vec3_dot(ray->tile_normal, tsr->world.global_light), 0);
+	diffuse = fmax(-vec3_dot(ray->tile_normal, tsr->world.data->skylight), 0);
 	specular = 0.0;
 	if (ray->tile_data->specular)
 		specular = pow(fmax(vec3_dot(vec3_normalize(ray->dir),
-						reflect(tsr->world.global_light, ray->tile_normal)),
+						reflect(tsr->world.data->skylight, ray->tile_normal)),
 					0), 32);
 	return (vec4_add(dark,
 			vec4_mult(light,

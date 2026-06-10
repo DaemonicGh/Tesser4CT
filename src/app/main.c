@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include "tsr.h"
 
 static void	prepare_next_render(t_tsr *tsr)
@@ -26,8 +27,13 @@ static void	prepare_next_render(t_tsr *tsr)
 	tsr->rendering.target = tsr->rendering.swap_target;
 	tsr->rendering.swap_target = tmp;
 	tsr->mbx->viewport = tsr->rendering.swap_target;
-	tsr->rendering.current_frag_shader = tsr->rendering.frag_shader;
-	tsr_update_camera(tsr);
+	tsr->rendering.data.camera = tsr->camera;
+	if (tsr->rendering.data.world.chunks != tsr->world.chunks)
+		free(tsr->rendering.data.world.chunks);
+	if (tsr->rendering.data.world.chunk_refs != tsr->world.chunk_refs)
+		free(tsr->rendering.data.world.chunk_refs);
+	tsr->rendering.data.world = tsr->world;
+	tsr->rendering.data.frag_shader = tsr->rendering.frag_shader;
 }
 
 static void	init_state(t_tsr *tsr)
@@ -83,7 +89,6 @@ int	main(void)
 	tsr_report(STATUS_DEBUG, REPORT_DEBUG_ON);
 	tsr = tsr_init();
 	init_state(tsr);
-	tsr->mbx->settings.use_azerty = true;
 	mbx_run(tsr->mbx, main_update, tsr);
 	tsr_exit(tsr, STATUS_INFO, REPORT_SUCCESS);
 }

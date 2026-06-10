@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "tsr_core.h"
+#include "mbx.h"
 
 typedef enum e_tsr_report_status
 {
@@ -40,9 +40,10 @@ typedef enum e_tsr_report_status
 #define REPORT_MEMORY		"Heap allocation failed"
 #define REPORT_NULLMBX		"Failed to initialize MacroBoX"
 #define REPORT_NULLMBXWIN	"Failed to initialize the MacroBoX window"
-#define REPORT_NULLDEFIMGF	"Failed to load the default image file at " DEFAULT_REGION_PATH
+#define REPORT_NULLDEFIMGF	"Failed to load the default image file"
 #define REPORT_NULLIMGF		"Failed to load image file at "
 #define REPORT_NULLTHREAD	"Failed to create thread"
+#define REPORT_MAPSAVED		"Sucessfully saved map at "
 
 t_vec3
 get_tile_normal(t_vec3 ray_dir, int axis);
@@ -60,13 +61,16 @@ void
 *tsr_memreport(void *pointer);
 
 size_t
-ft_strlen(const char *s);
+tsr_strlen(const char *s);
 
 int
-ft_strcmp(const char *s1, const char *s2);
+tsr_strcmp(const char *s1, const char *s2);
 
 char
-*ft_strcat(char *dst, const char *src);
+*tsr_strcat(char *dst, const char *src);
 
 char
-*ft_strdup(const char *src);
+*tsr_strdup(const char *src);
+
+char
+tsr_tolower(char c);

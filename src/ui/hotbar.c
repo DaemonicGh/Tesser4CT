@@ -14,23 +14,23 @@
 
 static void	set_hotbar_offset(t_tsr *tsr)
 {
-	const double	diff = tsr->player.tile_id - tsr->ui.hotbar.offset;
+	const double	diff = tsr->player.hotbar_tile - tsr->ui.hotbar.offset;
 	double			delta;
 
-	if (fabs(diff) < tsr->world.tile_count / 2.)
+	if (fabs(diff) < tsr->world.data->tile_count / 2.)
 		delta = 0.2 * diff;
 	else
-		delta = 0.2 * fsign(diff) * (fabs(diff) - tsr->world.tile_count);
+		delta = 0.2 * fsign(diff) * (fabs(diff) - tsr->world.data->tile_count);
 	if (fabs(delta) < 0.01)
 	{
-		tsr->ui.hotbar.offset = tsr->player.tile_id;
+		tsr->ui.hotbar.offset = tsr->player.hotbar_tile;
 		return ;
 	}
 	tsr->ui.hotbar.delta += delta;
 	tsr->ui.hotbar.delta *= 0.5;
 	tsr->ui.hotbar.offset = fwrap(
 			tsr->ui.hotbar.offset + tsr->ui.hotbar.delta,
-			1, tsr->world.tile_count);
+			1, tsr->world.data->tile_count);
 }
 
 void	draw_hotbar(t_tsr *tsr)
@@ -49,8 +49,8 @@ void	draw_hotbar(t_tsr *tsr)
 	{
 		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
 		mbx_set_subregion(tsr->ui.target,
-			tsr->world.tiles[wrap((int)(tsr->ui.hotbar.offset) + i,
-				1, tsr->world.tile_count)].texture[0]->texture,
+			tsr->world.data->tiles[wrap((int)(tsr->ui.hotbar.offset) + i,
+				1, tsr->world.data->tile_count)].texture[0]->texture,
 			vec2i(pos.x - 8 + 20 * off,
 				pos.y - 20 * (cos(off * off / 22.3) - 1)),
 			vec2ix2_xy(0, 0, 16, 16));

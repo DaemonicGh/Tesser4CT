@@ -2,9 +2,11 @@ map_id = test
 attributes = [
 	skybox = #sky_sunset
 	light_color = [1.8 1.2 0.8]
-	light_dir = [0.01 0.5 0.85]
+	light_direction = [0.01 0.5 0.85]
 	origin = 0
-	spawn = [1 1 1]
+	player_chunk = 0
+	player_position = [1.01 1.01 1.01]
+	player_rotation = [0 0]
 ]
 chunks = [
 	[

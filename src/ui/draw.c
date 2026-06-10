@@ -11,17 +11,17 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_ui.h"
 
 static void	draw_debug(t_tsr *tsr)
 {
 	char	str[256];
 
-	snprintf(str, 256, "FPS \t%.2f\nPOS \t[%.1f %.1f %.1f]\n"
-		"ROT \t[%.2f %.2f]\nFW  \t[%.1f %.1f %.1f]",
-		1.0 / tsr->mbx->dt, tsr->player.chunk_position.x,
-		tsr->player.chunk_position.y, tsr->player.chunk_position.z,
-		tsr->camera.rotation.x, tsr->camera.rotation.y,
-		tsr->camera.forward.x, tsr->camera.forward.y, tsr->camera.forward.z);
+	snprintf(str, 256, "FPS\t\t%.2f\nPOS\t\t[%.1f %.1f %.1f]\n"
+		"ROT\t\t[%.2f %.2f]\nCID\t\t%u",
+		1.0 / tsr->mbx->dt, tsr->player.position.x,
+		tsr->player.position.y, tsr->player.position.z,
+		tsr->camera.rotation.x, tsr->camera.rotation.y, tsr->player.chunk);
 	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
 }
 
@@ -51,5 +51,6 @@ void	draw_ui(t_tsr *tsr)
 {
 	draw_debug(tsr);
 	draw_crosshair(tsr);
+	prompt_draw(tsr);
 	draw_hotbar(tsr);
 }

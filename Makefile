@@ -16,7 +16,7 @@
 NAMES					:=	Tesser4CT
 
 app_init_files			:=	\
-	init regions rendering textures tiles map chunks							\
+	init regions rendering textures tiles										\
 
 app_files				:=	\
 	$(addprefix init/,	$(app_init_files))\
@@ -26,12 +26,15 @@ app_files				:=	\
 renderer_files			:=	\
 	camera draw_ray get_color lighting normal texture threads trace_ray			\
 
+world_files				:=	\
+	load/map load/chunks save/map save/chunks chunk tile						\
+
 common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
-	player/actions player/movement player/update player/collision				\
-	world/chunk world/chunk_ref world/tile										\
-	ui/draw	ui/hotbar ui/title ui/button.c										\
+	$(addprefix world/,		$(world_files))\
+	player/actions player/update player/collision player/prompt					\
+	ui/draw	ui/hotbar ui/title ui/button ui/prompt								\
 	utils/memory utils/report utils/string utils/tile							\
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a MLEM/libmlem.a

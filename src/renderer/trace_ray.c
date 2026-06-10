@@ -24,17 +24,15 @@ static void	check_chunk_bounds(t_tsr *tsr, t_tsr_ray *ray)
 
 	if (ray->tile_position.v[ray->axis] < 0)
 	{
-		ray->chunk_id = tsr->world.chunk_refs[ray->chunk_id]
+		ray->chunk = tsr->rendering.data.world.chunk_refs[ray->chunk]
 			.neighbors[ray->axis * 2];
-		ray->chunk = &tsr->world.chunks[ray->chunk_id];
 		ray->tile_position.v[ray->axis] += 4;
 		ray->tile_index += c_iter.v[ray->axis];
 	}
 	else if (ray->tile_position.v[ray->axis] >= 4)
 	{
-		ray->chunk_id = tsr->world.chunk_refs[ray->chunk_id]
+		ray->chunk = tsr->rendering.data.world.chunk_refs[ray->chunk]
 			.neighbors[ray->axis * 2 + 1];
-		ray->chunk = &tsr->world.chunks[ray->chunk_id];
 		ray->tile_position.v[ray->axis] -= 4;
 		ray->tile_index -= c_iter.v[ray->axis];
 	}
@@ -52,8 +50,7 @@ static void	step_ray(t_tsr *tsr, t_tsr_ray *ray)
 	ray->tile_position.v[ray->axis] += ray->dir_sign.v[ray->axis];
 	if (ray->lifetime-- < 0)
 	{
-		ray->chunk_id = 0;
-		ray->chunk = &tsr->world.chunks[0];
+		ray->chunk = 0;
 		return ;
 	}
 	check_chunk_bounds(tsr, ray);
@@ -64,18 +61,21 @@ void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 	while (true)
 	{
 		step_ray(tsr, ray);
-		if (!ray->chunk_id)
+		if (!ray->chunk)
 		{
-			ray->tile = &tsr->world.skybox;
+			ray->tile = &tsr->world.data->skybox;
+			ray->tiles = &tsr->rendering.data.world.chunks[0];
 			break ;
 		}
-		if (tsr->world.chunk_refs[ray->chunk_id].process
+		if (tsr->rendering.data.world.chunk_refs[ray->chunk].process
 			& (1ul << ray->tile_index))
 		{
-			ray->tile = &ray->chunk->tiles[ray->tile_index];
-			break ;
+			ray->tiles = &tsr->rendering.data.world.chunks[ray->chunk];
+			ray->tile = &ray->tiles->tiles[ray->tile_index];
+			if (ray->tile->type <= tsr->world.data->tile_count)
+				break ;
 		}
 	}
-	ray->tile_data = &tsr->world.tiles[ray->tile->type];
+	ray->tile_data = &tsr->world.data->tiles[ray->tile->type];
 	ray->distance = ray->dist.v[ray->axis];
 }

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_core.h"
 
 t_tsr_tile	tsr_tile(t_tsr_tile_id id, uint8_t orientation)
 {
@@ -24,28 +23,28 @@ int	tsr_get_tile_index(t_vec3i pos)
 }
 
 bool	tsr_set_tile(
-	t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i pos, t_tsr_tile tile)
+	const t_tsr_world *world, t_tsr_chunk_id chunk_id, t_vec3i pos, t_tsr_tile tile)
 {
-	const bool	skip = tsr->world.tiles[tile.type].skip;
+	const bool	skip = world->data->tiles[tile.type].skip;
 	int			index;
 
-	chunk = tsr_relocate_chunk(tsr, chunk, &pos);
-	if (!chunk)
+	chunk_id = tsr_relocate_chunk(world, chunk_id, &pos);
+	if (!chunk_id)
 		return (false);
 	index = tsr_get_tile_index(pos);
-	chunk->tiles[index] = tile;
+	world->chunks[chunk_id].tiles[index] = tile;
 	if (skip)
-		tsr->world.chunk_refs[chunk->id].process &= ~(1ul << index);
+		world->chunk_refs[chunk_id].process &= ~(1ul << index);
 	else
-		tsr->world.chunk_refs[chunk->id].process |= 1ul << index;
+		world->chunk_refs[chunk_id].process |= 1ul << index;
 	return (true);
 }
 
 t_tsr_tile	*tsr_get_tile(
-	t_tsr *tsr, t_tsr_chunk *chunk, t_vec3i pos)
+	const t_tsr_world *world, t_tsr_chunk_id chunk_id, t_vec3i pos)
 {
-	chunk = tsr_relocate_chunk(tsr, chunk, &pos);
-	if (!chunk)
-		return (&tsr->world.skybox);
-	return (&chunk->tiles[tsr_get_tile_index(pos)]);
+	chunk_id = tsr_relocate_chunk(world, chunk_id, &pos);
+	if (!chunk_id)
+		return (&world->data->skybox);
+	return (&world->chunks[chunk_id].tiles[tsr_get_tile_index(pos)]);
 }

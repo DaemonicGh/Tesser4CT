@@ -35,6 +35,15 @@
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18
 
+# define PROMPT_SIZE			64
+# define MAP_SELECT_PREFIX		"maps/"
+# define MAP_SELECT_PREFIX_LEN	5
+# define MAP_SELECT_SUFFIX		".mlem"
+# define MAP_SELECT_SUFFIX_LEN	5
+
+# define MAP_INFO_INPUT			"Enter map name:"
+# define MAP_INFO_ERROR			"ERROR: Unable to open map"
+
 # define CAMERA_SENSITIVITY		2
 
 #endif

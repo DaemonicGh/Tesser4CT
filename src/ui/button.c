@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tsr_ui_button.h"
+#include "tsr.h"
 
 static int	inside(t_vec2i pos, t_vec2i size, t_vec2i mouse)
 {
@@ -27,10 +27,10 @@ void	draw_button(t_tsr *tsr, t_ui_button *button)
 	int				scale;
 	t_vec2i			text_size;
 
-	scale = min(button->size.x / (charset_size.x * ft_strlen(button->str)),
+	scale = min(button->size.x / (charset_size.x * tsr_strlen(button->str)),
 			button->size.y / charset_size.y);
 	text_size = vec2i_mult_d(charset_size, scale);
-	text_size.x *= ft_strlen(button->str);
+	text_size.x *= tsr_strlen(button->str);
 	color = button->still_col;
 	if (button->hovered)
 		color = button->hover_col;
@@ -46,7 +46,7 @@ void	draw_button(t_tsr *tsr, t_ui_button *button)
 void	update_button(t_tsr *tsr, t_ui_button *button, void (*f)(t_tsr *))
 {
 	button->hovered = inside(button->pos, button->size,
-		vec2i_vd(tsr->mbx->cursor));
+			vec2i_vd(tsr->mbx->cursor));
 	if (button->hovered && f)
 		f(tsr);
 }

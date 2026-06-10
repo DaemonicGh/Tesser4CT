@@ -24,13 +24,13 @@ static void	load_chunk_tiles(t_tsr_chunk *chunk, t_mlem_value array)
 	j = 0;
 	tile = 0;
 	count = 0;
-	while (i < array.array_len)
+	while (i < array.arrayv.len)
 	{
-		if (array.array_v[i].type == MLEM_TYPE_INT)
-			count = array.array_v[i].int_v - 1;
+		if (array.arrayv.value[i].type == MLEM_TYPE_INT)
+			count = array.arrayv.value[i].intv.value - 1;
 		else
 		{
-			tile = array.array_v[i].reference_v->value.int_v;
+			tile = array.arrayv.value[i].refv.value->value.intv.value;
 			count = 1;
 		}
 		while (count-- > 0 && j < 64)
@@ -61,20 +61,20 @@ static t_tsr_chunk_ref	load_chunk_ref(
 	t_mlem_value		*value;
 	uint32_t			i;
 
+	chunk_ref = (t_tsr_chunk_ref){0};
 	i = 0;
 	while (i < 6)
 	{
 		value = mlem_object_get(object, keys[i]);
 		if (value)
-			chunk_ref.neighbors[i] = value->int_v + 1;
+			chunk_ref.neighbors[i] = value->intv.value + 1;
 		i++;
 	}
 	i = 64;
-	chunk_ref.process = 0;
 	while (i--)
 	{
 		chunk_ref.process <<= 1;
-		chunk_ref.process |= !tsr->world.tiles[chunk->tiles[i].type].skip;
+		chunk_ref.process |= !tsr->world_data.tiles[chunk->tiles[i].type].skip;
 	}
 	return (chunk_ref);
 }
@@ -84,18 +84,20 @@ void	load_chunk_data(t_tsr *tsr, t_mlem_value array)
 	t_mlem_value	chunk;
 	uint32_t		i;
 
+	tsr->world.chunk_count = array.arrayv.len + 1;
+	tsr->world.chunk_capacity = tsr->world.chunk_count;
 	tsr->world.chunks = malloc(
-			sizeof(t_tsr_chunk) * (array.array_len + 1));
+			sizeof(t_tsr_chunk) * tsr->world.chunk_capacity);
 	tsr->world.chunk_refs = malloc(
-			sizeof(t_tsr_chunk_ref) * (array.array_len + 1));
+			sizeof(t_tsr_chunk_ref) * tsr->world.chunk_capacity);
 	if (!tsr->world.chunks || !tsr->world.chunk_refs)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
 	tsr->world.chunks[0] = (t_tsr_chunk){0};
 	tsr->world.chunk_refs[0] = (t_tsr_chunk_ref){0};
 	i = 0;
-	while (i < array.array_len)
+	while (i < array.arrayv.len)
 	{
-		chunk = array.array_v[i++];
+		chunk = array.arrayv.value[i++];
 		tsr->world.chunks[i] = load_chunk(tsr, chunk);
 		tsr->world.chunks[i].id = i;
 		tsr->world.chunk_refs[i] = load_chunk_ref(

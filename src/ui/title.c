@@ -31,8 +31,8 @@ static t_mbx_color	reverse(void *data, t_mbx_region *region, int index)
 
 static void	set_wierd_char(t_tsr *tsr, char c, t_vec2i pos, t_vec2 scale)
 {
-	const uint8_t	mask = (((int)(
-			(tsr->mbx->now - tsr->mbx->app_timestamp + ~pos.x) * 10))
+	const uint8_t	mask = (
+			((int)((tsr->mbx->now - tsr->mbx->app_timestamp + ~pos.x) * 10))
 			^ ~(int)tsr->mbx->now) & 0b11111111;
 	t_vec2ix3		pos_uv_wh;
 

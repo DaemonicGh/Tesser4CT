@@ -12,7 +12,7 @@
 
 #include "tsr_utils.h"
 
-size_t	ft_strlen(const char *s)
+size_t	tsr_strlen(const char *s)
 {
 	size_t	i;
 
@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-int	ft_strcmp(const char *s1, const char *s2)
+int	tsr_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
 
@@ -32,24 +32,24 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (s1[i] - s2[i]);
 }
 
-char	*ft_strcat(char *dst, const char *src)
+char	*tsr_strcat(char *dst, const char *src)
 {
-	const size_t	i = ft_strlen(dst);
+	const size_t	i = tsr_strlen(dst);
 	size_t			j;
 
-	j = ft_strlen(src);
+	j = tsr_strlen(src);
 	dst[i + j] = 0;
 	while (j--)
 		dst[i + j] = src[j];
 	return (dst);
 }
 
-char	*ft_strdup(const char *src)
+char	*tsr_strdup(const char *src)
 {
 	char	*dst;
 	size_t	len;
 
-	len = ft_strlen(src);
+	len = tsr_strlen(src);
 	dst = malloc(len + 1);
 	if (!dst)
 		return (NULL);
@@ -57,4 +57,11 @@ char	*ft_strdup(const char *src)
 	while (len--)
 		dst[len] = src[len];
 	return (dst);
+}
+
+char	tsr_tolower(char c)
+{
+	if (c >= 'A' && c < 'Z')
+		c += 32;
+	return (c);
 }
