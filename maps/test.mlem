@@ -1,48 +1,324 @@
-map_id = test
-attributes = [
-	skybox = #sky_sunset
-	light_color = [1.8 1.2 0.8]
-	light_direction = [0.01 0.5 0.85]
-	origin = 0
-	player_chunk = 0
-	player_position = [1.01 1.01 1.01]
-	player_rotation = [0 0]
+"map_id" = "test"
+"attributes" = [
+	"skybox" = #sky_sunset
+	"light_color" = [
+		1.8
+		1.2
+		.8
+	]
+	"light_direction" = [
+		.01
+		.5
+		.85
+	]
+	"origin" = 0
+	"player_chunk" = 3
+	"player_position" = [
+		.62124024878
+		.59962264656
+		2.42223215622
+	]
+	"player_rotation" = [
+		-1.71875
+		.00277777777
+		0.
+	]
 ]
-chunks = [
+"chunks" = [
 	[
-		tiles = [#grass]
-		south = 1
-		north = 1
-		east = 3
-		west = 3
-		up = 2
-		down = 2
+		"tiles" = [
+			#grass
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 3
+		"east" = 3
+		"down" = 2
+		"up" = 2
+		"north" = 1
+		"south" = 1
 	]
 	[
-		tiles = [#stone]
-		south = 0
-		north = 0
-		east = 2
-		west = 2
-		up = 3
-		down = 3
+		"tiles" = [
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 2
+		"east" = 2
+		"down" = 3
+		"up" = 3
+		"north" = 0
+		"south" = 0
 	]
 	[
-		tiles = [#oak_planks]
-		south = 3
-		north = 3
-		east = 1
-		west = 1
-		up = 0
-		down = 0
+		"tiles" = [
+			#oak_planks
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 1
+		"east" = 1
+		"down" = 0
+		"up" = 0
+		"north" = 3
+		"south" = 3
 	]
 	[
-		tiles = [#oak_log]
-		south = 2
-		north = 2
-		east = 0
-		west = 0
-		up = 1
-		down = 1
+		"tiles" = [
+			#oak_log
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 0
+		"east" = 0
+		"down" = 1
+		"up" = 1
+		"north" = 2
+		"south" = 2
 	]
 ]

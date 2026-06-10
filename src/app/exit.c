@@ -41,6 +41,7 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 	mlem_destroy(tsr->world_data.mlem);
 	free(tsr->world.chunks);
 	free(tsr->world.chunk_refs);
+	free(tsr->world_data.name);
 	mbx_exit(tsr->mbx);
 	free(tsr);
 	exit(!tsr_report(status, message));

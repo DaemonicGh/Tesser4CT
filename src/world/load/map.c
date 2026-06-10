@@ -84,7 +84,10 @@ static bool	load_map_data(t_tsr *tsr, t_mlem_value map)
 	value = mlem_object_get(map, "map_id");
 	if (!value || value->type != MLEM_TYPE_STRING)
 		return (false);
-	tsr->world_data.name = value->strv.value;
+	free(tsr->world_data.name);
+	tsr->world_data.name = tsr_strdup(value->strv.value);
+	if (!tsr->world_data.name)
+		return (false);
 	value = mlem_object_get(map, "chunks");
 	if (!value || value->type != MLEM_TYPE_ARRAY)
 		return (false);
