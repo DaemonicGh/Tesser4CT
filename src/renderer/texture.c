@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 23:38:55 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/28 22:09:11 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/10 11:24:41 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,9 @@ t_mbx_color	get_texture_color(t_tsr_ray *ray, t_tsr_tile *tile)
 	ray->texture = tile->texture[ray->axis * 2
 		+ (ray->dir_sign.v[ray->axis] > 0)];
 	ray->texture_uv = vec2i_mult_vd(ray->texture->texture->size, ray->uv);
+	if (ray->texture->flags & TX_PROPERTY)
+		ray->texture_uv.y /= 3;
+	else if (ray->texture->flags & TX_NORMAL)
+		ray->texture_uv.y /= 2;
 	return (mbx_get_pixel_unsafe(ray->texture->texture, ray->texture_uv));
 }

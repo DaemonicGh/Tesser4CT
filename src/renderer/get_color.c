@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 15:57:33 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/21 20:49:38 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/08 11:02:43 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_vec4	ray_tile_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
 
 	col = vec4_from_color(get_texture_color(ray, tile));
 	if (tile->skybox || ray->is_shadow)
-		return (col);
+		return (col);	
 	check_tile_highlight(tsr, ray, &col);
 	apply_lighting_effects(tsr, ray, tile, &col);
 	return (col);

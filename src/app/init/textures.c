@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/27 14:44:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/29 02:48:37 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/10 11:25:37 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,19 @@ static t_tsr_texture	load_texture(t_tsr *tsr, t_mlem_value object)
 {
 	const t_tsr_texture	def = {.texture = tsr->textures._default};
 	t_tsr_texture		texture;
+	t_mlem_value		*value;
 
 	texture = def;
 	if (object.type != MLEM_TYPE_OBJECT)
-		return (texture);
+		return (texture);	
 	texture.flags = TX_NONE;
+	value = mlem_object_get(object, "normal");
+	if (value && value->type == MLEM_TYPE_BOOL && value->bool_v)
+		texture.flags |= TX_NORMAL;
+	value = mlem_object_get(object, "property");
+	if (value && value->type == MLEM_TYPE_BOOL && value->bool_v
+			&& (texture.flags & TX_NORMAL))
+		texture.flags |= TX_PROPERTY;
 	texture.texture = mbx_create_region_from_file(tsr->mbx,
 			mlem_object_get(object, "file")->string_v);
 	tsr->textures.count++;

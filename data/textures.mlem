@@ -3,54 +3,83 @@
 ]
 #stone = [
 	file = "assets/textures/tiles/stone.png"
+	normal = true
 ]
 #dirt = [
 	file = "assets/textures/tiles/dirt.png"
+	normal = true
 ]
 #grass_block_side = [
 	file = "assets/textures/tiles/grass_block_side.png"
+	normal = true
 ]
 #grass_block_top = [
 	file = "assets/textures/tiles/grass_block_top.png"
+	normal = true
 ]
 #cobblestone = [
 	file = "assets/textures/tiles/cobblestone.png"
+	normal = true
 ]
 #stone_bricks = [
 	file = "assets/textures/tiles/stone_bricks.png"
+	normal = true
+	property = true
 ]
 #oak_planks = [
 	file = "assets/textures/tiles/oak_planks.png"
+	normal = true
 ]
 #oak_log_side = [
 	file = "assets/textures/tiles/oak_log.png"
+	normal = true
 ]
 #oak_log_top = [
 	file = "assets/textures/tiles/oak_log_top.png"
+	normal = true
 ]
 #oak_leaves = [
 	file = "assets/textures/tiles/oak_leaves.png"
+	normal = true
 ]
 #iron_block = [
 	file = "assets/textures/tiles/iron_block.png"
+	normal = true
+	property = true
 ]
 #moss = [
 	file = "assets/textures/tiles/moss.png"
+	normal = true
 ]
 #glass = [
 	file = "assets/textures/tiles/glass.png"
+	normal = true
 ]
 #white_stained_glass = [
 	file = "assets/textures/tiles/white_stained_glass.png"
+	normal = true
 ]
 #red_stained_glass = [
 	file = "assets/textures/tiles/red_stained_glass.png"
+	normal = true
 ]
 #green_stained_glass = [
 	file = "assets/textures/tiles/green_stained_glass.png"
+	normal = true
 ]
 #blue_stained_glass = [
 	file = "assets/textures/tiles/blue_stained_glass.png"
+	normal = true
+]
+#magma = [
+	file = "assets/textures/tiles/magma.png"
+	normal = true
+	property = true
+]
+#gold_ore = [
+	file = "assets/textures/tiles/gold_ore.png"
+	normal = true
+	property = true
 ]
 #skybox_north = [
 	file = "assets/textures/tiles/skybox_north.png"

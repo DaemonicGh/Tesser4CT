@@ -6,7 +6,7 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 16:51:50 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/28 22:08:59 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/10 11:25:15 by emarrot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,21 @@ static void	normal_map_transform(t_tsr_ray *ray)
 
 void	get_normal(t_tsr_ray *ray, t_tsr_tile *tile)
 {
-	t_mbx_region	*nrm;
+	t_tsr_texture	*tex;
 	t_vec2i			uv;
 	t_mbx_color		col;
 	t_vec3			normal;
 
-	ray->tile_normal = get_tile_normal(ray->dir, ray->axis);
-	return ;
-	nrm = tile->texture[ray->axis * 2
-		+ (ray->dir_sign.v[ray->axis] > 0)]->texture;
-	if (nrm)
+	tex = tile->texture[ray->axis * 2
+		+ (ray->dir_sign.v[ray->axis] > 0)];
+	if (tex->flags & TX_NORMAL)
 	{
-		uv = vec2i_mult_vd(nrm->size, ray->uv);
-		col = mbx_get_pixel_unsafe(nrm, uv);
+		uv = vec2i_mult_vd(tex->texture->size, ray->uv);
+		if (tex->flags & TX_PROPERTY)
+			uv.y = uv.y / 3 + tex->texture->size.x;
+		else	
+			uv.y = uv.y / 2 + tex->texture->size.x;
+		col = mbx_get_pixel_unsafe(tex->texture, uv);
 		normal.x = 1.0 - col.r * 2.0 / 255;
 		normal.y = col.g * 2.0 / 255 - 1.0;
 		normal.z = sqrt(1.0 - normal.x * normal.x - normal.y * normal.y);

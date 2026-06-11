@@ -15,10 +15,10 @@
 [
 	texture = #grass_block_side
 	textures = [
-		top		= #grass_block_top
-		bottom	= #dirt
+		top		= #dirt
+		bottom	= #grass_block_top
 ]]
-[ texture = #oak_leaves				backface = true		inner_backface = true]
+[ texture = #oak_leaves				backface = false	inner_backface = true]
 [
 	texture = #oak_log_side
 	textures = [
@@ -35,3 +35,5 @@
 [ texture = #red_stained_glass		backface = false	specular = true ]
 [ texture = #green_stained_glass	backface = false	specular = true ]
 [ texture = #blue_stained_glass		backface = false	specular = true ]
+[ texture = #magma			backface = false	specular = true ]
+[ texture = #gold_ore ]
