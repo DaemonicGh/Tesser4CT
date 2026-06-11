@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_core.h"
-#include "tsr_ui.h"
 
 static void	update_player_rotation(t_tsr *tsr)
 {
@@ -35,14 +33,13 @@ static void	update_player_chunk(t_tsr *tsr)
 	while (axis--)
 	{
 		chunk = tsr->player.chunk;
-		if (target.v[axis] < tsr->player.hitbox.v[axis])
+		if (target.v[axis] < 0.1)
 			chunk = tsr->world.chunk_refs[chunk].neighbors[axis * 2];
-		else if (target.v[axis] >= 4 - tsr->player.hitbox.v[axis])
+		else if (target.v[axis] >= 3.9)
 			chunk = tsr->world.chunk_refs[chunk].neighbors[axis * 2 + 1];
 		if (!chunk)
 		{
-			tsr->player.position.v[axis] = fclamp(target.v[axis],
-					tsr->player.hitbox.v[axis], 4 - tsr->player.hitbox.v[axis]);
+			tsr->player.position.v[axis] = fclamp(target.v[axis], 0.1, 3.9);
 			tsr->player.velocity.v[axis] = 0;
 			continue ;
 		}

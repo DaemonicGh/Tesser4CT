@@ -33,7 +33,7 @@ common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
 	$(addprefix world/,		$(world_files))\
-	player/actions player/update player/collision player/prompt					\
+	player/actions player/update player/collision player/prompt	player/chunk	\
 	ui/draw	ui/hotbar ui/title ui/button ui/prompt								\
 	utils/memory utils/report utils/string utils/tile							\
 

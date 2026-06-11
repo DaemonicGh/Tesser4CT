@@ -1,0 +1,466 @@
+"map_id" = "light2"
+"attributes" = [
+	"skybox" = #sky_sunset
+	"light_color" = [
+		1.8
+		1.2
+		.8
+	]
+	"light_direction" = [
+		.001
+		.5
+		.85
+	]
+	"origin" = 0
+	"player_chunk" = 4
+	"player_position" = [
+		2.50869030725
+		3.1
+		1.8806809624
+	]
+	"player_rotation" = [
+		1.49568530717
+		.12642589542
+		0.
+	]
+]
+"chunks" = [
+	[
+		"tiles" = [
+			#grass
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 3
+		"east" = 3
+		"down" = 2
+		"up" = 2
+		"north" = 4
+		"south" = 1
+	]
+	[
+		"tiles" = [
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#sky_sunset
+			#stone
+			#stone
+			#stone
+			#sky_sunset
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 2
+		"east" = 2
+		"down" = 3
+		"up" = 3
+		"north" = 0
+		"south" = 5
+	]
+	[
+		"tiles" = [
+			#oak_planks
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 1
+		"east" = 1
+		"down" = 0
+		"up" = 0
+		"north" = 3
+		"south" = 3
+	]
+	[
+		"tiles" = [
+			#oak_log
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#stone_bricks
+			#air
+			#air
+			#air
+			#stone_bricks
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 0
+		"east" = 0
+		"down" = 1
+		"up" = 1
+		"north" = 2
+		"south" = 2
+	]
+	[
+		"tiles" = [
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#stone
+			#stone
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"east" = 5
+		"south" = 0
+	]
+	[
+		"tiles" = [
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#stone
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+			#air
+		]
+		"west" = 4
+		"down" = 0
+		"up" = 0
+		"north" = 1
+	]
+]

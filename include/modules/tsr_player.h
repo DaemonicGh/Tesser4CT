@@ -20,6 +20,12 @@ player_collision(t_tsr *tsr);
 void
 tsr_player_actions(t_tsr *tsr);
 
+void
+create_chunk(t_tsr *tsr, t_tsr_chunk_id id, bool one_way);
+
+void
+update_chunk_prompt(t_tsr *tsr);
+
 bool
 tsr_player_update_prompt(t_tsr *tsr);
 

@@ -1,0 +1,24 @@
+"map_id" = ""
+"attributes" = [
+	"skybox" = #sky_sunset
+	"origin" = 0
+	"player_position" = [
+		2.01
+		3.01
+		2.01
+	]
+]
+"chunks" = [
+	[
+		"tiles" = [
+			#stone 4
+			#air 12
+			#stone 4
+			#air 12
+			#stone 4
+			#air 12
+			#stone 4
+			#air 12
+		]
+	]
+]

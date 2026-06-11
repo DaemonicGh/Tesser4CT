@@ -1,32 +1,32 @@
-"map_id" = "test"
-"attributes" = [
-	"skybox" = #sky_sunset
-	"light_color" = [
+map_id = test
+attributes = [
+	skybox = #sky_sunset
+	light_color = [
 		1.8
 		1.2
 		.8
 	]
-	"light_direction" = [
+	light_direction = [
 		.01
 		.5
 		.85
 	]
-	"origin" = 0
-	"player_chunk" = 3
-	"player_position" = [
-		.62124024878
-		.59962264656
-		2.42223215622
+	origin = 0
+	player_chunk = 3
+	player_position = [
+		2.32225138775
+		2.15960705291
+		.71869592834
 	]
-	"player_rotation" = [
-		-1.71875
-		.00277777777
+	player_rotation = [
+		3.13631030717
+		.14166666667
 		0.
 	]
 ]
-"chunks" = [
+chunks = [
 	[
-		"tiles" = [
+		tiles = [
 			#grass
 			#air
 			#air
@@ -92,15 +92,15 @@
 			#air
 			#air
 		]
-		"west" = 3
-		"east" = 3
-		"down" = 2
-		"up" = 2
-		"north" = 1
-		"south" = 1
+		west = 3
+		east = 3
+		down = 2
+		up = 2
+		north = 1
+		south = 1
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#stone
 			#air
 			#air
@@ -166,15 +166,15 @@
 			#air
 			#air
 		]
-		"west" = 2
-		"east" = 2
-		"down" = 3
-		"up" = 3
-		"north" = 0
-		"south" = 0
+		west = 2
+		east = 2
+		down = 3
+		up = 3
+		north = 0
+		south = 0
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#oak_planks
 			#air
 			#air
@@ -240,15 +240,15 @@
 			#air
 			#air
 		]
-		"west" = 1
-		"east" = 1
-		"down" = 0
-		"up" = 0
-		"north" = 3
-		"south" = 3
+		west = 1
+		east = 1
+		down = 0
+		up = 0
+		north = 3
+		south = 3
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#oak_log
 			#air
 			#air
@@ -314,11 +314,11 @@
 			#air
 			#air
 		]
-		"west" = 0
-		"east" = 0
-		"down" = 1
-		"up" = 1
-		"north" = 2
-		"south" = 2
+		west = 0
+		east = 0
+		down = 1
+		up = 1
+		north = 2
+		south = 2
 	]
 ]

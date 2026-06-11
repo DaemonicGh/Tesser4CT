@@ -68,18 +68,16 @@ void	prompt_draw(t_tsr *tsr)
 
 	if (!tsr->ui.prompt.visible)
 		return ;
+	mbx_set_text_scaled(tsr->ui.target, tsr->ui.prompt.message,
+		vec2ix2(ele_pos.p1, scale), tsr->textures.font_small);
 	if (tsr->ui.prompt.is_error)
 	{
 		mbx_set_rect(tsr->ui.target, ele_pos.p3,
 			vec2i(166, 18), color_rgba(0xAA0000BB));
-		mbx_set_text_scaled(tsr->ui.target, "Prompt Error",
-			vec2ix2(ele_pos.p2, scale), tsr->textures.font_small);
 	}
 	else
 		mbx_set_rect(tsr->ui.target, ele_pos.p3,
 			vec2i(166, 18), color_rgba(0xBB));
-	mbx_set_text_scaled(tsr->ui.target, tsr->ui.prompt.message,
-		vec2ix2(ele_pos.p1, scale), tsr->textures.font_small);
 	mbx_set_text_scaled(tsr->ui.target,
 		tsr->ui.prompt.buffer + max(tsr->ui.prompt.cursor - 16, 0),
 		vec2ix2(pos, scale), tsr->textures.font_small);
