@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include ".mlem_values.h"
 #include "tsr.h"
 
 static t_vec3	get_as_vec3(
@@ -49,14 +48,14 @@ static void	load_map_attributes(t_tsr *tsr, t_mlem_value object)
 	tsr->player.chunk = mlem_as_int(mlem_object_get(object, "player_chunk"),
 			tsr->world_data.origin - 1) + 1;
 	tsr->player.position = get_as_vec3(
-			object, "player_position", vec3_zero());
+			object, "player_position", vec3_d(1.01));
 	tsr->camera.rotation = get_as_vec3(
-			object, "player_rotation", vec3_zero());
+			object, "player_rotation", vec3_d(0));
 	tsr->player.rotation.x = tsr->camera.rotation.x;
 	tsr->world_data.skylight_color = vec3_w(
-			get_as_vec3(object, "light_color", vec3_zero()), 1);
-	tsr->world_data.skylight = get_as_vec3(
-			object, "light_direction", vec3(0, -1, 0));
+			get_as_vec3(object, "light_color", vec3_d(1)), 1);
+	tsr->world_data.skylight = vec3_neg(get_as_vec3(
+				object, "light_direction", vec3(0.01, -0.99, 0.01)));
 }
 
 static void	setup_name(t_tsr *tsr, char *name)
@@ -88,14 +87,14 @@ static bool	load_map_data(t_tsr *tsr, t_mlem_value map)
 	tsr->world_data.name = tsr_strdup(value->strv.value);
 	if (!tsr->world_data.name)
 		return (false);
-	value = mlem_object_get(map, "chunks");
-	if (!value || value->type != MLEM_TYPE_ARRAY)
-		return (false);
-	load_chunk_data(tsr, *value);
 	value = mlem_object_get(map, "attributes");
 	if (!value || value->type != MLEM_TYPE_OBJECT)
 		return (false);
 	load_map_attributes(tsr, *value);
+	value = mlem_object_get(map, "chunks");
+	if (!value || value->type != MLEM_TYPE_ARRAY)
+		return (false);
+	load_chunk_data(tsr, *value);
 	return (true);
 }
 

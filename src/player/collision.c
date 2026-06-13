@@ -6,12 +6,11 @@
 /*   By: emarrot <emarrot@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 09:03:50 by emarrot           #+#    #+#             */
-/*   Updated: 2026/05/12 02:24:56 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/11 17:04:19 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_world.h"
 
 /*
 static bool	tile_collision(t_tsr_player *player, t_vec3i tile)

@@ -15,42 +15,25 @@
 #include "modules/mbx_structs.h"
 #include "tsr_world.h"
 
-typedef struct s_tsr_render_ray
+typedef struct s_tsr_pbr_properties
 {
-	t_vec3			origin;
-	t_vec3			dir;
-	t_vec3			delta;
-	t_vec3			abs_delta;
-	t_vec3i			dir_sign;
-	t_vec3i			iter;
-	t_vec3			dist;
-	double			distance;
-	t_vec3			position;
-	t_tsr_chunk_id	chunk;
-	t_tsr_chunk		*tiles;
-	t_vec3i			tile_position;
-	int				tile_index;
-	int				lifetime;
-	int8_t			axis;
-	t_tsr_tile		*tile;
-	t_tsr_tile_data	*tile_data;
-	t_vec2			uv;
-	t_tsr_texture	*texture;
-	t_vec2i			texture_uv;
-	t_vec3			tile_normal;
-	t_vec4			color;
-	bool			is_shadow;
-}	t_tsr_ray;
+	double		specular;
+	double		f0;
+	double		emissive;
+}	t_tsr_pbr;
 
 t_vec3
 reflect(t_vec3 ray_dir, t_vec3 normal);
 
 void
-get_normal(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);
+get_normal(t_tsr *tsr, t_tsr_ray *ray);
+
+t_vec2
+get_tile_uv(t_tsr_ray *ray);
 
 void
 apply_lighting_effects(
-	t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile, t_vec4 *color);
+	t_tsr *tsr, t_tsr_ray *ray, t_vec4 *col);
 
 t_mbx_color
 get_texture_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile);
@@ -66,9 +49,6 @@ trace_ray(t_tsr *tsr, t_tsr_ray *ray);
 
 t_tsr_ray
 setup_ray(t_tsr *tsr, t_vec3 origin, t_tsr_chunk_id chunk_id, t_vec3 forward);
-
-void
-get_ray_position(t_tsr_ray *ray);
 
 void
 *tsr_render_thread_init(void *data);

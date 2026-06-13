@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_constants.h"
+#include "modules/mbx_handlers.h"
 #include "tsr.h"
+#include "tsr_utils.h"
 
 static t_tsr_texture	*get_texture(t_mlem_value *reference)
 {
@@ -55,8 +58,15 @@ static void	set_textures(t_tsr_tile_data *tile, t_mlem_value object)
 
 static void	set_values(t_tsr_tile_data *tile, t_mlem_value object)
 {
-	t_mlem_value		*value;
+	t_mlem_value	*value;
 
+	value = mlem_object_get(object, "name");
+	if (value)
+	{
+		value = mlem_dereference_ptr(value);
+		tile->name = value->strv.value;
+		value->strv.value = NULL;
+	}
 	value = mlem_object_get(object, "skip");
 	if (value)
 		tile->skip = mlem_dereference(*value).boolv.value;
@@ -74,7 +84,8 @@ static void	set_values(t_tsr_tile_data *tile, t_mlem_value object)
 		tile->specular = mlem_dereference(*value).boolv.value;
 }
 
-static t_tsr_tile_data	load_tile(t_tsr *tsr, t_mlem_value object)
+static t_tsr_tile_data	load_tile(
+	t_tsr *tsr, t_mlem_value object, t_mlem_string name)
 {
 	const t_tsr_tile_data	def = {.texture = {
 		&tsr->textures.textures[0], &tsr->textures.textures[0],
@@ -82,6 +93,7 @@ static t_tsr_tile_data	load_tile(t_tsr *tsr, t_mlem_value object)
 		&tsr->textures.textures[0], &tsr->textures.textures[0]}};
 	t_tsr_tile_data			tile;
 
+	(void)name;
 	tile = def;
 	if (object.type != MLEM_TYPE_OBJECT)
 		return (tile);
@@ -104,7 +116,7 @@ void	load_tile_data(t_tsr *tsr)
 	while (i < tiles.objectv.len && i < TILE_BUFFER_SIZE)
 	{
 		tile = tiles.objectv.value[i].value.refv.value;
-		tsr->world_data.tiles[i] = load_tile(tsr, tile->value);
+		tsr->world_data.tiles[i] = load_tile(tsr, tile->value, tile->name);
 		mlem_destroy(tile->value);
 		tile->value = mlem_int(i);
 		i++;

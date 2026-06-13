@@ -14,7 +14,6 @@
 
 #include <stdatomic.h>
 
-#include ".mlem_values.h"
 #include "mlem.h"
 #include "mbx.h"
 #include "tsr_constants.h"
@@ -23,20 +22,100 @@ typedef uint8_t					t_tsr_tile_id;
 typedef uint16_t				t_tsr_chunk_id;
 typedef struct s_tsr_context	t_tsr;
 
+typedef struct s_tsr_pbr_texture_atlas
+{
+	enum e_tsr_texture_flags: uint8_t
+	{
+		TX_NONE			= 0x00,
+		TX_NORMAL		= 0x01,
+		TX_PROPERTY		= 0x02,
+		TX_ANIMATED		= 0x04
+	}				flags;
+	t_mbx_atlas		*texture;
+}	t_tsr_texture;
+
+typedef struct s_tsr_tile_data
+{
+	t_tsr_texture	*texture[6];
+	char			*name;
+	bool			skip;
+	bool			backface;
+	bool			inner_backface;
+	bool			skybox;
+	bool			specular;
+}	t_tsr_tile_data;
+
+typedef struct s_tsr_tile
+{
+	t_tsr_tile_id	type;
+	uint8_t			orientation;
+	uint8_t			light;
+	uint8_t			render_light;
+}	t_tsr_tile;
+
+typedef struct s_tsr_chunk_ref
+{
+	uint64_t		process;
+	t_tsr_chunk_id	neighbors[6];
+}	t_tsr_chunk_ref;
+
+typedef struct s_tsr_chunk
+{
+	t_tsr_tile		tiles[64];
+	t_tsr_tile		limits[6];
+	t_tsr_chunk_id	id;
+}	t_tsr_chunk;
+
+typedef struct s_tsr_render_ray
+{
+	t_vec3			origin;
+	t_vec3			dir;
+	t_vec3			delta;
+	t_vec3			abs_delta;
+	t_vec3i			dir_sign;
+	t_vec3i			iter;
+	t_vec3			dist;
+	t_vec3			position;
+	t_tsr_chunk_id	chunk;
+	t_vec3i			tile_position;
+	int				tile_index;
+	int				lifetime;
+	int8_t			axis;
+	int8_t			tile_axis;
+	int8_t			face;
+	t_tsr_tile		*tile;
+	t_tsr_tile_data	*tile_data;
+	t_tsr_tile		*front_tile;
+	t_vec2			uv;
+	t_tsr_texture	*texture;
+	t_vec3			tile_normal;
+	t_vec4			color;
+	bool			is_shadow;
+}	t_tsr_ray;
+
 typedef struct s_tsr_player
 {
 	t_vec3			rotation;
 	t_vec3			hitbox;
+	t_vec3			forward;
 	t_vec3			right;
 	t_vec3			up;
-	t_vec3			forward;
 	t_vec3			velocity;
 	t_tsr_chunk_id	chunk;
 	t_vec3			position;
 	t_tsr_tile_id	hotbar_tile;
+	t_vec3i			face;
+	t_tsr_ray		ray;
 	t_tsr_chunk_id	tile_highlight_chunk;
 	t_vec3i			tile_highlight_pos;
 	int				tile_highlight_axis;
+	enum	e_tsr_game_prompt_state: int
+	{
+		PROMPT_STATE_NONE,
+		PROMPT_STATE_CHUNK,
+		PROMPT_STATE_TP,
+		PROMPT_STATE_SAVE,
+	}				prompt_state;
 }	t_tsr_player;
 
 typedef struct s_tsr_camera
@@ -49,53 +128,6 @@ typedef struct s_tsr_camera
 	t_tsr_chunk_id	chunk;
 	t_vec3			position;
 }	t_tsr_camera;
-
-typedef struct s_tsr_pbr_texture_atlas
-{
-	enum e_tsr_texture_flags: uint8_t
-	{
-		TX_NONE			= 0x00,
-		TX_NORMAL		= 0x01,
-		TX_EMISSIVE		= 0x02,
-		TX_SPECULAR		= 0x04,
-		TX_ANIMATED		= 0x10
-	}				flags;
-	uint8_t			emissive_channel;
-	uint8_t			specular_channel;
-	int				normal_v;
-	int				emissive_v;
-	int				specular_v;
-	t_mbx_atlas		*texture;
-}	t_tsr_texture;
-
-typedef struct s_tsr_tile_data
-{
-	t_tsr_texture	*texture[6];
-	bool			skip;
-	bool			backface;
-	bool			inner_backface;
-	bool			skybox;
-	bool			specular;
-}	t_tsr_tile_data;
-
-typedef struct s_tsr_tile
-{
-	t_tsr_tile_id	type;
-	uint8_t			light;
-	uint8_t			orientation;
-}	t_tsr_tile;
-
-typedef struct s_tsr_chunk_ref
-{
-	uint64_t		process;
-	t_tsr_chunk_id	neighbors[6];
-}	t_tsr_chunk_ref;
-
-typedef struct s_tsr_chunk
-{
-	t_tsr_tile		tiles[64];
-	t_tsr_chunk_id	id;
-}	t_tsr_chunk;
 
 typedef struct s_tsr_world_data
 {
@@ -179,12 +211,6 @@ typedef struct s_tsr_context
 			double				offset;
 			double				delta;
 		}					hotbar;
-		enum	e_tsr_game_prompt_state: int
-		{
-			PROMPT_STATE_NONE,
-			PROMPT_STATE_CHUNK,
-			PROMPT_STATE_SAVE,
-		}					prompt_state;
 	}	ui;
 	t_tsr_world_data	world_data;
 	t_tsr_world			world;
@@ -195,5 +221,6 @@ typedef struct s_tsr_context
 		double				aspect_ratio;
 		double				fov;
 		double				focal_length;
+		bool				show_chunks;
 	}	extras;
 }	t_tsr;

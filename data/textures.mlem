@@ -3,70 +3,117 @@
 ]
 #tx_stone = [
 	file = "assets/textures/tiles/stone.png"
+	normal = true
 ]
 #tx_dirt = [
 	file = "assets/textures/tiles/dirt.png"
+	normal = true
 ]
 #tx_grass_block_side = [
 	file = "assets/textures/tiles/grass_block_side.png"
+	normal = true
 ]
 #tx_grass_block_top = [
 	file = "assets/textures/tiles/grass_block_top.png"
+	normal = true
 ]
 #tx_cobblestone = [
 	file = "assets/textures/tiles/cobblestone.png"
+	normal = true
 ]
 #tx_stone_bricks = [
 	file = "assets/textures/tiles/stone_bricks.png"
+	normal = true
+	property = true
 ]
 #tx_oak_planks = [
 	file = "assets/textures/tiles/oak_planks.png"
+	normal = true
 ]
 #tx_oak_log_side = [
 	file = "assets/textures/tiles/oak_log.png"
+	normal = true
 ]
 #tx_oak_log_top = [
 	file = "assets/textures/tiles/oak_log_top.png"
+	normal = true
 ]
 #tx_oak_leaves = [
 	file = "assets/textures/tiles/oak_leaves.png"
+	normal = true
 ]
 #tx_iron_block = [
 	file = "assets/textures/tiles/iron_block.png"
+	normal = true
+	property = true
 ]
 #tx_moss = [
 	file = "assets/textures/tiles/moss.png"
+	normal = true
+]
+#tx_magma = [
+	file = "assets/textures/tiles/magma.png"
+	normal = true
+	property = true
+]
+#tx_gold_ore = [
+	file = "assets/textures/tiles/gold_ore.png"
+	normal = true
+	property = true
 ]
 #tx_glass = [
-	file = "assets/textures/tiles/glass.png"
+	file = "assets/textures/tiles/glass/glass.png"
+	normal = true
 ]
 #tx_white_glass = [
-	file = "assets/textures/tiles/white_stained_glass.png"
+	file = "assets/textures/tiles/glass/white_glass.png"
+	normal = true
 ]
 #tx_red_glass = [
-	file = "assets/textures/tiles/red_stained_glass.png"
+	file = "assets/textures/tiles/glass/red_glass.png"
+	normal = true
 ]
 #tx_green_glass = [
-	file = "assets/textures/tiles/green_stained_glass.png"
+	file = "assets/textures/tiles/glass/green_glass.png"
+	normal = true
 ]
 #tx_blue_glass = [
-	file = "assets/textures/tiles/blue_stained_glass.png"
+	file = "assets/textures/tiles/glass/blue_glass.png"
+	normal = true
 ]
 #tx_skybox_north = [
-	file = "assets/textures/tiles/skybox_north.png"
+	file = "assets/textures/tiles/skybox/north.png"
 ]
 #tx_skybox_south = [
-	file = "assets/textures/tiles/skybox_south.png"
+	file = "assets/textures/tiles/skybox/south.png"
 ]
 #tx_skybox_east = [
-	file = "assets/textures/tiles/skybox_east.png"
+	file = "assets/textures/tiles/skybox/east.png"
 ]
 #tx_skybox_west = [
-	file = "assets/textures/tiles/skybox_west.png"
+	file = "assets/textures/tiles/skybox/west.png"
 ]
 #tx_skybox_top = [
-	file = "assets/textures/tiles/skybox_up.png"
+	file = "assets/textures/tiles/skybox/top.png"
 ]
 #tx_skybox_bottom = [
-	file = "assets/textures/tiles/skybox_down.png"
+	file = "assets/textures/tiles/skybox/bottom.png"
+]
+#tx_test_north = [
+	file = "assets/textures/tiles/test/north.png"
+]
+#tx_test_south = [
+	file = "assets/textures/tiles/test/south.png"
+]
+#tx_test_east = [
+	file = "assets/textures/tiles/test/east.png"
+]
+#tx_test_west = [
+	file = "assets/textures/tiles/test/west.png"
+]
+#tx_test_top = [
+	file = "assets/textures/tiles/test/top.png"
+]
+#tx_test_bottom = [
+	file = "assets/textures/tiles/test/bottom.png"
 ]

@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_drawing.h"
 #include "tsr.h"
+#include "tsr_core.h"
+#include "tsr_utils.h"
 
 static void	set_hotbar_offset(t_tsr *tsr)
 {
@@ -35,27 +38,27 @@ static void	set_hotbar_offset(t_tsr *tsr)
 
 void	draw_hotbar(t_tsr *tsr)
 {
-	t_vec2i				pos;
+	const char			*name
+		= tsr->world_data.tiles[tsr->player.hotbar_tile].name;
+	t_mbx_region		*texture;
 	double				off;
 	int					i;
 
-	pos = vec2i(tsr->mbx->viewport->size.x / 2,
-			tsr->mbx->viewport->size.y - 22);
-	mbx_set_rect(tsr->ui.target, vec2i(pos.x - 135, pos.y - 8),
-		vec2i(270, 30), color_rgba(0x9966FF22));
 	set_hotbar_offset(tsr);
 	i = -6;
 	while (i <= 6)
 	{
 		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
-		mbx_set_subregion(tsr->ui.target,
-			tsr->world.data->tiles[wrap((int)(tsr->ui.hotbar.offset) + i,
-				1, tsr->world.data->tile_count)].texture[0]->texture,
-			vec2i(pos.x - 8 + 20 * off,
-				pos.y - 20 * (cos(off * off / 22.3) - 1)),
-			vec2ix2_xy(0, 0, 16, 16));
+		texture = tsr->world.data->tiles[wrap((int)(tsr->ui.hotbar.offset) + i,
+				1, tsr->world.data->tile_count)].texture[0]->texture;
+		mbx_set_subregion_scaled(tsr->ui.target, texture, vec2ix3(
+				vec2i(312 + 20 * off, 338 - 20 * (cos(off * off / 22.3) - 1)),
+				vec2i(0, 0), texture->subregion_size),
+			vec2_div_rd(16, vec2_vi(texture->subregion_size)));
 		i++;
 	}
 	mbx_set_region(tsr->ui.target, tsr->textures.hotbar_selection,
-		vec2i(pos.x - 12, pos.y - 4));
+		vec2i(308, 334));
+	mbx_set_text(tsr->ui.target, name,
+		vec2i(320 - tsr_strlen(name) * 2.5, 325), tsr->textures.font_small);
 }

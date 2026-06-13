@@ -23,7 +23,7 @@ static void	init_player(t_tsr *tsr)
 {
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
-	tsr->player.hotbar_tile = 1;
+	tsr->player.hotbar_tile = 2;
 }
 
 static void	init_values(t_tsr *tsr)

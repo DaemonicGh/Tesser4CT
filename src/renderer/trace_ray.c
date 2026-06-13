@@ -11,12 +11,9 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-
-void	get_ray_position(t_tsr_ray *ray)
-{
-	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->dir,
-				ray->distance - ray->abs_delta.v[ray->axis]));
-}
+#include "tsr_core.h"
+#include "tsr_world.h"
+#include <sys/types.h>
 
 static void	check_chunk_bounds(t_tsr *tsr, t_tsr_ray *ray)
 {
@@ -56,26 +53,44 @@ static void	step_ray(t_tsr *tsr, t_tsr_ray *ray)
 	check_chunk_bounds(tsr, ray);
 }
 
+static void	set_hit_values(t_tsr *tsr, t_tsr_ray *ray)
+{
+	t_vec3i			position;
+	t_tsr_chunk_id	chunk;
+
+	ray->tile_axis = ray->axis;
+	ray->tile_data = &tsr->world_data.tiles[ray->tile->type];
+	position = vec3i_sub(ray->tile_position,
+			vec3i_vd(get_tile_normal(ray->dir, ray->tile_axis)));
+	chunk = tsr_relocate_chunk(&tsr->rendering.data.world,
+			ray->chunk, &position);
+	ray->front_tile = &tsr->rendering.data.world.chunks[chunk]
+		.tiles[tsr_get_tile_index(position)];
+	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->dir,
+				ray->dist.v[ray->axis] - ray->abs_delta.v[ray->axis]));
+}
+
 void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
 {
+	t_tsr_chunk_id	prev;
+
 	while (true)
 	{
+		prev = ray->chunk;
 		step_ray(tsr, ray);
 		if (!ray->chunk)
 		{
-			ray->tile = &tsr->world.data->skybox;
-			ray->tiles = &tsr->rendering.data.world.chunks[0];
+			ray->tile = &tsr->rendering.data.world.chunks[prev]
+				.limits[ray->axis * 2 + (ray->dir_sign.v[ray->axis] >= 0)];
 			break ;
 		}
 		if (tsr->rendering.data.world.chunk_refs[ray->chunk].process
 			& (1ul << ray->tile_index))
 		{
-			ray->tiles = &tsr->rendering.data.world.chunks[ray->chunk];
-			ray->tile = &ray->tiles->tiles[ray->tile_index];
-			if (ray->tile->type <= tsr->world.data->tile_count)
-				break ;
+			ray->tile = &tsr->rendering.data.world.chunks[ray->chunk]
+				.tiles[ray->tile_index];
+			break ;
 		}
 	}
-	ray->tile_data = &tsr->world.data->tiles[ray->tile->type];
-	ray->distance = ray->dist.v[ray->axis];
+	set_hit_values(tsr, ray);
 }

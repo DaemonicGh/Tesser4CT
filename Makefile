@@ -16,24 +16,27 @@
 NAMES					:=	Tesser4CT
 
 app_init_files			:=	\
-	init regions rendering textures tiles										\
+	init regions rendering textures tiles
 
 app_files				:=	\
 	$(addprefix init/,	$(app_init_files))\
 	main exit																	\
-	update/game	update/main_menu update/pause update/setting					\
+	update/game	update/main_menu update/pause update/setting
+
+player_files			:=	\
+	actions collision movement prompt tile update
 
 renderer_files			:=	\
-	camera draw_ray get_color lighting normal texture threads trace_ray			\
+	camera draw_ray get_color lighting normal texture threads trace_ray
 
 world_files				:=	\
-	load/map load/chunks save/map save/chunks chunk tile						\
+	load/map load/chunks save/map save/chunks chunk tile
 
 common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
 	$(addprefix world/,		$(world_files))\
-	player/actions player/update player/collision player/prompt	player/chunk	\
+	$(addprefix player/,	$(player_files))\
 	ui/draw	ui/hotbar ui/title ui/button ui/prompt								\
 	utils/memory utils/report utils/string utils/tile							\
 

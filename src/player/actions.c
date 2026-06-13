@@ -5,95 +5,94 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/25 15:26:42 by rprieur           #+#    #+#             */
-/*   Updated: 2026/05/28 23:11:19 by rprieur          ###   ########.fr       */
+/*   Created: 2026/06/11 22:01:06 by rprieur           #+#    #+#             */
+/*   Updated: 2026/06/11 22:01:06 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_player.h"
 
-static void	item_select(t_tsr *tsr)
+static void	link_neighbor_chunks(t_tsr *tsr,
+	t_tsr_chunk_id chunk1, t_tsr_chunk_id chunk2, t_vec3i face)
 {
-	uint32_t	i;
-
-	i = 0;
-	while (i <= tsr->world_data.tile_count / 10)
-	{
-		if (mbx_key_pressed(tsr->mbx, 30 + i))
-			tsr->player.hotbar_tile = i * 10 + 1;
-		i++;
-	}
-	tsr->player.hotbar_tile = wrap(
-			(tsr->player.hotbar_tile - tsr->mbx->scroll_delta),
-			1, tsr->world_data.tile_count);
-}
-
-static void	place_tile(t_tsr *tsr, t_tsr_ray *ray)
-{
-	static t_vec3i	position = {.x = -1, .y = -1, .z = -1};
+	const int		faces[4] = {face.x, face.x ^ 1, face.y, face.y ^ 1};
+	size_t			i;
 	t_tsr_chunk_id	chunk;
 
-	if (mbx_key_held(tsr->mbx, MBX_MOUSE_RIGHT)
-		&& (tsr->mbx->inputs[MBX_MOUSE_RIGHT].press == 0
-			|| tsr->mbx->inputs[MBX_MOUSE_RIGHT].press > 0.1))
+	i = 0;
+	while (i < 4)
 	{
-		if (!vec3i_eq(ray->tile_position, position))
+		chunk = tsr->world.chunk_refs[chunk1].neighbors[faces[i]];
+		if (chunk)
+			chunk = tsr->world.chunk_refs[chunk].neighbors[face.z];
+		if (chunk)
 		{
-			position = vec3i_sub(ray->tile_position,
-					vec3i_vd(get_tile_normal(ray->dir, ray->axis)));
-			chunk = tsr_relocate_chunk(&tsr->world, ray->chunk, &position);
-			if (chunk)
-				tsr_set_tile(&tsr->world, chunk, position,
-					tsr_tile(tsr->player.hotbar_tile, 0));
+			tsr->world.chunk_refs[chunk].neighbors[faces[i] ^ 1] = chunk2;
+			if (chunk2)
+				tsr->world.chunk_refs[chunk2].neighbors[faces[i]] = chunk;
 		}
+		i++;
 	}
-	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_RIGHT))
-		position = vec3i_i(-1);
 }
 
-static void	break_tile(t_tsr *tsr, t_tsr_ray *ray)
+void	create_chunk(t_tsr *tsr, t_tsr_chunk_id id, int flags)
 {
-	const double	break_time = 0.166;
-	static double	break_timer = 0.0;
+	const int	face = tsr->player.face.z;
 
-	if (mbx_key_held(tsr->mbx, MBX_MOUSE_LEFT)
-		&& (tsr->mbx->inputs[MBX_MOUSE_LEFT].press == 0
-			|| tsr->mbx->inputs[MBX_MOUSE_LEFT].press > break_time * 2))
+	if (id >= tsr->world.chunk_count)
 	{
-		if (break_timer <= 0 && tsr_set_tile(
-				&tsr->world, ray->chunk, ray->tile_position, tsr_tile(0, 0)))
-			break_timer = break_time;
-		else
-			break_timer -= tsr->mbx->delta_time;
+		id = tsr_new_chunk(&tsr->world);
+		if (!id)
+			return ;
 	}
-	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_LEFT))
-		break_timer = 0.0;
+	tsr->world.chunk_refs[tsr->player.chunk].neighbors[face] = id;
+	if (flags == CHUNK_CONNECT_FRONT_ONEWAY)
+		return ;
+	if (id)
+		tsr->world.chunk_refs[id].neighbors[face ^ 1] = tsr->player.chunk;
+	if (flags == CHUNK_CONNECT_FRONT)
+		return ;
+	link_neighbor_chunks(tsr,
+		tsr->player.chunk, id, tsr->player.face);
 }
 
-static void	place_and_destroy(t_tsr *tsr)
+static bool	prompt_inputs(t_tsr *tsr)
 {
-	t_tsr_ray	ray;
-
-	ray = setup_ray(tsr, tsr->camera.position,
-			tsr->camera.chunk, tsr->camera.forward);
-	trace_ray(tsr, &ray);
-	if (ray.distance < 12.0)
+	if (mbx_key_pressed(tsr->mbx, MBX_KEY_C)
+		&& mbx_key_held(tsr->mbx, MBX_KEY_LALT))
 	{
-		if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
-			tsr->player.hotbar_tile = tsr_get_tile(
-					&tsr->world, ray.chunk, ray.tile_position)->type;
-		break_tile(tsr, &ray);
-		place_tile(tsr, &ray);
-		tsr->player.tile_highlight_chunk = ray.chunk;
-		tsr->player.tile_highlight_pos = ray.tile_position;
-		tsr->player.tile_highlight_axis = ray.axis;
+		tsr->player.prompt_state = PROMPT_STATE_CHUNK;
+		prompt_init(tsr, vec2i(240, 200), "Link to Chunk");
+	}
+	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_B))
+	{
+		tsr->player.prompt_state = PROMPT_STATE_TP;
+		prompt_init(tsr, vec2i(240, 200), "TP to Chunk");
+	}
+	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_M)
+		&& (mbx_key_held(tsr->mbx, MBX_KEY_LALT)
+			|| !tsr->world_data.name[0]))
+	{
+		tsr->player.prompt_state = PROMPT_STATE_SAVE;
+		prompt_init(tsr, vec2i(240, 200), "Save location");
 	}
 	else
-		tsr->player.tile_highlight_chunk = 0;
+		return (false);
+	return (true);
 }
 
-void	tsr_player_actions(t_tsr *tsr)
+void	player_inputs(t_tsr *tsr)
 {
-	place_and_destroy(tsr);
-	item_select(tsr);
+	if (prompt_inputs(tsr))
+		return ;
+	if (mbx_key_pressed(tsr->mbx, MBX_KEY_G))
+		tsr->extras.show_chunks = !tsr->extras.show_chunks;
+	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_V))
+		tsr->world.chunks[tsr->player.chunk]
+			.limits[tsr->player.face.z].type = tsr->player.hotbar_tile;
+	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_M))
+		save_map(tsr, tsr->world_data.name);
+	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_C))
+		create_chunk(tsr, -1, CHUNK_DEFAULT);
 }

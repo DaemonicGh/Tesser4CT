@@ -11,17 +11,19 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_ui.h"
 
 static void	draw_debug(t_tsr *tsr)
 {
-	char	str[256];
+	const t_tsr_tile	*tile = tsr_get_tile(&tsr->world,
+			tsr->player.tile_highlight_chunk, tsr->player.tile_highlight_pos);
+	char				str[256];
 
 	snprintf(str, 256, "FPS\t\t%.2f\nPOS\t\t[%.1f %.1f %.1f]\n"
-		"ROT\t\t[%.2f %.2f]\nCID\t\t%u",
+		"ROT\t\t[%.2f %.2f] %i\nCHUNK\t%u\nTILE\t%u(%u)",
 		1.0 / tsr->mbx->dt, tsr->player.position.x,
 		tsr->player.position.y, tsr->player.position.z,
-		tsr->camera.rotation.x, tsr->camera.rotation.y, tsr->player.chunk);
+		tsr->camera.rotation.x, tsr->camera.rotation.y, tsr->player.face.z,
+		tsr->player.chunk, tile->type, tile->orientation);
 	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
 }
 

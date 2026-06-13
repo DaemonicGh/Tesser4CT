@@ -30,17 +30,16 @@ void	prompt_init(t_tsr *tsr, t_vec2i	position, const char *message)
 bool	prompt_update(t_tsr *tsr)
 {
 	size_t	i;
+	char	c;
 
 	tsr->ui.prompt.shake = fmax(tsr->ui.prompt.shake - tsr->mbx->dt, 0);
 	i = 0;
 	while (tsr->mbx->text_input[i])
 	{
-		if (tsr->mbx->text_input[i] == '\n')
-		{
-			tsr->ui.prompt.buffer[tsr->ui.prompt.cursor] = 0;
+		c = tsr->mbx->text_input[i++];
+		if (c == '\n')
 			return (true);
-		}
-		else if (tsr->mbx->text_input[i] == '\b')
+		else if (c == '\b')
 		{
 			if (tsr->ui.prompt.cursor > 0)
 			{
@@ -48,10 +47,8 @@ bool	prompt_update(t_tsr *tsr)
 				tsr->ui.prompt.is_error = false;
 			}
 		}
-		else if (tsr->ui.prompt.cursor < PROMPT_SIZE - 1)
-			tsr->ui.prompt.buffer[tsr->ui.prompt.cursor++]
-				= tsr->mbx->text_input[i];
-		i++;
+		else if (c != '\t' && tsr->ui.prompt.cursor < PROMPT_SIZE - 1)
+			tsr->ui.prompt.buffer[tsr->ui.prompt.cursor++] = c;
 	}
 	return (false);
 }

@@ -22,8 +22,8 @@ int	tsr_get_tile_index(t_vec3i pos)
 	return (pos.x + pos.y * 4 + pos.z * 16);
 }
 
-bool	tsr_set_tile(
-	const t_tsr_world *world, t_tsr_chunk_id chunk_id, t_vec3i pos, t_tsr_tile tile)
+bool	tsr_set_tile(const t_tsr_world *world,
+	t_tsr_chunk_id chunk_id, t_vec3i pos, t_tsr_tile tile)
 {
 	const bool	skip = world->data->tiles[tile.type].skip;
 	int			index;

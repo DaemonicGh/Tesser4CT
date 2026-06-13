@@ -12,6 +12,81 @@
 
 #include <pthread.h>
 #include "tsr.h"
+#include "tsr_core.h"
+
+static uint8_t	cast_illumination_ray(
+	t_tsr *tsr, t_tsr_chunk_id chunk, t_tsr_tile_id	tile)
+{
+	t_tsr_ray		shadow_ray;
+
+	shadow_ray = setup_ray(tsr, vec3_add(vec3_d(0.5),
+				vec3(tile & 3, tile >> 2 & 3, tile >> 4 & 3)),
+			chunk, tsr->world_data.skylight);
+	shadow_ray.lifetime = 50;
+	shadow_ray.is_shadow = true;
+	while (true)
+	{
+		trace_ray(tsr, &shadow_ray);
+		if (shadow_ray.tile_data->skybox)
+			return (128);
+		if (set_ray_tile_color(tsr, &shadow_ray, shadow_ray.tile))
+			return (4);
+	}
+}
+
+static uint8_t	spread_light(
+	t_tsr *tsr, t_tsr_chunk_id chunk, t_tsr_tile_id tile)
+{
+	const int		values[6][2] = {
+	{-1, 3}, {1, -3}, {-4, 12}, {4, -12}, {-16, 48}, {16, -48}};
+	t_tsr_chunk_id	ochunk;
+	uint8_t			light;
+	int				i;
+
+	light = cast_illumination_ray(tsr, chunk, tile);
+	i = 0;
+	while (i < 6)
+	{
+		if ((tile >> (i & ~1) & 3) != (i % 2 * 3))
+			light = max(light, tsr->world.chunks[chunk]
+					.tiles[tile + values[i][0]].light / 2);
+		else
+		{
+			ochunk = tsr->world.chunk_refs[chunk].neighbors[i];
+			if (ochunk)
+				light = max(light, tsr->world.chunks[ochunk]
+						.tiles[tile + values[i][1]].light / 2);
+		}
+		i++;
+	}
+	return (light);
+}
+
+static void	update_light(t_tsr *tsr)
+{
+	t_tsr_tile	*tile;
+	size_t		chunk;
+	size_t		i;
+
+	chunk = 1;
+	while (chunk < tsr->world.chunk_count)
+	{
+		i = 0;
+		while (i < 64)
+		{
+			tile = &tsr->world.chunks[chunk].tiles[i];
+			if (!tile->type)
+				tile->render_light = spread_light(tsr, chunk, i);
+			i++;
+		}
+		while (i--)
+		{
+			tile = &tsr->world.chunks[chunk].tiles[i];
+			tile->light = tile->render_light;
+		}
+		chunk++;
+	}
+}
 
 static void	prepare_next_render(t_tsr *tsr)
 {
@@ -33,6 +108,7 @@ static void	prepare_next_render(t_tsr *tsr)
 	if (tsr->rendering.data.world.chunk_refs != tsr->world.chunk_refs)
 		free(tsr->rendering.data.world.chunk_refs);
 	tsr->rendering.data.world = tsr->world;
+	update_light(tsr);
 	tsr->rendering.data.frag_shader = tsr->rendering.frag_shader;
 }
 

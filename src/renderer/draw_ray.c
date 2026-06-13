@@ -12,6 +12,21 @@
 
 #include "tsr.h"
 
+static void	fix_zeros(t_vec3 *origin, t_vec3 *forward)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < 3)
+	{
+		if (origin->v[i] == 0)
+			origin->v[i] = 1e-6;
+		if (forward->v[i] == 0)
+			forward->v[i] = 1e-6;
+		i++;
+	}
+}
+
 t_tsr_ray	setup_ray(
 	t_tsr *tsr, t_vec3 origin, t_tsr_chunk_id chunk, t_vec3 forward)
 {
@@ -19,13 +34,13 @@ t_tsr_ray	setup_ray(
 	t_vec3i				tile_pos;
 	t_tsr_ray			ray;
 
+	fix_zeros(&origin, &forward);
 	tile_pos = vec3i_vd(vec3_exec(floor, origin));
 	chunk = tsr_relocate_chunk(world, chunk, &tile_pos);
 	ray = (t_tsr_ray){.origin = origin,
 		.dir = forward, .dir_sign = vec3i_vd(vec3_sign(forward)),
 		.delta = vec3_div_rd(1, forward),
 		.chunk = chunk,
-		.tiles = &tsr->rendering.data.world.chunks[chunk],
 		.tile_position = tile_pos, .lifetime = 128};
 	ray.abs_delta = vec3_abs(ray.delta);
 	ray.iter = vec3i_mult(vec3i(1, 4, 16), ray.dir_sign);

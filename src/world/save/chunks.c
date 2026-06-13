@@ -31,15 +31,42 @@ static t_mlem_value	save_chunk_data(t_tsr *tsr, t_tsr_chunk_id id)
 	return (array);
 }
 
-static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk_id id)
+static void	save_chunk_attributes(
+	t_tsr *tsr, t_tsr_chunk_id id, t_mlem_value *object)
 {
-	const t_mlem_string	keys[6] = {
+	const t_mlem_string	neighbor_keys[6] = {
 		"west", "east", "down", "up", "north", "south"};
-	t_mlem_value		object;
-	t_mlem_value		data;
+	const t_mlem_string	skybox_keys[6] = {
+		"skybox_west", "skybox_east", "skybox_down",
+		"skybox_up", "skybox_north", "skybox_south"};
+	t_tsr_tile_id		skybox;
 	size_t				i;
 
-	object = mlem_object_empty(7);
+	i = 0;
+	while (i < 6)
+	{
+		if (tsr->world.chunk_refs[id].neighbors[i])
+			mlem_object_append(object, neighbor_keys[i],
+				mlem_int(tsr->world.chunk_refs[id].neighbors[i] - 1));
+		i++;
+	}
+	i = 0;
+	while (i < 6)
+	{
+		skybox = tsr->world.chunks[id].limits[i].type;
+		if (skybox != tsr->world_data.skybox.type)
+			mlem_object_append(object, skybox_keys[i], mlem_reference(
+					tsr->world_data.mlem.objectv.value[skybox].value));
+		i++;
+	}
+}
+
+static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk_id id)
+{
+	t_mlem_value		object;
+	t_mlem_value		data;
+
+	object = mlem_object_empty(13);
 	if (!object.type)
 		return ((t_mlem_value){0});
 	data = save_chunk_data(tsr, id);
@@ -49,14 +76,7 @@ static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk_id id)
 		return ((t_mlem_value){0});
 	}
 	mlem_object_append(&object, "tiles", data);
-	i = 0;
-	while (i < 6)
-	{
-		if (tsr->world.chunk_refs[id].neighbors[i])
-			mlem_object_append(&object, keys[i],
-				mlem_int(tsr->world.chunk_refs[id].neighbors[i] - 1));
-		i++;
-	}
+	save_chunk_attributes(tsr, id, &object);
 	return (object);
 }
 

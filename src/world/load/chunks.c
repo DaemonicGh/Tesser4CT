@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_world.h"
 
 static void	load_chunk_tiles(t_tsr_chunk *chunk, t_mlem_value array)
 {
@@ -41,11 +40,25 @@ static void	load_chunk_tiles(t_tsr_chunk *chunk, t_mlem_value array)
 
 static t_tsr_chunk	load_chunk(t_tsr *tsr, t_mlem_value object)
 {
+	const t_mlem_string	keys[6] = {
+		"skybox_west", "skybox_east", "skybox_down",
+		"skybox_up", "skybox_north", "skybox_south"};
 	t_tsr_chunk			chunk;
 	t_mlem_value		*value;
+	int					i;
 
 	(void)tsr;
 	chunk = (t_tsr_chunk){0};
+	i = 0;
+	while (i < 6)
+	{
+		value = mlem_object_get(object, keys[i]);
+		if (value)
+			chunk.limits[i].type = value->refv.value->value.intv.value;
+		else
+			chunk.limits[i] = tsr->world_data.skybox;
+		i++;
+	}
 	value = mlem_object_get(object, "tiles");
 	if (value)
 		load_chunk_tiles(&chunk, *value);
@@ -79,6 +92,20 @@ static t_tsr_chunk_ref	load_chunk_ref(
 	return (chunk_ref);
 }
 
+static void	create_null_chunk(t_tsr *tsr)
+{
+	size_t	i;
+
+	tsr->world.chunks[0] = (t_tsr_chunk){0};
+	tsr->world.chunk_refs[0] = (t_tsr_chunk_ref){0};
+	i = 0;
+	while (i < 6)
+		tsr->world.chunks[0].limits[i++] = tsr->world_data.skybox;
+	i = 0;
+	while (i < 64)
+		tsr->world.chunks[0].tiles[i++].light = 64;
+}
+
 void	load_chunk_data(t_tsr *tsr, t_mlem_value array)
 {
 	t_mlem_value	chunk;
@@ -92,8 +119,7 @@ void	load_chunk_data(t_tsr *tsr, t_mlem_value array)
 			sizeof(t_tsr_chunk_ref) * tsr->world.chunk_capacity);
 	if (!tsr->world.chunks || !tsr->world.chunk_refs)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_MEMORY);
-	tsr->world.chunks[0] = (t_tsr_chunk){0};
-	tsr->world.chunk_refs[0] = (t_tsr_chunk_ref){0};
+	create_null_chunk(tsr);
 	i = 0;
 	while (i < array.arrayv.len)
 	{

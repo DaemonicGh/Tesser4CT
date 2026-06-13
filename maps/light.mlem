@@ -1,32 +1,32 @@
-"map_id" = "light"
-"attributes" = [
-	"skybox" = #sky_sunset
-	"light_color" = [
+map_id = light
+attributes = [
+	skybox = #sky_sunset
+	light_color = [
 		1.8
 		1.2
 		.8
 	]
-	"light_direction" = [
-		.001
-		.5
-		.85
+	light_direction = [
+		-0
+		-.5
+		-.85
 	]
-	"origin" = 0
-	"player_chunk" = 6
-	"player_position" = [
-		3.44377432981
+	origin = 0
+	player_chunk = 3
+	player_position = [
+		.16177169047
 		3.1
-		.4
+		1.22814061159
 	]
-	"player_rotation" = [
-		-1.7375
-		.00968521568
+	player_rotation = [
+		1.57381030717
+		.07087033987
 		0.
 	]
 ]
-"chunks" = [
+chunks = [
 	[
-		"tiles" = [
+		tiles = [
 			#grass
 			#stone
 			#stone
@@ -44,8 +44,8 @@
 			#air
 			#air
 			#stone
-			#air
-			#air
+			#stone
+			#stone
 			#stone
 			#air
 			#air
@@ -92,15 +92,21 @@
 			#air
 			#air
 		]
-		"west" = 3
-		"east" = 3
-		"down" = 2
-		"up" = 2
-		"north" = 4
-		"south" = 1
+		west = 3
+		east = 3
+		down = 2
+		up = 2
+		north = 1
+		south = 1
+		skybox_west = #oak_planks
+		skybox_east = #oak_planks
+		skybox_down = #oak_planks
+		skybox_up = #oak_planks
+		skybox_north = #oak_planks
+		skybox_south = #oak_planks
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#stone
 			#stone
 			#stone
@@ -166,15 +172,21 @@
 			#air
 			#air
 		]
-		"west" = 2
-		"east" = 2
-		"down" = 3
-		"up" = 3
-		"north" = 0
-		"south" = 5
+		west = 2
+		east = 2
+		down = 3
+		up = 3
+		north = 0
+		south = 0
+		skybox_west = #oak_planks
+		skybox_east = #oak_planks
+		skybox_down = #oak_planks
+		skybox_up = #oak_planks
+		skybox_north = #oak_planks
+		skybox_south = #oak_planks
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#oak_planks
 			#stone
 			#stone
@@ -240,15 +252,15 @@
 			#air
 			#air
 		]
-		"west" = 1
-		"east" = 1
-		"down" = 0
-		"up" = 0
-		"north" = 3
-		"south" = 3
+		west = 1
+		east = 1
+		down = 0
+		up = 0
+		north = 3
+		south = 3
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#oak_log
 			#stone
 			#stone
@@ -314,15 +326,15 @@
 			#air
 			#air
 		]
-		"west" = 0
-		"east" = 0
-		"down" = 1
-		"up" = 1
-		"north" = 2
-		"south" = 2
+		west = 0
+		east = 0
+		down = 1
+		up = 1
+		north = 2
+		south = 2
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#air
 			#air
 			#air
@@ -388,12 +400,12 @@
 			#air
 			#air
 		]
-		"west" = 6
-		"east" = 5
-		"south" = 0
+		west = 6
+		east = 5
+		south = 0
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#air
 			#air
 			#air
@@ -459,13 +471,13 @@
 			#air
 			#air
 		]
-		"west" = 4
-		"down" = 0
-		"up" = 0
-		"north" = 1
+		west = 4
+		down = 0
+		up = 0
+		north = 1
 	]
 	[
-		"tiles" = [
+		tiles = [
 			#air
 			#air
 			#air
@@ -531,5 +543,6 @@
 			#air
 			#air
 		]
+		south = 0
 	]
 ]

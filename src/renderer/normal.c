@@ -34,28 +34,24 @@ static void	normal_map_transform(t_tsr_ray *ray)
 		ray->tile_normal = vec3(-nrm.x, nrm.y, -nrm.z);
 }
 
-void	get_normal(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
+void	get_normal(t_tsr *tsr, t_tsr_ray *ray)
 {
-	t_mbx_region	*nrm;
 	t_vec2i			uv;
 	t_mbx_color		col;
 	t_vec3			normal;
 
 	(void)tsr;
-	(void)tile;
-	ray->tile_normal = get_tile_normal(ray->dir, ray->axis);
-	nrm = ray->tile_data->texture[ray->axis * 2
-		+ (ray->dir_sign.v[ray->axis] > 0)]->texture;
-	if (nrm)
+	if (!(ray->texture->flags & TX_NORMAL))
 	{
-		uv = vec2i_mult_vd(nrm->size, ray->uv);
-		col = mbx_get_pixel_unsafe(nrm, uv);
-		normal.x = 1.0 - col.r * 2.0 / 255;
-		normal.y = col.g * 2.0 / 255 - 1.0;
-		normal.z = sqrt(1.0 - normal.x * normal.x - normal.y * normal.y);
-		ray->tile_normal = normal;
-		normal_map_transform(ray);
-	}
-	else
 		ray->tile_normal = get_tile_normal(ray->dir, ray->axis);
+		return ;
+	}
+	uv = vec2i_mult_vd(ray->texture->texture->subregion_size,
+			vec2_add(ray->uv, vec2(0, 1)));
+	col = mbx_get_pixel_unsafe(ray->texture->texture, uv);
+	normal.x = 1.0 - col.r * 2.0 / 255;
+	normal.y = col.g * 2.0 / 255 - 1.0;
+	normal.z = sqrt(1.0 - normal.x * normal.x - normal.y * normal.y);
+	ray->tile_normal = normal;
+	normal_map_transform(ray);
 }

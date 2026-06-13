@@ -6,18 +6,77 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 03:43:06 by rprieur           #+#    #+#             */
-/*   Updated: 2026/06/10 03:43:06 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/11 17:04:19 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tsr.h"
 
+static bool	parse_chunk_prompt(t_tsr *tsr,
+	t_tsr_chunk_id *id, int *flags)
+{
+	uint32_t	i;
+
+	i = 0;
+	while (i < tsr->ui.prompt.cursor
+		&& tsr->ui.prompt.buffer[i] >= '0'
+		&& tsr->ui.prompt.buffer[i] <= '9')
+		*id = *id * 10 + tsr->ui.prompt.buffer[i++] - '0';
+	while (i < tsr->ui.prompt.cursor)
+	{
+		if (tsr->ui.prompt.buffer[i] == '^' && *flags > 0)
+			*flags -= 1;
+		else if (tsr->ui.prompt.buffer[i] != ' ')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+static void	update_chunk_prompt(t_tsr *tsr)
+{
+	t_tsr_chunk_id	id;
+	int				flags;
+
+	id = 0;
+	flags = CHUNK_DEFAULT;
+	if (!parse_chunk_prompt(tsr, &id, &flags))
+	{
+		tsr->ui.prompt.is_error = true;
+		tsr->ui.prompt.shake = 1;
+		return ;
+	}
+	tsr->ui.prompt.visible = false;
+	tsr->player.prompt_state = PROMPT_STATE_NONE;
+	create_chunk(tsr, id, flags);
+}
+
+static void	update_tp_prompt(t_tsr *tsr)
+{
+	t_tsr_chunk_id	id;
+	uint32_t		i;
+
+	id = 0;
+	i = 0;
+	while (i < tsr->ui.prompt.cursor
+		&& tsr->ui.prompt.buffer[i] >= '0'
+		&& tsr->ui.prompt.buffer[i] <= '9')
+		id = id * 10 + tsr->ui.prompt.buffer[i++] - '0';
+	if (id == 0 || id >= tsr->world.chunk_count)
+	{
+		tsr->ui.prompt.is_error = true;
+		tsr->ui.prompt.shake = 1;
+		return ;
+	}
+	tsr->ui.prompt.visible = false;
+	tsr->player.prompt_state = PROMPT_STATE_NONE;
+	tsr->player.chunk = id;
+}
+
 static void	update_save_prompt(t_tsr *tsr)
 {
 	uint32_t	i;
 
-	if (!prompt_update(tsr) || tsr->ui.prompt.cursor == 0)
-		return ;
 	i = 0;
 	while (i < tsr->ui.prompt.cursor)
 	{
@@ -31,49 +90,23 @@ static void	update_save_prompt(t_tsr *tsr)
 		return ;
 	}
 	tsr->ui.prompt.visible = false;
-	tsr->ui.prompt_state = PROMPT_STATE_NONE;
+	tsr->player.prompt_state = PROMPT_STATE_NONE;
 }
 
-static void	update_inputs(t_tsr *tsr)
-{
-	if (mbx_key_pressed(tsr->mbx, MBX_KEY_P))
-	{
-		if (mbx_key_held(tsr->mbx, MBX_KEY_LALT)
-			|| !tsr->world_data.name[0])
-		{
-			tsr->ui.prompt_state = PROMPT_STATE_SAVE;
-			prompt_init(tsr, vec2i(240, 200), "Save location");
-		}
-		else
-			save_map(tsr, tsr->world_data.name);
-	}
-	else if (mbx_key_pressed(tsr->mbx, MBX_KEY_EQUALS))
-	{
-		if (mbx_key_held(tsr->mbx, MBX_KEY_LALT))
-		{
-			tsr->ui.prompt_state = PROMPT_STATE_CHUNK;
-			prompt_init(tsr, vec2i(240, 200), "Chunk ID");
-		}
-		else
-			create_chunk(tsr, -1, false);
-	}
-}
-
-bool	tsr_player_update_prompt(t_tsr *tsr)
+void	player_update_prompt(t_tsr *tsr)
 {
 	if (mbx_key_pressed(tsr->mbx, MBX_KEY_ESCAPE))
 	{
-		tsr->ui.prompt_state = PROMPT_STATE_NONE;
+		tsr->player.prompt_state = PROMPT_STATE_NONE;
 		tsr->ui.prompt.visible = false;
+		return ;
 	}
-	if (tsr->ui.prompt_state == PROMPT_STATE_CHUNK)
+	if (!prompt_update(tsr) || tsr->ui.prompt.cursor == 0)
+		return ;
+	if (tsr->player.prompt_state == PROMPT_STATE_CHUNK)
 		update_chunk_prompt(tsr);
-	else if (tsr->ui.prompt_state == PROMPT_STATE_SAVE)
+	else if (tsr->player.prompt_state == PROMPT_STATE_TP)
+		update_tp_prompt(tsr);
+	else if (tsr->player.prompt_state == PROMPT_STATE_SAVE)
 		update_save_prompt(tsr);
-	else
-	{
-		update_inputs(tsr);
-		return (false);
-	}
-	return (true);
 }

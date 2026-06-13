@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include ".mlem_values.h"
 #include "tsr.h"
 
 static bool	append_vec3(t_mlem_value *object, t_mlem_string key, t_vec3 vec)
@@ -41,7 +40,8 @@ static t_mlem_value	save_attributes(t_tsr *tsr)
 			tsr->world_data.skybox.type].value));
 	append_vec3(&object, "light_color",
 		vec4_xyz(tsr->world_data.skylight_color));
-	append_vec3(&object, "light_direction", tsr->world_data.skylight);
+	append_vec3(&object, "light_direction",
+		vec3_neg(tsr->world_data.skylight));
 	mlem_object_append(&object, "origin",
 		mlem_int(tsr->world_data.origin - 1));
 	mlem_object_append(&object, "player_chunk",

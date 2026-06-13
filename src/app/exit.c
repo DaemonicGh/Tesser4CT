@@ -34,11 +34,16 @@ static void	cancel_threads(t_tsr *tsr)
 
 void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 {
+	size_t	i;
+
 	if (!tsr)
 		exit(!tsr_report(status, message));
 	cancel_threads(tsr);
 	mlem_destroy(tsr->textures.mlem);
 	mlem_destroy(tsr->world_data.mlem);
+	i = 0;
+	while (i < tsr->world_data.tile_count)
+		free(tsr->world_data.tiles[i++].name);
 	free(tsr->world.chunks);
 	free(tsr->world.chunk_refs);
 	free(tsr->world_data.name);
