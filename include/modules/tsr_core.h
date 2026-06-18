@@ -28,10 +28,11 @@ typedef struct s_tsr_pbr_texture_atlas
 	{
 		TX_NONE			= 0x00,
 		TX_NORMAL		= 0x01,
-		TX_PROPERTY		= 0x02,
-		TX_ANIMATED		= 0x04
+		TX_BUMP			= 0x02,
+		TX_PROPERTY		= 0x04,
+		TX_ANIMATED		= 0x08
 	}				flags;
-	t_mbx_atlas		*texture;
+	t_mbx_atlas		*restrict texture[MIPMAP_LEVELS];
 }	t_tsr_texture;
 
 typedef struct s_tsr_tile_data
@@ -39,31 +40,25 @@ typedef struct s_tsr_tile_data
 	t_tsr_texture	*texture[6];
 	char			*name;
 	bool			skip;
-	bool			backface;
-	bool			inner_backface;
 	bool			skybox;
-	bool			specular;
+	bool			transparent;
+	bool			cast_shadow;
+	bool			backface;
 }	t_tsr_tile_data;
 
 typedef struct s_tsr_tile
 {
 	t_tsr_tile_id	type;
-	uint8_t			orientation;
+	uint8_t			rotation;
 	uint8_t			light;
 	uint8_t			render_light;
 }	t_tsr_tile;
 
-typedef struct s_tsr_chunk_ref
-{
-	uint64_t		process;
-	t_tsr_chunk_id	neighbors[6];
-}	t_tsr_chunk_ref;
-
 typedef struct s_tsr_chunk
 {
 	t_tsr_tile		tiles[64];
+	t_tsr_chunk_id	neighbors[6];
 	t_tsr_tile		limits[6];
-	t_tsr_chunk_id	id;
 }	t_tsr_chunk;
 
 typedef struct s_tsr_render_ray
@@ -75,6 +70,7 @@ typedef struct s_tsr_render_ray
 	t_vec3i			dir_sign;
 	t_vec3i			iter;
 	t_vec3			dist;
+	double			distance;
 	t_vec3			position;
 	t_tsr_chunk_id	chunk;
 	t_vec3i			tile_position;
@@ -82,15 +78,16 @@ typedef struct s_tsr_render_ray
 	int				lifetime;
 	int8_t			axis;
 	int8_t			tile_axis;
+	t_vec3i			tile_normal;
 	int8_t			face;
+	bool			backface;
 	t_tsr_tile		*tile;
 	t_tsr_tile_data	*tile_data;
-	t_tsr_tile		*front_tile;
 	t_vec2			uv;
 	t_tsr_texture	*texture;
-	t_vec3			tile_normal;
-	t_vec4			color;
-	bool			is_shadow;
+	t_vec3			normal;
+	uint8_t			mipmap;
+	t_mbx_color		color;
 }	t_tsr_ray;
 
 typedef struct s_tsr_player
@@ -103,7 +100,7 @@ typedef struct s_tsr_player
 	t_vec3			velocity;
 	t_tsr_chunk_id	chunk;
 	t_vec3			position;
-	t_tsr_tile_id	hotbar_tile;
+	t_tsr_tile		hotbar_tile;
 	t_vec3i			face;
 	t_tsr_ray		ray;
 	t_tsr_chunk_id	tile_highlight_chunk;
@@ -116,6 +113,7 @@ typedef struct s_tsr_player
 		PROMPT_STATE_TP,
 		PROMPT_STATE_SAVE,
 	}				prompt_state;
+	bool			godmode;
 }	t_tsr_player;
 
 typedef struct s_tsr_camera
@@ -136,14 +134,14 @@ typedef struct s_tsr_world_data
 	t_mlem_value		mlem;
 	t_mlem_string		name;
 	t_vec3				skylight;
-	t_vec4				skylight_color;
+	t_vec3				skylight_color;
+	t_vec3				shadow_color;
 	t_tsr_chunk_id		origin;
 	t_tsr_tile			skybox;
 }	t_tsr_world_data;
 
 typedef struct s_tsr_world_content
 {
-	t_tsr_chunk_ref		*chunk_refs;
 	t_tsr_chunk			*chunks;
 	size_t				chunk_count;
 	size_t				chunk_capacity;
@@ -169,7 +167,7 @@ typedef struct s_tsr_context
 		t_tsr_texture		textures[TEXTURE_BUFFER_SIZE];
 		t_mlem_value		mlem;
 		size_t				count;
-		t_mbx_region		*_default;
+		t_mbx_region		*default_region;
 		t_mbx_region		*tile_highlight;
 		t_mbx_region		*tile_face_highlight;
 		t_mbx_region		*hotbar_selection;
@@ -183,6 +181,7 @@ typedef struct s_tsr_context
 		size_t				thread_count;
 		pthread_t			*threads;
 		pthread_barrier_t	wait_barrier;
+		atomic_uint			threads_waiting;
 		atomic_bool			running;
 		size_t				job_count;
 		atomic_size_t		current_job;

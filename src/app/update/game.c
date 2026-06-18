@@ -24,6 +24,7 @@ void	tsr_update_game(t_tsr *tsr)
 {
 	if (mbx_btnp(tsr->mbx, MBX_KEY_ESCAPE) && !tsr->player.prompt_state)
 		tsr->ui.state = UI_STATE_PAUSE;
+	update_light(tsr);
 	tsr_update_player(tsr);
 	tsr_update_camera(tsr);
 	if (mbx_btnp(tsr->mbx, MBX_KEY_F1))

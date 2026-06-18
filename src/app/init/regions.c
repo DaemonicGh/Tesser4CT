@@ -22,16 +22,16 @@ static t_mbx_region	*load_texture(t_tsr *tsr, char *path)
 	if (!region)
 	{
 		tsr_report_m(STATUS_WARNING, REPORT_NULLIMGF, path);
-		return (tsr->textures._default);
+		return (tsr->textures.default_region);
 	}
 	return (region);
 }
 
 void	load_regions(t_tsr *tsr)
 {
-	tsr->textures._default = load_texture(tsr,
+	tsr->textures.default_region = load_texture(tsr,
 			"assets/textures/default.png");
-	if (!tsr->textures._default)
+	if (!tsr->textures.default_region)
 		tsr_exit(tsr, STATUS_ERROR, REPORT_NULLDEFIMGF);
 	tsr->textures.font_small = load_texture(tsr,
 			"assets/textures/fonts/small.png");

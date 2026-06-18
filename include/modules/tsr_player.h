@@ -41,7 +41,7 @@ void
 place_and_destroy(t_tsr *tsr);
 
 void
-create_chunk(t_tsr *tsr, t_tsr_chunk_id id, int flags);
+create_chunk(t_tsr *tsr, t_tsr_chunk_id chunk, int flags);
 
 void
 player_update_prompt(t_tsr *tsr);

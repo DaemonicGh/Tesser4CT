@@ -1,15 +1,20 @@
 map_id = loight
 attributes = [
 	skybox = #sky_sunset
-	light_color = [
+	skylight_color = [
 		1.
 		1.
 		1.
 	]
-	light_direction = [
+	skylight_direction = [
 		.9
 		-.2
 		.2
+	]
+	shadow_color = [
+		0.4
+		0.6
+		1.0
 	]
 	origin = 0
 	player_chunk = 1

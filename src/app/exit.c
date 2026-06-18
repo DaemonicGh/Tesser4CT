@@ -19,6 +19,8 @@ static void	cancel_threads(t_tsr *tsr)
 
 	if (!tsr->rendering.running)
 		return ;
+	while (tsr->rendering.threads_waiting < tsr->rendering.thread_count)
+		usleep(1000);
 	tsr->rendering.running = false;
 	if (tsr->rendering.threads)
 	{
@@ -45,7 +47,6 @@ void	tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message)
 	while (i < tsr->world_data.tile_count)
 		free(tsr->world_data.tiles[i++].name);
 	free(tsr->world.chunks);
-	free(tsr->world.chunk_refs);
 	free(tsr->world_data.name);
 	mbx_exit(tsr->mbx);
 	free(tsr);

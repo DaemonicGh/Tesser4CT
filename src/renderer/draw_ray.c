@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_constants.h"
 
-static void	fix_zeros(t_vec3 *origin, t_vec3 *forward)
+static void	fix_zeros(t_vec3 *restrict origin, t_vec3 *restrict forward)
 {
 	size_t	i;
 
@@ -27,31 +28,39 @@ static void	fix_zeros(t_vec3 *origin, t_vec3 *forward)
 	}
 }
 
-t_tsr_ray	setup_ray(
+t_tsr_ray	setup_ray_unsafe(
 	t_tsr *tsr, t_vec3 origin, t_tsr_chunk_id chunk, t_vec3 forward)
 {
-	const t_tsr_world	*world = &tsr->rendering.data.world;
-	t_vec3i				tile_pos;
+	const t_vec3i		tile_pos = vec3i_vd(vec3_exec(floor, origin));
 	t_tsr_ray			ray;
 
-	fix_zeros(&origin, &forward);
-	tile_pos = vec3i_vd(vec3_exec(floor, origin));
-	chunk = tsr_relocate_chunk(world, chunk, &tile_pos);
 	ray = (t_tsr_ray){.origin = origin,
 		.dir = forward, .dir_sign = vec3i_vd(vec3_sign(forward)),
 		.delta = vec3_div_rd(1, forward),
-		.chunk = chunk,
-		.tile_position = tile_pos, .lifetime = 128};
+		.chunk = chunk, .tile_position = tile_pos, .lifetime = RAY_LIFETIME};
 	ray.abs_delta = vec3_abs(ray.delta);
 	ray.iter = vec3i_mult(vec3i(1, 4, 16), ray.dir_sign);
 	ray.tile_index = tile_pos.x + tile_pos.y * 4 + tile_pos.z * 16;
-	ray.tile = tsr_get_tile(world, chunk, ray.tile_position);
-	ray.dist = vec3_mult(vec3_sub(vec3_vi(vec3i_add(ray.tile_position, vec3i(
+	ray.tile = tsr_get_tile(&tsr->rendering.data.world, chunk, tile_pos);
+	ray.tile_data = &tsr->rendering.data.world.data->tiles[ray.tile->type];
+	ray.dist = vec3_mult(vec3_sub(vec3_vi(vec3i_add(tile_pos, vec3i(
 							ray.dir_sign.x > 0,
 							ray.dir_sign.y > 0,
 							ray.dir_sign.z > 0))),
 				ray.origin), ray.delta);
 	return (ray);
+}
+
+t_tsr_ray	setup_ray(
+	t_tsr *tsr, t_vec3 origin, t_tsr_chunk_id chunk, t_vec3 forward)
+{
+	t_vec3i				tile_pos;
+
+	fix_zeros(&origin, &forward);
+	tile_pos = vec3i_vd(vec3_exec(floor, origin));
+	chunk = tsr_relocate_chunk(&tsr->rendering.data.world, chunk, &tile_pos);
+	origin = vec3_add(vec3_vi(tile_pos), vec3_exec(fract, origin));
+	return (setup_ray_unsafe(tsr, origin, chunk, forward));
 }
 
 t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
@@ -66,9 +75,9 @@ t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
 					vec3_mult_d(camera.up, -uvc.y))));
 	while (true)
 	{
-		trace_ray(tsr, &ray);
-		if (set_ray_tile_color(tsr, &ray, ray.tile))
+		trace_ray(tsr, &ray, false);
+		if (set_ray_tile_color(tsr, &ray))
 			break ;
 	}
-	return (vec4_to_color(ray.color));
+	return (ray.color);
 }

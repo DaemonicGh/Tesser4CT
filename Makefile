@@ -20,25 +20,27 @@ app_init_files			:=	\
 
 app_files				:=	\
 	$(addprefix init/,	$(app_init_files))\
-	main exit																	\
+	main exit																\
 	update/game	update/main_menu update/pause update/setting
 
 player_files			:=	\
 	actions collision movement prompt tile update
 
 renderer_files			:=	\
-	camera draw_ray get_color lighting normal texture threads trace_ray
+	camera draw_ray get_color illum lighting normal texture threads			\
+	trace_ray
 
 world_files				:=	\
-	load/map load/chunks save/map save/chunks chunk tile
+	load/map load/chunks save/map save/chunks								\
+	illum illum_rays trash chunk tile tile_new
 
 common_files			:=	\
 	$(addprefix app/,		$(app_files))\
 	$(addprefix renderer/,	$(renderer_files))\
 	$(addprefix world/,		$(world_files))\
 	$(addprefix player/,	$(player_files))\
-	ui/draw	ui/hotbar ui/title ui/button ui/prompt								\
-	utils/memory utils/report utils/string utils/tile							\
+	ui/draw	ui/hotbar ui/title ui/button ui/prompt							\
+	utils/memory utils/report utils/string utils/tile						\
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a MLEM/libmlem.a
 OTHER_LIBRARIES			:=	m
@@ -74,7 +76,7 @@ SILENT_NAMES				:=
 
 COMPILER					=	cc
 COMPILER_FLAGS				=	-Wall -Wextra -Werror
-RELEASE_COMPILER_FLAGS		=	-O3 -flto -march=native -DNDEBUG
+RELEASE_COMPILER_FLAGS		=	-O3 -flto -march=native -ffast-math
 DEBUG_COMPILER_FLAGS		=	-O1 -g -D TSR_DEBUG
 SANITIZE_COMPILER_FLAGS		=	-fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
 

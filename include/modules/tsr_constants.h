@@ -35,6 +35,11 @@
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18
 
+# define RAY_LIFETIME			16
+# define SHADOW_RAY_LIFETIME	8
+# define ILLUM_RAY_LIFETIME		8
+# define MIPMAP_LEVELS			4
+
 # define PROMPT_SIZE			64
 # define MAP_SELECT_PREFIX		"maps/"
 # define MAP_SELECT_PREFIX_LEN	5

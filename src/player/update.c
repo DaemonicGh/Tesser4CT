@@ -16,7 +16,7 @@ static void	raycast(t_tsr *tsr)
 {
 	tsr->player.ray = setup_ray(tsr,
 			tsr->camera.position, tsr->camera.chunk, tsr->camera.forward);
-	trace_ray(tsr, &tsr->player.ray);
+	trace_ray(tsr, &tsr->player.ray, false);
 }
 
 void	tsr_update_player(t_tsr *tsr)

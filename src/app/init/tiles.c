@@ -67,21 +67,13 @@ static void	set_values(t_tsr_tile_data *tile, t_mlem_value object)
 		tile->name = value->strv.value;
 		value->strv.value = NULL;
 	}
-	value = mlem_object_get(object, "skip");
-	if (value)
-		tile->skip = mlem_dereference(*value).boolv.value;
-	value = mlem_object_get(object, "backface");
-	if (value)
-		tile->backface = mlem_dereference(*value).boolv.value;
-	value = mlem_object_get(object, "inner_backface");
-	if (value)
-		tile->inner_backface = mlem_dereference(*value).boolv.value;
-	value = mlem_object_get(object, "skybox");
-	if (value)
-		tile->skybox = mlem_dereference(*value).boolv.value;
-	value = mlem_object_get(object, "specular");
-	if (value)
-		tile->specular = mlem_dereference(*value).boolv.value;
+	tile->skip = mlem_as_bool(mlem_object_get(object, "skip"), false);
+	tile->transparent = mlem_as_bool(
+		mlem_object_get(object, "transparent"), tile->skip);
+	tile->skybox = mlem_as_bool(
+		mlem_object_get(object, "skybox"), false);
+	tile->backface = mlem_as_bool(
+		mlem_object_get(object, "backface"), false);
 }
 
 static t_tsr_tile_data	load_tile(

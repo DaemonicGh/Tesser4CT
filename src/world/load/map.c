@@ -42,9 +42,9 @@ static void	load_map_attributes(t_tsr *tsr, t_mlem_value object)
 	value = mlem_object_get(object, "skybox");
 	if (value && value->type == MLEM_TYPE_REFERENCE)
 		tsr->world_data.skybox = tsr_tile(mlem_as_int(
-					&value->refv.value->value, 1), 0);
+					&value->refv.value->value, 1), 3, 0);
 	else
-		tsr->world_data.skybox = tsr_tile(1, 0);
+		tsr->world_data.skybox = tsr_tile(1, 3, 0);
 	tsr->player.chunk = mlem_as_int(mlem_object_get(object, "player_chunk"),
 			tsr->world_data.origin - 1) + 1;
 	tsr->player.position = get_as_vec3(
@@ -52,10 +52,12 @@ static void	load_map_attributes(t_tsr *tsr, t_mlem_value object)
 	tsr->camera.rotation = get_as_vec3(
 			object, "player_rotation", vec3_d(0));
 	tsr->player.rotation.x = tsr->camera.rotation.x;
-	tsr->world_data.skylight_color = vec3_w(
-			get_as_vec3(object, "light_color", vec3_d(1)), 1);
-	tsr->world_data.skylight = vec3_neg(get_as_vec3(
-				object, "light_direction", vec3(0.01, -0.99, 0.01)));
+	tsr->world_data.skylight_color = get_as_vec3(
+			object, "skylight_color", vec3_d(1));
+	tsr->world_data.skylight = vec3_normalize(vec3_neg(get_as_vec3(
+					object, "skylight_direction", vec3(0.01, -0.99, 0.01))));
+	tsr->world_data.shadow_color = get_as_vec3(
+			object, "shadow_color", vec3_d(0.1));
 }
 
 static void	setup_name(t_tsr *tsr, char *name)
@@ -84,9 +86,8 @@ static bool	load_map_data(t_tsr *tsr, t_mlem_value map)
 	if (!value || value->type != MLEM_TYPE_STRING)
 		return (false);
 	free(tsr->world_data.name);
-	tsr->world_data.name = tsr_strdup(value->strv.value);
-	if (!tsr->world_data.name)
-		return (false);
+	tsr->world_data.name = value->strv.value;
+	value->strv.value = NULL;
 	value = mlem_object_get(map, "attributes");
 	if (!value || value->type != MLEM_TYPE_OBJECT)
 		return (false);

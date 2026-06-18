@@ -23,12 +23,13 @@ static void	init_player(t_tsr *tsr)
 {
 	tsr->player.hitbox = vec3(0.4, 0.9, 0.4);
 	tsr->player.velocity = vec3_zero();
-	tsr->player.hotbar_tile = 2;
+	tsr->player.hotbar_tile = tsr_tile(2, 3, 0);
+	tsr->player.godmode = true;
 }
 
 static void	init_values(t_tsr *tsr)
 {
-	tsr->mbx->settings.fps_cap = 60;
+	tsr->mbx->settings.fps_cap = 120;
 	tsr->mbx->settings.exit_key = MBX_KEY_NONE;
 	tsr->mbx->settings.viewport_render = MBX_VIEWPORT_RENDER_SKIP;
 	tsr->extras.aspect_ratio = (double)DEFAULT_VIEWPORT_H / DEFAULT_VIEWPORT_W;

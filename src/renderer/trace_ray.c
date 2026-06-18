@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_core.h"
-#include "tsr_world.h"
-#include <sys/types.h>
 
 static void	check_chunk_bounds(t_tsr *tsr, t_tsr_ray *ray)
 {
@@ -21,23 +18,28 @@ static void	check_chunk_bounds(t_tsr *tsr, t_tsr_ray *ray)
 
 	if (ray->tile_position.v[ray->axis] < 0)
 	{
-		ray->chunk = tsr->rendering.data.world.chunk_refs[ray->chunk]
-			.neighbors[ray->axis * 2];
+		ray->chunk = tsr->rendering.data.world.chunks
+		[ray->chunk].neighbors[ray->axis * 2];
 		ray->tile_position.v[ray->axis] += 4;
 		ray->tile_index += c_iter.v[ray->axis];
 	}
 	else if (ray->tile_position.v[ray->axis] >= 4)
 	{
-		ray->chunk = tsr->rendering.data.world.chunk_refs[ray->chunk]
-			.neighbors[ray->axis * 2 + 1];
+		ray->chunk = tsr->rendering.data.world.chunks
+		[ray->chunk].neighbors[ray->axis * 2 + 1];
 		ray->tile_position.v[ray->axis] -= 4;
 		ray->tile_index -= c_iter.v[ray->axis];
 	}
 	else
+	{
 		ray->tile_index += ray->iter.v[ray->axis];
+		return ;
+	}
+	if (ray->lifetime-- < 0)
+		ray->chunk = 0;
 }
 
-static void	step_ray(t_tsr *tsr, t_tsr_ray *ray)
+void	step_ray(t_tsr *restrict tsr, t_tsr_ray *restrict ray)
 {
 	if (ray->dist.z < ray->dist.x && ray->dist.z < ray->dist.y)
 		ray->axis = 2;
@@ -45,52 +47,69 @@ static void	step_ray(t_tsr *tsr, t_tsr_ray *ray)
 		ray->axis = (ray->dist.y < ray->dist.x);
 	ray->dist.v[ray->axis] += ray->abs_delta.v[ray->axis];
 	ray->tile_position.v[ray->axis] += ray->dir_sign.v[ray->axis];
-	if (ray->lifetime-- < 0)
-	{
-		ray->chunk = 0;
-		return ;
-	}
 	check_chunk_bounds(tsr, ray);
 }
 
-static void	set_hit_values(t_tsr *tsr, t_tsr_ray *ray)
+static void	set_hit_values(t_tsr_ray *ray)
 {
-	t_vec3i			position;
-	t_tsr_chunk_id	chunk;
+	double	angle;
 
 	ray->tile_axis = ray->axis;
-	ray->tile_data = &tsr->world_data.tiles[ray->tile->type];
-	position = vec3i_sub(ray->tile_position,
-			vec3i_vd(get_tile_normal(ray->dir, ray->tile_axis)));
-	chunk = tsr_relocate_chunk(&tsr->rendering.data.world,
-			ray->chunk, &position);
-	ray->front_tile = &tsr->rendering.data.world.chunks[chunk]
-		.tiles[tsr_get_tile_index(position)];
+	ray->tile_normal = vec3i_zero();
+	ray->tile_normal.v[ray->axis] = fsign(ray->dir.v[ray->axis]);
 	ray->position = vec3_add(ray->origin, vec3_mult_d(ray->dir,
 				ray->dist.v[ray->axis] - ray->abs_delta.v[ray->axis]));
+	ray->distance = vec3_dist(ray->origin, ray->position);
+	if (ray->tile_data->skybox)
+		ray->mipmap = 0;
+	else
+	{
+		angle = 1 - fabs(vec3_dot(ray->dir, vec3_vi(ray->tile_normal)));
+		ray->mipmap = fclamp(fmax(ray->distance / 4, 3)
+				* pow(angle, 4), 0, 3);
+	}
 }
 
-void	trace_ray(t_tsr *tsr, t_tsr_ray *ray)
+static void	trace_ray_loop(
+	t_tsr *tsr, t_tsr_ray *ray, bool backface)
 {
-	t_tsr_chunk_id	prev;
+	t_tsr_tile		*initial_tile;
+	t_tsr_chunk_id	prev_chunk;
 
+	initial_tile = ray->tile;
 	while (true)
 	{
-		prev = ray->chunk;
+		prev_chunk = ray->chunk;
 		step_ray(tsr, ray);
 		if (!ray->chunk)
 		{
-			ray->tile = &tsr->rendering.data.world.chunks[prev]
+			ray->tile = &tsr->rendering.data.world.chunks[prev_chunk]
 				.limits[ray->axis * 2 + (ray->dir_sign.v[ray->axis] >= 0)];
-			break ;
+			return ;
 		}
-		if (tsr->rendering.data.world.chunk_refs[ray->chunk].process
-			& (1ul << ray->tile_index))
+		ray->tile = &tsr->rendering.data.world.chunks[ray->chunk]
+			.tiles[ray->tile_index];
+		if (!tsr->world_data.tiles[ray->tile->type].skip)
 		{
-			ray->tile = &tsr->rendering.data.world.chunks[ray->chunk]
-				.tiles[ray->tile_index];
-			break ;
+			if (!backface || ray->tile->type != initial_tile->type)
+				return ;
 		}
+		else if (backface)
+			break ;
 	}
-	set_hit_values(tsr, ray);
+	ray->backface = true;
+	ray->tile = initial_tile;
+}
+
+void	trace_ray(
+	t_tsr *restrict tsr, t_tsr_ray *restrict ray, bool lighting_ray)
+{
+	const bool	backface = !lighting_ray && ray->tile_data
+		&& ray->tile_data->backface && !ray->backface;
+
+	ray->backface = false;
+	trace_ray_loop(tsr, ray, backface);
+	ray->tile_data = &tsr->world_data.tiles[ray->tile->type];
+	if (!lighting_ray)
+		set_hit_values(ray);
 }

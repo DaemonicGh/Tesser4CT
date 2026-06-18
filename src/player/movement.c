@@ -57,9 +57,9 @@ static void	update_player_chunk(t_tsr *tsr)
 	{
 		chunk = tsr->player.chunk;
 		if (target.v[axis] < 0.1)
-			chunk = tsr->world.chunk_refs[chunk].neighbors[axis * 2];
+			chunk = tsr->world.chunks[chunk].neighbors[axis * 2];
 		else if (target.v[axis] >= 3.9)
-			chunk = tsr->world.chunk_refs[chunk].neighbors[axis * 2 + 1];
+			chunk = tsr->world.chunks[chunk].neighbors[axis * 2 + 1];
 		if (!chunk)
 		{
 			tsr->player.position.v[axis] = fclamp(target.v[axis], 0.1, 3.9);
@@ -74,8 +74,8 @@ static void	update_player_chunk(t_tsr *tsr)
 
 void	player_movement(t_tsr *tsr)
 {
-	const double	speed = 0.3;
-	const double	accel = 1;
+	const double	speed = 0.15;
+	const double	accel = 0.8;
 	t_vec3			mv;
 
 	mv = vec3_zero();

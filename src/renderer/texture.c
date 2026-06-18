@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_drawing.h"
+#include "modules/mbx_structs.h"
 #include "tsr.h"
 
 static t_vec2	get_skybox_uv(t_tsr_ray *ray)
@@ -51,24 +53,19 @@ t_vec2	get_tile_uv(t_tsr_ray *ray)
 	return (uv);
 }
 
-t_mbx_color	get_texture_color(t_tsr *tsr, t_tsr_ray *ray, t_tsr_tile *tile)
+t_mbx_color	get_texture_color(t_tsr_ray *ray)
 {
-	t_vec2i	texture_uv;
+	t_vec2i		texture_uv;
 
-	(void)tsr;
-	(void)tile;
 	if (ray->tile_data->skybox)
 		ray->uv = get_skybox_uv(ray);
 	else
 		ray->uv = get_tile_uv(ray);
 	ray->face = ray->axis * 2 + (ray->dir_sign.v[ray->axis] < 0);
-	ray->texture = ray->tile_data->texture[ray->face];
-	if (ray->uv.x >= 1 || ray->uv.y >= 1)
-	{
-		printf("PIXEL FAIL (? %i %i)\n",
-			(ray->dir.v[ray->axis] < 0) == !(ray->axis & 2), ray->axis == 1);
-		ray->uv = vec2_exec2(fmin, ray->uv, vec2_d(1 - 1e-6));
-	}
-	texture_uv = vec2i_mult_vd(ray->texture->texture->subregion_size, ray->uv);
-	return (mbx_get_pixel_unsafe(ray->texture->texture, texture_uv));
+	ray->texture = ray->tile_data->texture
+	[get_tile_texture(ray->tile, ray->face, &ray->uv)];
+	texture_uv = vec2i_mult_vd(ray->texture->texture
+		[ray->mipmap]->subregion_size, ray->uv);
+	return (mbx_get_pixel_unsafe(
+			ray->texture->texture[ray->mipmap], texture_uv));
 }

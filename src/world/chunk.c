@@ -13,19 +13,8 @@
 #include "tsr.h"
 #include "tsr_core.h"
 
-t_tsr_chunk	*tsr_get_chunk_neighbor(
-	t_tsr *tsr, t_tsr_chunk *chunk, int side)
-{
-	size_t	id;
-
-	id = tsr->world.chunk_refs[chunk->id].neighbors[side];
-	if (!id)
-		return (NULL);
-	return (&tsr->world.chunks[id]);
-}
-
 t_tsr_chunk_id	tsr_relocate_chunk(
-	const t_tsr_world *world, t_tsr_chunk_id chunk_id, t_vec3i *pos)
+	const t_tsr_world *world, t_tsr_chunk_id chunk, t_vec3i *pos)
 {
 	int	axis;
 	int	side;
@@ -36,62 +25,47 @@ t_tsr_chunk_id	tsr_relocate_chunk(
 	{
 		while (pos->v[axis] < 0)
 		{
-			chunk_id = world->chunk_refs[chunk_id].neighbors[side];
-			if (!chunk_id)
+			chunk = world->chunks[chunk].neighbors[side];
+			if (!chunk)
 				return (0);
 			pos->v[axis] += 4;
 		}
 		while (pos->v[axis] >= 4)
 		{
-			chunk_id = world->chunk_refs[chunk_id].neighbors[side + 1];
-			if (!chunk_id)
+			chunk = world->chunks[chunk].neighbors[side + 1];
+			if (!chunk)
 				return (0);
 			pos->v[axis] -= 4;
 		}
 		axis++;
 		side += 2;
 	}
-	return (chunk_id);
-}
-
-static void	copy_chunks(t_tsr_world *src, t_tsr_world *dest)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < src->chunk_count)
-	{
-		dest->chunks[i] = src->chunks[i];
-		dest->chunk_refs[i] = src->chunk_refs[i];
-		i++;
-	}
-	while (i < dest->chunk_capacity)
-	{
-		dest->chunks[i] = src->chunks[0];
-		dest->chunks[i].id = i;
-		dest->chunk_refs[i] = src->chunk_refs[0];
-		i++;
-	}
+	return (chunk);
 }
 
 t_tsr_chunk_id	tsr_new_chunk(t_tsr_world *world)
 {
 	t_tsr_world		new;
+	size_t			i;
 
-	if (world->chunk_count == world->chunk_capacity)
+	if (world->chunk_count != world->chunk_capacity)
+		return (world->chunk_count++);
+	new = *world;
+	new.chunk_capacity = world->chunk_capacity * 1.5 + 1;
+	new.chunks = malloc(new.chunk_capacity * sizeof(t_tsr_chunk));
+	if (!new.chunks)
 	{
-		new = *world;
-		new.chunk_capacity = world->chunk_capacity * 1.5 + 1;
-		new.chunks = malloc(new.chunk_capacity * sizeof(t_tsr_chunk));
-		new.chunk_refs = malloc(new.chunk_capacity * sizeof(t_tsr_chunk_ref));
-		if (!new.chunks || !new.chunk_refs)
-		{
-			free(new.chunks);
-			free(new.chunk_refs);
-			return (0);
-		}
-		copy_chunks(world, &new);
-		*world = new;
+		free(new.chunks);
+		return (0);
 	}
+	i = 0;
+	while (i < world->chunk_count)
+	{
+		new.chunks[i] = world->chunks[i];
+		i++;
+	}
+	while (i < new.chunk_capacity)
+		new.chunks[i++] = world->chunks[0];
+	*world = new;
 	return (world->chunk_count++);
 }

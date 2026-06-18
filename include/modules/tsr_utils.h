@@ -45,9 +45,6 @@ typedef enum e_tsr_report_status
 #define REPORT_NULLTHREAD	"Failed to create thread"
 #define REPORT_MAPSAVED		"Sucessfully saved map at "
 
-t_vec3
-get_tile_normal(t_vec3 ray_dir, int axis);
-
 int
 tsr_report(t_tsr_status status, const char *message);
 

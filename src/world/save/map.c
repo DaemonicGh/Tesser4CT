@@ -39,7 +39,7 @@ static t_mlem_value	save_attributes(t_tsr *tsr)
 			tsr->world_data.mlem.objectv.value[
 			tsr->world_data.skybox.type].value));
 	append_vec3(&object, "light_color",
-		vec4_xyz(tsr->world_data.skylight_color));
+		tsr->world_data.skylight_color);
 	append_vec3(&object, "light_direction",
 		vec3_neg(tsr->world_data.skylight));
 	mlem_object_append(&object, "origin",

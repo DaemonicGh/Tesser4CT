@@ -11,7 +11,8 @@
 		top		= #tx_skybox_top
 		bottom	= #tx_skybox_bottom
 	]
-	skybox = true ]
+	skybox = true
+]
 #test = [
 	name = "Directional Test Cube"
 	textures = [
@@ -25,66 +26,69 @@
 ]
 #stone = [
 	name = "Stone"
-	texture = #tx_stone ]
+	texture = #tx_stone
+]
 #dirt = [
 	name = "Dirt"
-	texture = #tx_dirt ]
+	texture = #tx_dirt
+]
 #grass = [
 	name = "Grass Block"
 	texture = #tx_grass_block_side
 	textures = [
 		top		= #tx_grass_block_top
-		bottom	= #tx_dirt ]]
+		bottom	= #tx_dirt
+	]
+]
 #oak_leaves = [
 	name = "Oak Leaves"
 	texture = #tx_oak_leaves
-	backface = true		inner_backface = true ]
+	backface = true
+]
 #oak_log = [
 	name = "Oak Log"
 	texture = #tx_oak_log_side
 	textures = [
 		top		= #tx_oak_log_top
-		bottom	= #tx_oak_log_top ]]
+		bottom	= #tx_oak_log_top
+	]
+]
 #oak_planks = [
 	name = "Oak Planks"
-	texture = #tx_oak_planks ]
+	texture = #tx_oak_planks
+]
 #stone_bricks = [
 	name = "Stone Bricks"
-	texture = #tx_stone_bricks ]
+	texture = #tx_stone_bricks
+]
 #cobblestone = [
 	name = "Cobblestone"
-	texture = #tx_cobblestone ]
+	texture = #tx_cobblestone
+]
 #iron_block = [
 	name = "Iron Block"
 	texture = #tx_iron_block
-	specular = true ]
+]
 #moss = [
 	name = "Moss"
-	texture = #tx_moss ]
+	texture = #tx_moss
+]
 #glass = [
 	name = "Glass"
 	texture = #tx_glass
-	backface = true		specular = true ]
-#white_glass = [
-	name = "White Stained Glass"
-	texture = #tx_white_glass
-	backface = true		specular = true ]
-#red_glass = [
-	name = "Red Stained Glass"
-	texture = #tx_red_glass
-	backface = true		specular = true ]
-#green_glass = [
-	name = "Green Stained Glass"
-	texture = #tx_green_glass
-	backface = true		specular = true ]
-#blue_glass = [
-	name = "Blue Stained Glass"
-	texture = #tx_blue_glass
-	backface = true		specular = true ]
+	transparent = true
+	backface = true
+]
 #magma = [
 	name = "Magma Block"
 	texture = #tx_magma
-	backface = false	specular = true ]
+	backface = false
+]
 #gold_ore = [
 	name = "Gold Ore"
-	texture = #tx_gold_ore ]
+	texture = #tx_gold_ore
+]
+#ecko_block = [
+	name = "Ecko Block"
+	texture = #tx_transparent
+]

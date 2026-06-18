@@ -1,6 +1,9 @@
 #tx_default = [
 	file = "assets/textures/default.png"
 ]
+#tx_transparent = [
+	file = "assets/textures/transparent.png"
+]
 #tx_stone = [
 	file = "assets/textures/tiles/stone.png"
 	normal = true

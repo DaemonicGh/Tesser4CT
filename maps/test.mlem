@@ -7,27 +7,27 @@ attributes = [
 		.8
 	]
 	light_direction = [
-		.01
-		.5
-		.85
+		.01013988121
+		.5069940607
+		.86188990319
 	]
 	origin = 0
 	player_chunk = 3
 	player_position = [
-		2.32225138775
+		3.28964147268
 		2.15960705291
-		.71869592834
+		1.18267612876
 	]
 	player_rotation = [
-		3.13631030717
-		.14166666667
+		.18006030717
+		.24166666667
 		0.
 	]
 ]
 chunks = [
 	[
 		tiles = [
-			#grass
+			#air
 			#air
 			#air
 			#air
@@ -101,7 +101,7 @@ chunks = [
 	]
 	[
 		tiles = [
-			#stone
+			#air
 			#air
 			#air
 			#air
@@ -175,7 +175,7 @@ chunks = [
 	]
 	[
 		tiles = [
-			#oak_planks
+			#air
 			#air
 			#air
 			#air
@@ -249,7 +249,7 @@ chunks = [
 	]
 	[
 		tiles = [
-			#oak_log
+			#air
 			#air
 			#air
 			#air

@@ -6,15 +6,17 @@
 /*   By: rprieur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 00:14:45 by rprieur           #+#    #+#             */
-/*   Updated: 2026/06/10 00:14:45 by rprieur          ###   ########.fr       */
+/*   Updated: 2026/06/12 21:33:44 by rprieur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "mlem.h"
 #include "tsr.h"
 
-static t_mlem_value	save_chunk_data(t_tsr *tsr, t_tsr_chunk_id id)
+static t_mlem_value	save_chunk_data(t_tsr *tsr, t_tsr_chunk *chunk)
 {
 	t_mlem_value	array;
+	t_mlem_value	value;
 	t_tsr_tile_id	tile;
 	size_t			i;
 
@@ -24,15 +26,27 @@ static t_mlem_value	save_chunk_data(t_tsr *tsr, t_tsr_chunk_id id)
 	i = 0;
 	while (i < 64)
 	{
-		tile = tsr->world.chunks[id].tiles[i++].type;
+		tile = chunk->tiles[i].type;
 		mlem_array_append(&array, mlem_reference(
 				tsr->world_data.mlem.objectv.value[tile].value));
+		if (chunk->tiles[i].rotation != 24)
+		{
+			value = mlem_array(2, mlem_int(chunk->tiles[i].rotation >> 2),
+					mlem_int(chunk->tiles[i].rotation & 3));
+			if (!value.type)
+			{
+				mlem_destroy(array);
+				return ((t_mlem_value){0});
+			}
+			mlem_array_append(&array, value);
+		}
+		i++;
 	}
 	return (array);
 }
 
 static void	save_chunk_attributes(
-	t_tsr *tsr, t_tsr_chunk_id id, t_mlem_value *object)
+	t_tsr *tsr, t_tsr_chunk *chunk, t_mlem_value *object)
 {
 	const t_mlem_string	neighbor_keys[6] = {
 		"west", "east", "down", "up", "north", "south"};
@@ -45,15 +59,15 @@ static void	save_chunk_attributes(
 	i = 0;
 	while (i < 6)
 	{
-		if (tsr->world.chunk_refs[id].neighbors[i])
+		if (chunk->neighbors[i])
 			mlem_object_append(object, neighbor_keys[i],
-				mlem_int(tsr->world.chunk_refs[id].neighbors[i] - 1));
+				mlem_int(chunk->neighbors[i] - 1));
 		i++;
 	}
 	i = 0;
 	while (i < 6)
 	{
-		skybox = tsr->world.chunks[id].limits[i].type;
+		skybox = chunk->limits[i].type;
 		if (skybox != tsr->world_data.skybox.type)
 			mlem_object_append(object, skybox_keys[i], mlem_reference(
 					tsr->world_data.mlem.objectv.value[skybox].value));
@@ -61,7 +75,7 @@ static void	save_chunk_attributes(
 	}
 }
 
-static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk_id id)
+static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk *chunk)
 {
 	t_mlem_value		object;
 	t_mlem_value		data;
@@ -69,14 +83,14 @@ static t_mlem_value	save_chunk(t_tsr *tsr, t_tsr_chunk_id id)
 	object = mlem_object_empty(13);
 	if (!object.type)
 		return ((t_mlem_value){0});
-	data = save_chunk_data(tsr, id);
+	data = save_chunk_data(tsr, chunk);
 	if (!data.type)
 	{
 		mlem_destroy(object);
 		return ((t_mlem_value){0});
 	}
 	mlem_object_append(&object, "tiles", data);
-	save_chunk_attributes(tsr, id, &object);
+	save_chunk_attributes(tsr, chunk, &object);
 	return (object);
 }
 
@@ -92,7 +106,7 @@ t_mlem_value	save_chunks(t_tsr *tsr)
 	i = 1;
 	while (i < tsr->world.chunk_count)
 	{
-		chunk = save_chunk(tsr, i);
+		chunk = save_chunk(tsr, &tsr->world.chunks[i]);
 		if (!chunk.type)
 		{
 			mlem_destroy(array);

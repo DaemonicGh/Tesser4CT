@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
-#include "tsr_core.h"
 
 void	item_select(t_tsr *tsr)
 {
@@ -21,12 +20,17 @@ void	item_select(t_tsr *tsr)
 	while (i <= tsr->world_data.tile_count / 10)
 	{
 		if (mbx_key_pressed(tsr->mbx, 30 + i))
-			tsr->player.hotbar_tile = i * 10 + 1;
+			tsr->player.hotbar_tile.type = i * 10 + 1;
 		i++;
 	}
-	tsr->player.hotbar_tile = wrap(
-			(tsr->player.hotbar_tile - tsr->mbx->scroll_delta),
-			1, tsr->world_data.tile_count);
+	if (mbx_key_held(tsr->mbx, MBX_KEY_LALT))
+		tsr->player.hotbar_tile.rotation = wrap(
+				(tsr->player.hotbar_tile.rotation - tsr->mbx->scroll_delta),
+				0, 24);
+	else
+		tsr->player.hotbar_tile.type = wrap(
+				(tsr->player.hotbar_tile.type - tsr->mbx->scroll_delta),
+				1, tsr->world_data.tile_count);
 }
 
 static void	place_tile(t_tsr *tsr, const t_tsr_ray *ray)
@@ -40,12 +44,11 @@ static void	place_tile(t_tsr *tsr, const t_tsr_ray *ray)
 	{
 		if (!vec3i_eq(ray->tile_position, position))
 		{
-			position = vec3i_sub(ray->tile_position,
-					vec3i_vd(get_tile_normal(ray->dir, ray->tile_axis)));
+			position = vec3i_sub(ray->tile_position, ray->tile_normal);
 			chunk = tsr_relocate_chunk(&tsr->world, ray->chunk, &position);
 			if (chunk)
 				tsr_set_tile(&tsr->world, chunk, position,
-					tsr_tile(tsr->player.hotbar_tile, 0));
+					tsr->player.hotbar_tile);
 		}
 	}
 	else if (mbx_key_released(tsr->mbx, MBX_MOUSE_RIGHT))
@@ -62,7 +65,8 @@ static void	break_tile(t_tsr *tsr, const t_tsr_ray *ray)
 			|| tsr->mbx->inputs[MBX_MOUSE_LEFT].press > break_time * 2))
 	{
 		if (break_timer <= 0 && tsr_set_tile(
-				&tsr->world, ray->chunk, ray->tile_position, tsr_tile(0, 0)))
+				&tsr->world, ray->chunk, ray->tile_position,
+				tsr_tile_r(0, 0)))
 			break_timer = break_time;
 		else
 			break_timer -= tsr->mbx->delta_time;
@@ -73,18 +77,17 @@ static void	break_tile(t_tsr *tsr, const t_tsr_ray *ray)
 
 void	place_and_destroy(t_tsr *tsr)
 {
-	const t_tsr_ray	ray = tsr->player.ray;
-
-	if (vec3_dist(ray.position, ray.origin) < 8.0)
+	if (tsr->player.ray.distance < 8.0)
 	{
 		if (mbx_key_pressed(tsr->mbx, MBX_MOUSE_MIDDLE))
-			tsr->player.hotbar_tile = tsr_get_tile(
-					&tsr->world, ray.chunk, ray.tile_position)->type;
-		break_tile(tsr, &ray);
-		place_tile(tsr, &ray);
-		tsr->player.tile_highlight_chunk = ray.chunk;
-		tsr->player.tile_highlight_pos = ray.tile_position;
-		tsr->player.tile_highlight_axis = ray.axis;
+			tsr->player.hotbar_tile = *tsr_get_tile(
+					&tsr->world, tsr->player.ray.chunk,
+					tsr->player.ray.tile_position);
+		break_tile(tsr, &tsr->player.ray);
+		place_tile(tsr, &tsr->player.ray);
+		tsr->player.tile_highlight_chunk = tsr->player.ray.chunk;
+		tsr->player.tile_highlight_pos = tsr->player.ray.tile_position;
+		tsr->player.tile_highlight_axis = tsr->player.ray.axis;
 	}
 	else
 		tsr->player.tile_highlight_chunk = 0;

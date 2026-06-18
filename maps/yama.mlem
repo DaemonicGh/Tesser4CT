@@ -1,15 +1,20 @@
 map_id = yama
 attributes = [
 	skybox = #sky_sunset
-	light_color = [
-		0.
-		0.
-		0.
+	skylight_color = [
+		1.
+		1.
+		1.
 	]
-	light_direction = [
-		0.
+	skylight_direction = [
+		0.1
 		-1.
-		0.
+		0.1
+	]
+	shadow_color = [
+		0.4
+		0.6
+		1.0
 	]
 	origin = 0
 	player_chunk = 0

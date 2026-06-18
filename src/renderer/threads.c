@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <pthread.h>
+#include <stdatomic.h>
 #include "tsr.h"
 
 static void	render_job(t_tsr *tsr, size_t job_i)
@@ -59,12 +60,18 @@ void	*tsr_render_thread_init(void *data)
 	t_tsr		*tsr;
 
 	tsr = data;
+	tsr->rendering.threads_waiting++;
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
+	tsr->rendering.threads_waiting--;
 	while (tsr->rendering.running)
 	{
+		tsr->rendering.threads_waiting++;
 		pthread_barrier_wait(&tsr->rendering.wait_barrier);
+		tsr->rendering.threads_waiting--;
 		render_thread_loop(tsr);
+		tsr->rendering.threads_waiting++;
 		pthread_barrier_wait(&tsr->rendering.wait_barrier);
+		tsr->rendering.threads_waiting--;
 	}
 	return (NULL);
 }

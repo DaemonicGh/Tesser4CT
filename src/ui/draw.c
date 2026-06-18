@@ -16,15 +16,27 @@ static void	draw_debug(t_tsr *tsr)
 {
 	const t_tsr_tile	*tile = tsr_get_tile(&tsr->world,
 			tsr->player.tile_highlight_chunk, tsr->player.tile_highlight_pos);
+	t_vec3i				light_tile;
 	char				str[256];
 
-	snprintf(str, 256, "FPS\t\t%.2f\nPOS\t\t[%.1f %.1f %.1f]\n"
-		"ROT\t\t[%.2f %.2f] %i\nCHUNK\t%u\nTILE\t%u(%u)",
+	light_tile = vec3i_zero();
+	light_tile.v[tsr->player.tile_highlight_axis]
+		= tsr->camera.forward.v[tsr->player.tile_highlight_axis];
+	snprintf(str, 256, "FPS\t\t%.2f\nPos\t\t[%.1f %.1f %.1f]\n"
+		"Rot\t\t[%.2f %.2f] %i\nChunk\t%u\nTile\t%u[%u %u]",
 		1.0 / tsr->mbx->dt, tsr->player.position.x,
 		tsr->player.position.y, tsr->player.position.z,
 		tsr->camera.rotation.x, tsr->camera.rotation.y, tsr->player.face.z,
-		tsr->player.chunk, tile->type, tile->orientation);
+		tsr->player.chunk, tile->type, tile->rotation,
+		tsr_get_tile(&tsr->world, tsr->player.tile_highlight_chunk,
+			vec3i_sub(tsr->player.tile_highlight_pos, light_tile))->light);
 	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
+	if (mbx_key_held(tsr->mbx, MBX_KEY_LCTRL))
+		mbx_set_text(tsr->ui.target,
+			"[C] \tCreate Chunk\n[Alt+C]\tLink Chunk\n[V] \tSet Skybox\n"
+			"[Alt+N]\tDestroy Unused Chunks\n[B] \tTeleport\n"
+			"[M] \tSave Map\n[Alt+M]\tSave Map As",
+			vec2i(3, 50), tsr->textures.font_small);
 }
 
 static void	draw_crosshair(t_tsr *tsr)
