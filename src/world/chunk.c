@@ -14,7 +14,7 @@
 #include "tsr_core.h"
 
 t_tsr_chunk_id	tsr_relocate_chunk(
-	const t_tsr_world *world, t_tsr_chunk_id chunk, t_vec3i *pos)
+	const t_tsr_world *world, t_tsr_chunk_id chunk, t_vec3 *pos)
 {
 	int	axis;
 	int	side;

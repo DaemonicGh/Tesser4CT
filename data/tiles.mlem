@@ -1,29 +1,66 @@
 #air = [
 	skip = true
 ]
-#sky_sunset = [
-	name = "Sunset Sky"
-	textures = [
-		north	= #tx_skybox_north
-		south	= #tx_skybox_south
-		east	= #tx_skybox_east
-		west	= #tx_skybox_west
-		top		= #tx_skybox_top
-		bottom	= #tx_skybox_bottom
-	]
-	skybox = true
+
+#smooth_cray = [
+	name = "Smooth Cray"
+	texture = #tx_cray
 ]
-#test = [
-	name = "Directional Test Cube"
-	textures = [
-		north	= #tx_test_north
-		south	= #tx_test_south
-		east	= #tx_test_east
-		west	= #tx_test_west
-		top		= #tx_test_top
-		bottom	= #tx_test_bottom
-	]
+#cray_wall = [
+	name = "Cray Wall"
+	texture = #tx_cray_edge
 ]
+#bumpy_cray = [
+	name = "Bumpy Cray"
+	texture = #tx_cray_bumpy
+]
+#cray_tiles = [
+	name = "Cray Tiles"
+	texture = #tx_cray_tiles
+]
+#cray_pillar = [
+	name = "Cray Pillar"
+	texture = #tx_cray_pillar
+]
+#sculpted_cray = [
+	name = "Sculpted Cray"
+	texture = #tx_cray_sculpted
+]
+#cray_window = [
+	name = "Cray Window"
+	texture = #tx_cray_window
+	transparent = true
+	backface = true
+]
+#ornate_cray_on = [
+	name = "Ornate Cray [ON]"
+	texture = #tx_cray_ornate_on
+	interact_to = #ornate_cray_off
+	timeout_to = #ornate_cray_off
+	timeout_time = 2
+	light = [0.1 0 0.1]
+]
+#ornate_cray_off = [
+	name = "Ornate Cray [OFF]"
+	texture = #tx_cray_ornate_off
+	interact_to = #ornate_cray_on
+]
+
+#cloud_full = [
+	name = "Cloud [FULL]"
+	texture = #tx_cloud_full
+	interact_to = #cloud_clearing
+]
+#cloud_clearing = [
+	name = "Cloud [CLEAR]"
+	texture = #tx_cloud_clearing
+	timeout_to = #air
+	timeout_time = 0.25
+	transparent = true
+]
+
+// MINECRAFT TILES
+
 #stone = [
 	name = "Stone"
 	texture = #tx_stone
@@ -82,13 +119,58 @@
 #magma = [
 	name = "Magma Block"
 	texture = #tx_magma
-	backface = false
+	light = [0.2 0 0]
 ]
 #gold_ore = [
 	name = "Gold Ore"
 	texture = #tx_gold_ore
 ]
+
+// SKYBOXES
+
+#sky_sunset = [
+	name = "Sunset Sky"
+	textures = [
+		north	= #tx_sunset_north
+		south	= #tx_sunset_south
+		east	= #tx_sunset_east
+		west	= #tx_sunset_west
+		top		= #tx_sunset_top
+		bottom	= #tx_sunset_bottom
+	]
+	skybox = true
+	light = [1.5 1.2 1]
+]
+
+#sky_night = [
+	name = "Night Sky"
+	textures = [
+		north	= #tx_night_north
+		south	= #tx_night_south
+		east	= #tx_night_east
+		west	= #tx_night_west
+		top		= #tx_night_top
+		bottom	= #tx_night_bottom
+	]
+	skybox = true
+	light = [0.05 0.05 0.15]
+]
+
+// DEBUG TILES
+
 #ecko_block = [
 	name = "Ecko Block"
 	texture = #tx_transparent
+]
+
+#test = [
+	name = "Directional Test Cube"
+	textures = [
+		north	= #tx_test_north
+		south	= #tx_test_south
+		east	= #tx_test_east
+		west	= #tx_test_west
+		top		= #tx_test_top
+		bottom	= #tx_test_bottom
+	]
 ]

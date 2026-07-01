@@ -13,9 +13,10 @@
 #include "mlem.h"
 #include "tsr.h"
 
-static void	load_chunk_tiles(t_tsr_chunk *chunk, t_mlem_value array)
+static void	load_chunk_tiles(
+	t_tsr *tsr, t_tsr_chunk *chunk, t_mlem_value array)
 {
-	int			tile;
+	uint		tile;
 	t_mlem_int	count;
 	uint8_t		rotation;
 	uint32_t	i;
@@ -29,21 +30,23 @@ static void	load_chunk_tiles(t_tsr_chunk *chunk, t_mlem_value array)
 	while (i < array.arrayv.len)
 	{
 		if (array.arrayv.value[i].type == MLEM_TYPE_INT)
-			count = array.arrayv.value[i].intv.value - 1;
+			count = array.arrayv.value[i].intv.value;
 		else if (array.arrayv.value[i].type == MLEM_TYPE_ARRAY)
-			rotation
-				= mlem_as_int(mlem_array_get(array.arrayv.value[i], 0), 2) << 2
+			rotation = mlem_as_int(
+					mlem_array_get(array.arrayv.value[i], 0), 2) << 2
 				| mlem_as_int(mlem_array_get(array.arrayv.value[i], 1), 0);
 		else
 		{
-			while (count-- > 0 && j < 64)
-				chunk->tiles[j++] = tsr_tile_r(tile, rotation);
+			while (count-- && j < 64)
+				chunk->tiles[j++] = tsr_tile_r(tsr, tile, rotation);
 			tile = array.arrayv.value[i].refv.value->value.intv.value;
 			rotation = 12;
 			count = 1;
 		}
 		i++;
 	}
+	while (count-- && j < 64)
+		chunk->tiles[j++] = tsr_tile_r(tsr, tile, rotation);
 }
 
 static void	load_chunk_neighbors(t_mlem_value object, t_tsr_chunk *chunk)
@@ -72,21 +75,21 @@ static t_tsr_chunk	load_chunk(t_tsr *tsr, t_mlem_value object)
 	t_mlem_value		*value;
 	int					i;
 
-	(void)tsr;
 	chunk = (t_tsr_chunk){0};
 	i = 0;
 	while (i < 6)
 	{
 		value = mlem_object_get(object, keys[i]);
 		if (value)
-			chunk.limits[i].type = value->refv.value->value.intv.value;
+			chunk.limits[i] = tsr_tile_l(tsr,
+					value->refv.value->value.intv.value, 12, vec3_d(1));
 		else
 			chunk.limits[i] = tsr->world_data.skybox;
 		i++;
 	}
 	value = mlem_object_get(object, "tiles");
 	if (value)
-		load_chunk_tiles(&chunk, *value);
+		load_chunk_tiles(tsr, &chunk, *value);
 	load_chunk_neighbors(object, &chunk);
 	return (chunk);
 }

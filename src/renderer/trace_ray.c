@@ -50,7 +50,7 @@ void	step_ray(t_tsr *restrict tsr, t_tsr_ray *restrict ray)
 	check_chunk_bounds(tsr, ray);
 }
 
-static void	set_hit_values(t_tsr_ray *ray)
+static void	set_hit_values(t_tsr *tsr, t_tsr_ray *ray)
 {
 	double	angle;
 
@@ -64,26 +64,25 @@ static void	set_hit_values(t_tsr_ray *ray)
 		ray->mipmap = 0;
 	else
 	{
-		angle = 1 - fabs(vec3_dot(ray->dir, vec3_vi(ray->tile_normal)));
-		ray->mipmap = fclamp(fmax(ray->distance / 4, 3)
-				* pow(angle, 4), 0, 3);
+		angle = 1 - fabs(vec3_dot(vec3_vi(ray->tile_normal), vec3_div_d(
+						ray->dir, (tsr->extras.focal_length - 1) * 0.5 + 1)));
+		ray->mipmap = fclamp(fmax(ray->distance, 12)
+				/ (tsr->rendering.target->size.y / 90.) * pow(angle, 4), 0, 3);
 	}
 }
 
 static void	trace_ray_loop(
 	t_tsr *tsr, t_tsr_ray *ray, bool backface)
 {
-	t_tsr_tile		*initial_tile;
-	t_tsr_chunk_id	prev_chunk;
-
-	initial_tile = ray->tile;
 	while (true)
 	{
-		prev_chunk = ray->chunk;
+		ray->prev_chunk = ray->chunk;
+		ray->prev_tile = ray->tile;
+		ray->prev_tile_position = ray->tile_position;
 		step_ray(tsr, ray);
 		if (!ray->chunk)
 		{
-			ray->tile = &tsr->rendering.data.world.chunks[prev_chunk]
+			ray->tile = &tsr->rendering.data.world.chunks[ray->prev_chunk]
 				.limits[ray->axis * 2 + (ray->dir_sign.v[ray->axis] >= 0)];
 			return ;
 		}
@@ -91,14 +90,14 @@ static void	trace_ray_loop(
 			.tiles[ray->tile_index];
 		if (!tsr->world_data.tiles[ray->tile->type].skip)
 		{
-			if (!backface || ray->tile->type != initial_tile->type)
+			if (!backface || ray->tile->type != ray->prev_tile->type)
 				return ;
 		}
 		else if (backface)
 			break ;
 	}
 	ray->backface = true;
-	ray->tile = initial_tile;
+	ray->tile = ray->prev_tile;
 }
 
 void	trace_ray(
@@ -111,5 +110,5 @@ void	trace_ray(
 	trace_ray_loop(tsr, ray, backface);
 	ray->tile_data = &tsr->world_data.tiles[ray->tile->type];
 	if (!lighting_ray)
-		set_hit_values(ray);
+		set_hit_values(tsr, ray);
 }

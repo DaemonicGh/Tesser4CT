@@ -29,7 +29,8 @@ typedef struct s_tsr_illumination_data
 	t_vec2i			dir;
 	t_vec3i			pos;
 	t_tsr_chunk_id	chunk;
-	double			light[4];
+	t_tsr_tile		*tiles[4];
+	t_vec3			light[4];
 }	t_tsr_illum;
 
 enum	e_tsr_tile_rotations
@@ -63,14 +64,14 @@ enum	e_tsr_tile_rotations
 t_vec3
 reflect(t_vec3 ray_dir, t_vec3 normal);
 
-double
+t_vec3
 get_global_illumination(
 	t_tsr *restrict tsr, t_tsr_ray *restrict ray);
 
 void
 apply_lighting_effects(
 	t_tsr *restrict tsr, t_tsr_ray *restrict ray,
-	t_mbx_color *restrict col);
+	t_vec2i frag_pos, t_mbx_color *restrict col);
 
 void
 get_normal(
@@ -88,14 +89,14 @@ get_tile_texture_dir(
 	t_tsr_tile *tile, uint8_t face, t_vec2i *dir);
 
 t_mbx_color
-get_texture_color(t_tsr_ray *restrict ray);
+get_texture_color(t_tsr *restrict tsr, t_tsr_ray *restrict ray);
 
 bool
 set_ray_tile_color(
-	t_tsr *restrict tsr, t_tsr_ray *restrict ray);
+	t_tsr *restrict tsr, t_tsr_ray *restrict ray, t_vec2i frag_pos);
 
 t_mbx_color
-draw_ray(t_tsr *tsr, t_vec2 uv);
+draw_ray(t_tsr *tsr, t_vec2i frag_pos);
 
 void
 step_ray(
@@ -118,3 +119,6 @@ void
 
 void
 draw_title(t_tsr *tsr, char *str, t_vec2i pos, t_vec2 scale);
+
+t_mbx_color
+pause_background(t_tsr *tsr, t_vec2i frag_pos);

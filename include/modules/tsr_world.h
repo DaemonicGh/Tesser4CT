@@ -23,20 +23,20 @@ typedef struct s_tsr_chunk_trash_data
 
 t_tsr_chunk_id
 tsr_relocate_chunk(const t_tsr_world *world,
-	t_tsr_chunk_id chunk, t_vec3i *pos);
+	t_tsr_chunk_id chunk, t_vec3 *pos);
 
 t_tsr_chunk_id
 tsr_new_chunk(t_tsr_world *world);
 
 t_tsr_tile
-tsr_tile(t_tsr_tile_id id, uint8_t face, uint8_t roll);
-
-
-t_tsr_tile
-tsr_tile_r(t_tsr_tile_id id, uint8_t rotation);
+tsr_tile(t_tsr *tsr, t_tsr_tile_id id, uint8_t face, uint8_t roll);
 
 t_tsr_tile
-tsr_tile_l(t_tsr_tile_id id, uint8_t rotation, uint8_t light);
+tsr_tile_r(t_tsr *tsr, t_tsr_tile_id id, uint8_t rotation);
+
+t_tsr_tile
+tsr_tile_l(
+	t_tsr *tsr, t_tsr_tile_id id, uint8_t rotation, t_vec3 light);
 
 uint8_t
 tsr_get_tile_texture(t_tsr_tile *tile, uint8_t face);
@@ -51,8 +51,18 @@ tsr_set_tile(const t_tsr_world *world,
 t_tsr_tile
 *tsr_get_tile(const t_tsr_world *world, t_tsr_chunk_id chunk, t_vec3i pos);
 
+t_tsr_tile_data
+*tsr_get_tile_data(
+	const t_tsr_world *world, t_tsr_chunk_id chunk, t_vec3i pos);
+
+void
+tsr_tile_interact(t_tsr *tsr, t_tsr_tile *tile);
+
 void
 clear_light(t_tsr *tsr);
+
+void
+tsr_world_update(t_tsr *tsr);
 
 void
 cast_illumination_rays(t_tsr *tsr);

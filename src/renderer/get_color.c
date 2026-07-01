@@ -18,8 +18,8 @@ static void	get_tile_highlight(
 	t_mbx_region	*highlight;
 	t_vec2i			highlight_uv;
 
-	if (tsr->player.tile_highlight_chunk != ray->chunk
-		|| !vec3i_eq(ray->tile_position, tsr->player.tile_highlight_pos))
+	if (!(tsr->player.tile_highlight_chunk == ray->chunk
+			&& vec3i_eq(ray->tile_position, tsr->player.tile_highlight_pos)))
 		return ;
 	if (ray->tile_axis == tsr->player.tile_highlight_axis)
 		highlight = tsr->textures.tile_face_highlight;
@@ -28,7 +28,7 @@ static void	get_tile_highlight(
 	if (ray->tile_data->skybox)
 		highlight_uv = vec2i_mult_vd(highlight->size, get_tile_uv(ray));
 	else
-		highlight_uv = vec2i_mult_vd(highlight->size, ray->uv);
+		highlight_uv = vec2i_mult_vd(highlight->size, vec2_mod_d(ray->uv, 1));
 	*col = color_blend(*col, mbx_get_pixel_unsafe(
 				highlight, highlight_uv));
 }
@@ -48,11 +48,12 @@ static void	get_chunk_highlight(
 				tsr->textures.tile_highlight, texture_uv));
 }
 
-bool	set_ray_tile_color(t_tsr *restrict tsr, t_tsr_ray *restrict ray)
+bool	set_ray_tile_color(
+	t_tsr *restrict tsr, t_tsr_ray *restrict ray, t_vec2i frag_pos)
 {
 	t_mbx_color		col;
 
-	col = get_texture_color(ray);
+	col = get_texture_color(tsr, ray);
 	if (!col.a)
 		return (false);
 	if (ray->chunk)
@@ -60,7 +61,7 @@ bool	set_ray_tile_color(t_tsr *restrict tsr, t_tsr_ray *restrict ray)
 	else if (tsr->extras.show_chunks)
 		get_chunk_highlight(tsr, ray, &col);
 	if (!ray->tile_data->skybox)
-		apply_lighting_effects(tsr, ray, &col);
+		apply_lighting_effects(tsr, ray, frag_pos, &col);
 	ray->color = color_blend(col, ray->color);
 	return (ray->color.a == 255);
 }

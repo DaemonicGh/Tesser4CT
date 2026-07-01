@@ -19,7 +19,7 @@ static void	spread_light(
 	const int		values[6][2] = {
 	{-1, 3}, {1, -3}, {-4, 12}, {4, -12}, {-16, 48}, {16, -48}};
 	t_tsr_chunk_id	ochunk;
-	uint8_t			light;
+	t_vec3			light;
 	int				i;
 
 	light = tsr->world.chunks[chunk].tiles[tile].light;
@@ -27,14 +27,16 @@ static void	spread_light(
 	while (i < 6)
 	{
 		if ((tile >> (i & ~1) & 3) != (i % 2 * 3))
-			light = max(light, tsr->world.chunks[chunk]
-					.tiles[tile + values[i][0]].render_light / 2);
+			light = vec3_exec2(fmax, light,
+					vec3_mult_d(tsr->world.chunks[chunk].tiles
+					[tile + values[i][0]].prev_light, 0.5));
 		else
 		{
 			ochunk = tsr->world.chunks[chunk].neighbors[i];
 			if (ochunk)
-				light = max(light, tsr->world.chunks[ochunk]
-						.tiles[tile + values[i][1]].render_light / 2);
+				light = vec3_exec2(fmax, light,
+						vec3_mult_d(tsr->world.chunks[ochunk].tiles
+						[tile + values[i][1]].prev_light, 0.5));
 		}
 		i++;
 	}
@@ -54,8 +56,9 @@ void	clear_light(t_tsr *tsr)
 		while (index < 64)
 		{
 			tile = &tsr->world.chunks[chunk].tiles[index];
-			tile->render_light = tile->light;
-			tile->light /= 2;
+			tile->prev_light = tile->light;
+			tile->light = vec3_exec2(fmax, tsr->world_data.ambient_color,
+					vec3_mult_d(tile->light, 0.5));
 			index++;
 		}
 		chunk++;

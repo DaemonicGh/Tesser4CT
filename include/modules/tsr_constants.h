@@ -20,6 +20,10 @@
 #  define TSR_DEBUG	0
 # endif
 
+# ifndef TSR_ROOT
+#  error "Undefined Root folder"
+# endif
+
 # define TSR_NAME				"Tesser4CT"
 
 # define DEFAULT_VIEWPORT_W		640
@@ -35,20 +39,15 @@
 # define RENDER_JOB_REGION_W	32
 # define RENDER_JOB_REGION_H	18
 
-# define RAY_LIFETIME			16
-# define SHADOW_RAY_LIFETIME	8
-# define ILLUM_RAY_LIFETIME		8
 # define MIPMAP_LEVELS			4
 
 # define PROMPT_SIZE			64
-# define MAP_SELECT_PREFIX		"maps/"
-# define MAP_SELECT_PREFIX_LEN	5
+# define MAP_SELECT_PREFIX		"data/maps/"
 # define MAP_SELECT_SUFFIX		".mlem"
-# define MAP_SELECT_SUFFIX_LEN	5
+# define MINIMAP_CENTER			5
+# define MINIMAP_SIZE			9
 
 # define MAP_INFO_INPUT			"Enter map name:"
 # define MAP_INFO_ERROR			"ERROR: Unable to open map"
-
-# define CAMERA_SENSITIVITY		2
 
 #endif

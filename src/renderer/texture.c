@@ -53,7 +53,7 @@ t_vec2	get_tile_uv(t_tsr_ray *ray)
 	return (uv);
 }
 
-t_mbx_color	get_texture_color(t_tsr_ray *ray)
+t_mbx_color	get_texture_color(t_tsr *tsr, t_tsr_ray *ray)
 {
 	t_vec2i		texture_uv;
 
@@ -64,6 +64,9 @@ t_mbx_color	get_texture_color(t_tsr_ray *ray)
 	ray->face = ray->axis * 2 + (ray->dir_sign.v[ray->axis] < 0);
 	ray->texture = ray->tile_data->texture
 	[get_tile_texture(ray->tile, ray->face, &ray->uv)];
+	ray->uv.x += (uint64_t)(tsr->mbx->now * ray->texture->anim_speed)
+		% (ray->texture->texture[0]->size.x
+			/ ray->texture->texture[0]->subsize.x);
 	texture_uv = vec2i_mult_vd(ray->texture->texture
 		[ray->mipmap]->subregion_size, ray->uv);
 	return (mbx_get_pixel_unsafe(

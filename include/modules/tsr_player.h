@@ -47,7 +47,7 @@ void
 player_update_prompt(t_tsr *tsr);
 
 void
-player_inputs(t_tsr *tsr);
+player_tools(t_tsr *tsr);
 
 void
 tsr_update_player(t_tsr *tsr);

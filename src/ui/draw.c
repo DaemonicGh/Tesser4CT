@@ -11,50 +11,47 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_core.h"
 
 static void	draw_debug(t_tsr *tsr)
 {
+	char	str[32];
+
+	snprintf(str, 32, "FPS\t\t%.2f", 1.0 / tsr->mbx->dt);
+	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
+}
+
+static void	draw_debug_ext(t_tsr *tsr)
+{
 	const t_tsr_tile	*tile = tsr_get_tile(&tsr->world,
 			tsr->player.tile_highlight_chunk, tsr->player.tile_highlight_pos);
-	t_vec3i				light_tile;
 	char				str[256];
 
-	light_tile = vec3i_zero();
-	light_tile.v[tsr->player.tile_highlight_axis]
-		= tsr->camera.forward.v[tsr->player.tile_highlight_axis];
 	snprintf(str, 256, "FPS\t\t%.2f\nPos\t\t[%.1f %.1f %.1f]\n"
-		"Rot\t\t[%.2f %.2f] %i\nChunk\t%u\nTile\t%u[%u %u]",
+		"Rot\t\t[%.2f %.2f] %i\nChunk\t%u\nTile\t%u[%u]",
 		1.0 / tsr->mbx->dt, tsr->player.position.x,
 		tsr->player.position.y, tsr->player.position.z,
 		tsr->camera.rotation.x, tsr->camera.rotation.y, tsr->player.face.z,
-		tsr->player.chunk, tile->type, tile->rotation,
-		tsr_get_tile(&tsr->world, tsr->player.tile_highlight_chunk,
-			vec3i_sub(tsr->player.tile_highlight_pos, light_tile))->light);
+		tsr->player.chunk, tile->type, tile->rotation);
 	mbx_set_text(tsr->ui.target, str, vec2i(3, 3), tsr->textures.font_small);
-	if (mbx_key_held(tsr->mbx, MBX_KEY_LCTRL))
-		mbx_set_text(tsr->ui.target,
-			"[C] \tCreate Chunk\n[Alt+C]\tLink Chunk\n[V] \tSet Skybox\n"
-			"[Alt+N]\tDestroy Unused Chunks\n[B] \tTeleport\n"
-			"[M] \tSave Map\n[Alt+M]\tSave Map As",
-			vec2i(3, 50), tsr->textures.font_small);
 }
 
 static void	draw_crosshair(t_tsr *tsr)
 {
-	t_mbx_color	color;
-	t_vec2i		pos;
-	t_vec2i		xy;
+	t_mbx_color		color;
+	const t_vec2i	vp_pos = vec2i_div_d(tsr->mbx->vp->size, 2);
+	const t_vec2i	ui_pos = vec2i_div_d(tsr->ui.target->size, 2);
+	t_vec2i			xy;
 
-	pos = vec2i_div_d(tsr->mbx->vp->size, 2);
 	xy.x = -1;
 	while (xy.x < 1)
 	{
 		xy.y = -1;
 		while (xy.y < 1)
 		{
-			color = mbx_get_pixel(tsr->mbx->vp, vec2i_add(pos, xy));
+			color = mbx_get_pixel(tsr->mbx->vp, vec2i_add(vp_pos, xy));
 			color = color_r_g_b_a(~color.r, ~color.g, ~color.b, 255);
-			mbx_set_pixel(tsr->ui.target, vec2i_add(pos, xy), color);
+			mbx_set_pixel(tsr->ui.target, vec2i_add(ui_pos, xy), color);
 			xy.y++;
 		}
 		xy.x++;
@@ -63,8 +60,17 @@ static void	draw_crosshair(t_tsr *tsr)
 
 void	draw_ui(t_tsr *tsr)
 {
-	draw_debug(tsr);
 	draw_crosshair(tsr);
 	prompt_draw(tsr);
-	draw_hotbar(tsr);
+	if (!tsr->player.prompt_state
+		&& mbx_key_held(tsr->mbx, MBX_KEY_TAB))
+		update_and_draw_minimap(tsr);
+	if (tsr->player.godmode)
+	{
+		draw_debug_ext(tsr);
+		draw_hotbar(tsr);
+		draw_tool_hotbar(tsr);
+	}
+	else
+		draw_debug(tsr);
 }

@@ -13,13 +13,16 @@
 #include "tsr.h"
 #include "tsr_ui.h"
 
-static t_mbx_color	draw_main_menu_bg(t_tsr *tsr, t_vec2 uv)
+static t_mbx_color	draw_main_menu_bg(t_tsr *tsr, t_vec2i frag_pos)
 {
 	const t_vec2	cursor = vec2(
 			((double)tsr->mbx->cursor.x / tsr->mbx->vp->size.x - 0.5) / 8,
 			((double)tsr->mbx->cursor.y / tsr->mbx->vp->size.y - 0.5) / 8);
 	const t_vec2	uvc = vec2(
-			(uv.x - 0.5 + cursor.x) * 16 / 9, uv.y - 0.5 + cursor.y);
+			((double)frag_pos.x / tsr->rendering.target->size.x
+				- 0.5 + cursor.x) * 16 / 9,
+			(double)frag_pos.y / tsr->rendering.target->size.y
+			- 0.5 + cursor.y);
 	const double	dist = (fabs(uvc.x) + fabs(uvc.y));
 	const t_vec2	pos = vec2_rotate(uvc, dist * 8 - tsr->mbx->now * 2);
 	t_mbx_color		col;
@@ -48,17 +51,16 @@ static void	draw_main_menu(t_tsr *tsr)
 		vec2i(3, 3), tsr->textures.font_small);
 	draw_title(tsr, "TESSER4CT", vec2i(140, 50), vec2(4, 4));
 	prompt_draw(tsr);
-	mbx_set_text_scaled(tsr->ui.target, "[ESC] Exit",
-		vec2ix2_xy(280, 320, 2, 2), tsr->textures.font_small);
+	button_draw(tsr, &tsr->ui.buttons[0]);
 }
 
 void	tsr_init_main_menu(t_tsr *tsr)
 {
 	tsr->mbx->settings.hide_cursor = false;
 	tsr->mbx->settings.lock_cursor = false;
-	mbx_center_cursor(tsr->mbx);
 	tsr->rendering.frag_shader = draw_main_menu_bg;
-	prompt_init(tsr, vec2i(240, 160), "Open map");
+	prompt_init(tsr, vec2i(230, 160), "Open map");
+	button_init(&tsr->ui.buttons[0], vec2i(256, 240), "Exit");
 }
 
 static void	submit_map(t_tsr *tsr)
@@ -85,10 +87,10 @@ static void	submit_map(t_tsr *tsr)
 
 void	tsr_update_main_menu(t_tsr *tsr)
 {
-
 	mbx_clear(tsr->ui.target, color_rgba(0x0));
 	draw_main_menu(tsr);
-	if (mbx_key_released(tsr->mbx, MBX_KEY_ESCAPE))
+	if (mbx_key_released(tsr->mbx, MBX_KEY_ESCAPE)
+		|| button_update(tsr, &tsr->ui.buttons[0]))
 	{
 		tsr->mbx->exiting = true;
 		return ;

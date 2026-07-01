@@ -15,13 +15,12 @@
 
 NAMES					:=	Tesser4CT
 
-app_init_files			:=	\
-	init regions rendering textures tiles
-
 app_files				:=	\
-	$(addprefix init/,	$(app_init_files))\
-	main exit																\
+	main exit render														\
 	update/game	update/main_menu update/pause update/setting
+
+init_files			:=	\
+	init regions rendering textures tiles
 
 player_files			:=	\
 	actions collision movement prompt tile update
@@ -30,17 +29,22 @@ renderer_files			:=	\
 	camera draw_ray get_color illum lighting normal texture threads			\
 	trace_ray
 
+ui_files				:=	\
+	draw hotbar tool_hotbar minimap_draw minimap_update title				\
+	button toggle slider prompt
+
 world_files				:=	\
 	load/map load/chunks save/map save/chunks								\
-	illum illum_rays trash chunk tile tile_new
+	illum illum_rays interactions trash chunk tile tile_new
 
 common_files			:=	\
 	$(addprefix app/,		$(app_files))\
+	$(addprefix init/,		$(init_files))\
 	$(addprefix renderer/,	$(renderer_files))\
+	$(addprefix ui/,		$(ui_files))\
 	$(addprefix world/,		$(world_files))\
 	$(addprefix player/,	$(player_files))\
-	ui/draw	ui/hotbar ui/title ui/button ui/prompt							\
-	utils/memory utils/report utils/string utils/tile						\
+	utils/init utils/memory utils/report utils/string utils/tile
 
 LOCAL_LIBRARIES			:=	MacroBoX/libmbx.a MLEM/libmlem.a
 OTHER_LIBRARIES			:=	m
@@ -75,7 +79,7 @@ SILENT_NAMES				:=
 # ***** FORMAT ****************
 
 COMPILER					=	cc
-COMPILER_FLAGS				=	-Wall -Wextra -Werror
+COMPILER_FLAGS				=	-Wall -Wextra -Werror -DTSR_ROOT=\"$(ROOT_DIR)\"
 RELEASE_COMPILER_FLAGS		=	-O3 -flto -march=native -ffast-math
 DEBUG_COMPILER_FLAGS		=	-O1 -g -D TSR_DEBUG
 SANITIZE_COMPILER_FLAGS		=	-fsanitize=address -fsanitize=leak -fno-omit-frame-pointer
@@ -170,6 +174,8 @@ ifneq ($(reports),0)
 	$1_report_directory			:=	$$($1_build_directory)$$($1_report_subdirectory)
 endif
 endef
+
+ROOT_DIR					:=	$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 OBJECTS						:=
 DEPENDENCIES				:=

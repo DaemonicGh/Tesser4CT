@@ -1,122 +1,197 @@
 #tx_default = [
-	file = "assets/textures/default.png"
+	file = "default.png"
 ]
 #tx_transparent = [
-	file = "assets/textures/transparent.png"
+	file = "transparent.png"
 ]
+
+// CRAY
+
+#tx_cray = [
+	file = "tiles/cray/smooth.png"
+	normal = true
+]
+#tx_cray_edge = [
+	file = "tiles/cray/edge.png"
+	normal = true
+]
+#tx_cray_bumpy = [
+	file = "tiles/cray/bumpy.png"
+	normal = true
+]
+#tx_cray_tiles = [
+	file = "tiles/cray/tiles.png"
+	normal = true
+]
+#tx_cray_pillar = [
+	file = "tiles/cray/pillar.png"
+	normal = true
+]
+#tx_cray_sculpted = [
+	file = "tiles/cray/sculpted.png"
+	normal = true
+]
+#tx_cray_window = [
+	file = "tiles/cray/window.png"
+	normal = true
+]
+#tx_cray_ornate_on = [
+	file = "tiles/cray/ornate_on.png"
+	normal = true
+	pbr = true
+]
+#tx_cray_ornate_off = [
+	file = "tiles/cray/ornate_off.png"
+	normal = true
+	pbr = true
+]
+
+#tx_cloud_full = [
+	file = "tiles/cloud_full.png"
+]
+#tx_cloud_clearing = [
+	file = "tiles/cloud_clearing.png"
+]
+
+// MINECRAFT
+
 #tx_stone = [
-	file = "assets/textures/tiles/stone.png"
+	file = "tiles/minecraft/stone.png"
 	normal = true
 ]
 #tx_dirt = [
-	file = "assets/textures/tiles/dirt.png"
+	file = "tiles/minecraft/dirt.png"
 	normal = true
 ]
 #tx_grass_block_side = [
-	file = "assets/textures/tiles/grass_block_side.png"
+	file = "tiles/minecraft/grass_block_side.png"
 	normal = true
 ]
 #tx_grass_block_top = [
-	file = "assets/textures/tiles/grass_block_top.png"
+	file = "tiles/minecraft/grass_block_top.png"
 	normal = true
 ]
 #tx_cobblestone = [
-	file = "assets/textures/tiles/cobblestone.png"
+	file = "tiles/minecraft/cobblestone.png"
 	normal = true
 ]
 #tx_stone_bricks = [
-	file = "assets/textures/tiles/stone_bricks.png"
+	file = "tiles/minecraft/stone_bricks.png"
 	normal = true
-	property = true
+	pbr = true
 ]
 #tx_oak_planks = [
-	file = "assets/textures/tiles/oak_planks.png"
+	file = "tiles/minecraft/oak_planks.png"
 	normal = true
 ]
 #tx_oak_log_side = [
-	file = "assets/textures/tiles/oak_log.png"
+	file = "tiles/minecraft/oak_log.png"
 	normal = true
 ]
 #tx_oak_log_top = [
-	file = "assets/textures/tiles/oak_log_top.png"
+	file = "tiles/minecraft/oak_log_top.png"
 	normal = true
 ]
 #tx_oak_leaves = [
-	file = "assets/textures/tiles/oak_leaves.png"
+	file = "tiles/minecraft/oak_leaves.png"
 	normal = true
 ]
 #tx_iron_block = [
-	file = "assets/textures/tiles/iron_block.png"
+	file = "tiles/minecraft/iron_block.png"
 	normal = true
-	property = true
+	pbr = true
 ]
 #tx_moss = [
-	file = "assets/textures/tiles/moss.png"
+	file = "tiles/minecraft/moss.png"
 	normal = true
 ]
 #tx_magma = [
-	file = "assets/textures/tiles/magma.png"
+	file = "tiles/minecraft/magma.png"
 	normal = true
-	property = true
+	pbr = true
 ]
 #tx_gold_ore = [
-	file = "assets/textures/tiles/gold_ore.png"
+	file = "tiles/minecraft/gold_ore.png"
 	normal = true
-	property = true
+	pbr = true
 ]
 #tx_glass = [
-	file = "assets/textures/tiles/glass/glass.png"
+	file = "tiles/minecraft/glass/glass.png"
 	normal = true
 ]
 #tx_white_glass = [
-	file = "assets/textures/tiles/glass/white_glass.png"
+	file = "tiles/minecraft/glass/white_glass.png"
 	normal = true
 ]
 #tx_red_glass = [
-	file = "assets/textures/tiles/glass/red_glass.png"
+	file = "tiles/minecraft/glass/red_glass.png"
 	normal = true
 ]
 #tx_green_glass = [
-	file = "assets/textures/tiles/glass/green_glass.png"
+	file = "tiles/minecraft/glass/green_glass.png"
 	normal = true
 ]
 #tx_blue_glass = [
-	file = "assets/textures/tiles/glass/blue_glass.png"
+	file = "tiles/minecraft/glass/blue_glass.png"
 	normal = true
 ]
-#tx_skybox_north = [
-	file = "assets/textures/tiles/skybox/north.png"
+
+// SKYBOXES
+
+#tx_sunset_north = [
+	file = "tiles/skyboxes/sunset/north.png"
 ]
-#tx_skybox_south = [
-	file = "assets/textures/tiles/skybox/south.png"
+#tx_sunset_south = [
+	file = "tiles/skyboxes/sunset/south.png"
 ]
-#tx_skybox_east = [
-	file = "assets/textures/tiles/skybox/east.png"
+#tx_sunset_east = [
+	file = "tiles/skyboxes/sunset/east.png"
 ]
-#tx_skybox_west = [
-	file = "assets/textures/tiles/skybox/west.png"
+#tx_sunset_west = [
+	file = "tiles/skyboxes/sunset/west.png"
 ]
-#tx_skybox_top = [
-	file = "assets/textures/tiles/skybox/top.png"
+#tx_sunset_top = [
+	file = "tiles/skyboxes/sunset/top.png"
 ]
-#tx_skybox_bottom = [
-	file = "assets/textures/tiles/skybox/bottom.png"
+#tx_sunset_bottom = [
+	file = "tiles/skyboxes/sunset/bottom.png"
 ]
+#tx_night_north = [
+	file = "tiles/skyboxes/night/north.png"
+]
+#tx_night_south = [
+	file = "tiles/skyboxes/night/south.png"
+]
+#tx_night_east = [
+	file = "tiles/skyboxes/night/east.png"
+]
+#tx_night_west = [
+	file = "tiles/skyboxes/night/west.png"
+]
+#tx_night_top = [
+	file = "tiles/skyboxes/night/top.png"
+]
+#tx_night_bottom = [
+	file = "tiles/skyboxes/night/bottom.png"
+]
+
+// DEBUG
+
 #tx_test_north = [
-	file = "assets/textures/tiles/test/north.png"
+	file = "tiles/test/north.png"
 ]
 #tx_test_south = [
-	file = "assets/textures/tiles/test/south.png"
+	file = "tiles/test/south.png"
 ]
 #tx_test_east = [
-	file = "assets/textures/tiles/test/east.png"
+	file = "tiles/test/east.png"
 ]
 #tx_test_west = [
-	file = "assets/textures/tiles/test/west.png"
+	file = "tiles/test/west.png"
 ]
 #tx_test_top = [
-	file = "assets/textures/tiles/test/top.png"
+	file = "tiles/test/top.png"
 ]
 #tx_test_bottom = [
-	file = "assets/textures/tiles/test/bottom.png"
+	file = "tiles/test/bottom.png"
 ]

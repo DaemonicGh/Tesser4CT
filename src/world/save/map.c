@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tsr.h"
+#include "tsr_utils.h"
 
 static bool	append_vec3(t_mlem_value *object, t_mlem_string key, t_vec3 vec)
 {
@@ -38,10 +39,10 @@ static t_mlem_value	save_attributes(t_tsr *tsr)
 	mlem_object_append(&object, "skybox", mlem_reference(
 			tsr->world_data.mlem.objectv.value[
 			tsr->world_data.skybox.type].value));
-	append_vec3(&object, "light_color",
-		tsr->world_data.skylight_color);
-	append_vec3(&object, "light_direction",
+	append_vec3(&object, "skylight_direction",
 		vec3_neg(tsr->world_data.skylight));
+	append_vec3(&object, "ambient_color",
+		tsr->world_data.ambient_color);
 	mlem_object_append(&object, "origin",
 		mlem_int(tsr->world_data.origin - 1));
 	mlem_object_append(&object, "player_chunk",
@@ -79,26 +80,18 @@ static t_mlem_value	create_map_data(t_tsr *tsr, t_mlem_string name)
 
 bool	save_map(t_tsr *tsr, t_mlem_string name)
 {
-	char			file[PROMPT_SIZE
-		+ MAP_SELECT_PREFIX_LEN + MAP_SELECT_SUFFIX_LEN];
+	char			file[PROMPT_SIZE + 256];
 	t_mlem_value	map;
-	size_t			i;
-	size_t			j;
 
 	map = create_map_data(tsr, name);
 	if (!map.type)
 		return (false);
-	i = 0;
-	j = 0;
-	while (j < MAP_SELECT_PREFIX_LEN)
-		file[i++] = MAP_SELECT_PREFIX[j++];
-	j = 0;
-	while (name[j])
-		file[i++] = name[j++];
-	j = 0;
-	while (j < MAP_SELECT_SUFFIX_LEN)
-		file[i++] = MAP_SELECT_SUFFIX[j++];
-	file[i] = 0;
+	if (snprintf(file, 256, "%s%s%s%s", TSR_ROOT,
+		MAP_SELECT_PREFIX, name, MAP_SELECT_SUFFIX) == 256)
+	{
+		tsr_report_m(STATUS_WARNING, "Map path too long : ", name);
+		return (false);
+	}
 	mlem_print_to_file(file, map);
 	mlem_destroy_ex(map, false, false, true);
 	tsr_report_m(STATUS_INFO, REPORT_MAPSAVED, file);

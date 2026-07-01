@@ -49,8 +49,8 @@ void	get_normal(t_tsr *restrict tsr, t_tsr_ray *restrict ray)
 	uv = vec2i_mult_vd(ray->texture->texture
 		[ray->mipmap]->subregion_size, vec2_add(ray->uv, vec2(0, 1)));
 	col = mbx_get_pixel_unsafe(ray->texture->texture[ray->mipmap], uv);
-	normal.x = 1.0 - col.r * 2.0 / 255;
-	normal.y = col.g * 2.0 / 255 - 1.0;
+	normal.x = col.r / 255. - 0.5;
+	normal.y = col.g / 255. - 0.5;
 	normal.z = sqrt(1.0 - normal.x * normal.x - normal.y * normal.y);
 	ray->normal = normal;
 	normal_map_transform(ray);

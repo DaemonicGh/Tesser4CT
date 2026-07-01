@@ -20,7 +20,7 @@ static t_mlem_value	save_chunk_data(t_tsr *tsr, t_tsr_chunk *chunk)
 	t_tsr_tile_id	tile;
 	size_t			i;
 
-	array = mlem_array_empty(64);
+	array = mlem_array_empty(128);
 	if (!array.type)
 		return ((t_mlem_value){0});
 	i = 0;

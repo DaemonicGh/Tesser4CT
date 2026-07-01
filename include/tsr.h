@@ -34,6 +34,9 @@ init_rendering(t_tsr *tsr);
 t_tsr
 *tsr_init(void);
 
+t_vec3x3
+get_view_matrix(t_vec3 rotation);
+
 void
 tsr_update_camera(t_tsr *tsr);
 
@@ -60,6 +63,9 @@ tsr_init_main_menu(t_tsr *tsr);
 
 void
 tsr_update_main_menu(t_tsr *tsr);
+
+void
+prepare_next_render(t_tsr *tsr);
 
 void
 tsr_exit(t_tsr *tsr, t_tsr_status status, const char *message);

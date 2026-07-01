@@ -19,26 +19,27 @@ static void	render_job(t_tsr *tsr, size_t job_i)
 	const t_vec2i	start = vec2i(
 			job_i % tsr->rendering.job_region_count.x * RENDER_JOB_REGION_W,
 			job_i / tsr->rendering.job_region_count.x * RENDER_JOB_REGION_H);
-	const t_vec2	uv_delta = vec2_div_rd(1, vec2_vi(tsr->mbx->vp->size));
 	t_vec2i			pos;
-	size_t			i;
-	t_vec2			uv;
+	t_vec2i			frag_pos;
+	t_mbx_color		col;
 
 	pos.y = 0;
-	i = start.y * tsr->mbx->vp->size.x + start.x;
-	uv.y = (double)start.y / tsr->mbx->vp->size.y;
+	frag_pos.y = start.y;
 	while (pos.y++ < RENDER_JOB_REGION_H)
 	{
 		pos.x = 0;
-		uv.x = (double)start.x / tsr->mbx->vp->size.x;
+		frag_pos.x = start.x;
 		while (pos.x++ < RENDER_JOB_REGION_W)
 		{
-			mbx_set_pixel_raw_i(tsr->rendering.target, i++,
-				tsr->rendering.data.frag_shader(tsr, uv));
-			uv.x += uv_delta.x;
+			if (!tsr->extras.cross_fill || frag_pos.x % 2 == frag_pos.y % 2
+				== tsr->rendering.cross_cycle)
+				col = tsr->rendering.data.frag_shader(tsr, frag_pos);
+			else
+				col = mbx_get_pixel_raw(tsr->rendering.swap_target, frag_pos);
+			mbx_set_pixel_raw(tsr->rendering.target, frag_pos, col);
+			frag_pos.x++;
 		}
-		uv.y += uv_delta.y;
-		i += tsr->mbx->vp->size.x - RENDER_JOB_REGION_W;
+		frag_pos.y++;
 	}
 }
 
@@ -50,7 +51,7 @@ static void	render_thread_loop(t_tsr *tsr)
 	{
 		i = atomic_fetch_add(&tsr->rendering.current_job, 1);
 		if (i >= tsr->rendering.job_count)
-			return ;
+			break ;
 		render_job(tsr, i);
 	}
 }

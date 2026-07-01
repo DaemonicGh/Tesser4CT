@@ -12,63 +12,59 @@
 
 #include "tsr.h"
 
-/*
-static bool	tile_collision(t_tsr_player *player, t_vec3i tile)
+static t_vec3x2	get_bounds(t_tsr *tsr, int axis)
 {
-	return ((player->position.x - player->hitbox.x < tile.x + 1)
-		&& (player->position.x + player->hitbox.x > tile.x)
-		&& (player->position.y - player->hitbox.y < tile.y + 1)
-		&& (player->position.y + player->hitbox.y > tile.y)
-		&& (player->position.z - player->hitbox.z < tile.z + 1)
-		&& (player->position.z + player->hitbox.z > tile.z)
-	);
+	const double	velocity = tsr->player.velocity.v[axis];
+	t_vec3x2		bounds;
+
+	bounds.p1 = vec3_add(tsr->player.position, tsr->player.hitbox.p1);
+	bounds.p2 = vec3_add(tsr->player.position, tsr->player.hitbox.p2);
+	bounds.v[velocity < 0].v[axis] = bounds.v[velocity > 0].v[axis]
+		+ fsign(velocity);
+	bounds.v[velocity > 0].v[axis] += velocity;
+	bounds = vec3x2(vec3_exec(floor, bounds.p1), vec3_exec(ceil, bounds.p2));
+	return (bounds);
 }
 
-static void	player_to_tile(t_tsr *tsr, t_vec3i tile)
+static void	resolve_collision(t_tsr *tsr, t_vec3i pos, int axis, double *t)
 {
-	t_vec3			dist;
-	double			d;
-	int				axis;
+	const int		dir = fsign(tsr->player.velocity.v[axis]);
+	t_tsr_chunk_id	chunk;
+	t_tsr_tile_data	*data;
+	double			target;
+	t_vec3			dpos;
 
-	dist.x = tile.x + 1 - tsr->player.position.x + tsr->player.hitbox.x;
-	dist.y = tile.y + 1 - tsr->player.position.y + tsr->player.hitbox.y;
-	dist.z = tile.z + 1 - tsr->player.position.z + tsr->player.hitbox.z;
-	d = tile.x - tsr->player.position.x - tsr->player.hitbox.x;
-	if (-d < dist.x)
-		dist.x = d;
-	d = tile.y - tsr->player.position.y - tsr->player.hitbox.y;
-	if (-d < dist.y)
-		dist.y = d;
-	d = tile.z - tsr->player.position.z - tsr->player.hitbox.z;
-	if (-d < dist.z)
-		dist.z = d;
-	if (fabs(dist.z) < fabs(dist.x) && fabs(dist.z) < fabs(dist.y))
-		axis = 2;
-	else
-		axis = (fabs(dist.y) < fabs(dist.x));
-	tsr->player.position.v[axis] += dist.v[axis];
-	tsr->player.velocity.v[axis] *= 0.5;
+	dpos = vec3_vi(pos);
+	chunk = tsr_relocate_chunk(&tsr->world, tsr->player.chunk, &dpos);
+	if (!chunk)
+		return ;
+	data = &tsr->world_data.tiles[tsr->world.chunks[chunk].tiles
+	[tsr_get_tile_index(vec3i_vd(dpos))].type];
+	if (data->skip)
+		return ;
+	target = pos.v[axis] + (dir < 0);
+	target -= tsr->player.hitbox.v[(dir > 0)].v[axis] + dir * 1e-4;
+	target -= tsr->player.position.v[axis];
+	*t = target;
 }
 
-void	player_collision(t_tsr *tsr)
+static void	velocity_collision(t_tsr *tsr, int axis, double *t)
 {
-	const t_vec3i		player = vec3i_vd(
-			vec3_exec(floor, tsr->player.chunk_position));
-	static const int	size = 2;
-	t_vec3i				pos;
+	const t_vec3x2	bounds = get_bounds(tsr, axis);
+	t_vec3i			pos;
 
-	pos.x = player.x - size;
-	while (pos.x <= player.x + size)
+	if (tsr->player.velocity.v[axis] == 0)
+		return ;
+	pos.x = bounds.p1.x;
+	while (pos.x < bounds.p2.x)
 	{
-		pos.y = player.y - size;
-		while (pos.y <= player.y + size)
+		pos.y = bounds.p1.y;
+		while (pos.y < bounds.p2.y)
 		{
-			pos.z = player.z - size;
-			while (pos.z <= player.z + size)
+			pos.z = bounds.p1.z;
+			while (pos.z < bounds.p2.z)
 			{
-				if (!tsr_get_tile(tsr, tsr->player.chunk, pos)->skip
-					&& tile_collision(&tsr->player, pos))
-					player_to_tile(tsr, pos);
+				resolve_collision(tsr, pos, axis, t);
 				pos.z++;
 			}
 			pos.y++;
@@ -76,4 +72,49 @@ void	player_collision(t_tsr *tsr)
 		pos.x++;
 	}
 }
-*/
+
+static void	update_chunk(t_tsr *tsr, int axis)
+{
+	t_tsr_chunk_id	chunk;
+
+	chunk = tsr->player.chunk;
+	if (tsr->player.position.v[axis] < 0.1)
+		chunk = tsr->world.chunks[chunk].neighbors[axis * 2];
+	else if (tsr->player.position.v[axis] >= 3.9)
+		chunk = tsr->world.chunks[chunk].neighbors[axis * 2 + 1];
+	if (!chunk)
+	{
+		tsr->player.position.v[axis] = fclamp(
+				tsr->player.position.v[axis], 0.1, 3.9);
+		tsr->player.velocity.v[axis] *= 0.5;
+		return ;
+	}
+	if (tsr->player.position.v[axis] < 0 || tsr->player.position.v[axis] >= 4)
+		tsr->player.chunk = chunk;
+	tsr->player.position.v[axis] = fwrap(tsr->player.position.v[axis], 0, 4);
+}
+
+void	player_collision(t_tsr *tsr)
+{
+	int				axis;
+	double			t;
+
+	axis = 0;
+	while (axis < 3)
+	{
+		t = tsr->player.velocity.v[axis];
+		velocity_collision(tsr, axis, &t);
+		if (t != tsr->player.velocity.v[axis])
+		{
+			tsr->player.velocity.v[axis] *= 0.5;
+			if (axis == 1 && tsr->player.velocity.y < 0)
+			{
+				tsr->player.air_time = 0;
+				tsr->player.can_jump = true;
+			}
+		}
+		tsr->player.position.v[axis] += t;
+		update_chunk(tsr, axis);
+		axis++;
+	}
+}

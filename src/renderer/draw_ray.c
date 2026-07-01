@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_drawing.h"
+#include "modules/mbx_structs.h"
 #include "tsr.h"
 #include "tsr_constants.h"
 
@@ -37,7 +39,8 @@ t_tsr_ray	setup_ray_unsafe(
 	ray = (t_tsr_ray){.origin = origin,
 		.dir = forward, .dir_sign = vec3i_vd(vec3_sign(forward)),
 		.delta = vec3_div_rd(1, forward),
-		.chunk = chunk, .tile_position = tile_pos, .lifetime = RAY_LIFETIME};
+		.chunk = chunk, .tile_position = tile_pos,
+		.lifetime = tsr->extras.render_distance};
 	ray.abs_delta = vec3_abs(ray.delta);
 	ray.iter = vec3i_mult(vec3i(1, 4, 16), ray.dir_sign);
 	ray.tile_index = tile_pos.x + tile_pos.y * 4 + tile_pos.z * 16;
@@ -57,26 +60,28 @@ t_tsr_ray	setup_ray(
 	t_vec3i				tile_pos;
 
 	fix_zeros(&origin, &forward);
+	chunk = tsr_relocate_chunk(&tsr->rendering.data.world, chunk, &origin);
 	tile_pos = vec3i_vd(vec3_exec(floor, origin));
-	chunk = tsr_relocate_chunk(&tsr->rendering.data.world, chunk, &tile_pos);
 	origin = vec3_add(vec3_vi(tile_pos), vec3_exec(fract, origin));
 	return (setup_ray_unsafe(tsr, origin, chunk, forward));
 }
 
-t_mbx_color	draw_ray(t_tsr *tsr, t_vec2 uv)
+t_mbx_color	draw_ray(t_tsr *tsr, t_vec2i frag_pos)
 {
 	const t_tsr_camera	camera = tsr->rendering.data.camera;
-	const t_vec2		uvc = vec2((uv.x - 0.5) * 16 / 9, uv.y - 0.5);
+	const t_vec2		uvc = vec2(16. / 9
+			* ((double)frag_pos.x / tsr->rendering.target->size.x - 0.5),
+			(double)frag_pos.y / tsr->rendering.target->size.y - 0.5);
 	t_tsr_ray			ray;
 
 	ray = setup_ray(tsr, camera.position, camera.chunk,
 			vec3_add(vec3_mult_d(camera.forward, tsr->extras.focal_length),
 				vec3_add(vec3_mult_d(camera.right, uvc.x),
 					vec3_mult_d(camera.up, -uvc.y))));
-	while (true)
+	while (ray.lifetime)
 	{
 		trace_ray(tsr, &ray, false);
-		if (set_ray_tile_color(tsr, &ray))
+		if (set_ray_tile_color(tsr, &ray, frag_pos))
 			break ;
 	}
 	return (ray.color);

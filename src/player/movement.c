@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "modules/mbx_utils.h"
 #include "tsr.h"
 
 static void	player_side(t_tsr *tsr)
@@ -45,38 +46,28 @@ void	player_rotation(t_tsr *tsr)
 	player_side(tsr);
 }
 
-static void	update_player_chunk(t_tsr *tsr)
+static void	parkour_movement(t_tsr *tsr)
 {
-	const t_vec3	target = vec3_add(
-			tsr->player.position, tsr->player.velocity);
-	t_tsr_chunk_id	chunk;
-	int				axis;
-
-	axis = 3;
-	while (axis--)
+	tsr->player.velocity.y -= 0.8 * tsr->mbx->dt;
+	tsr->player.air_time += tsr->mbx->dt;
+	if (tsr->player.air_time > 0.2)
+		tsr->player.can_jump = false;
+	if (tsr->player.can_jump && tsr->mbx->inputs[MBX_KEY_SPACE].press < 0.2)
 	{
-		chunk = tsr->player.chunk;
-		if (target.v[axis] < 0.1)
-			chunk = tsr->world.chunks[chunk].neighbors[axis * 2];
-		else if (target.v[axis] >= 3.9)
-			chunk = tsr->world.chunks[chunk].neighbors[axis * 2 + 1];
-		if (!chunk)
-		{
-			tsr->player.position.v[axis] = fclamp(target.v[axis], 0.1, 3.9);
-			tsr->player.velocity.v[axis] = 0;
-			continue ;
-		}
-		if (target.v[axis] < 0 || target.v[axis] >= 4)
-			tsr->player.chunk = chunk;
-		tsr->player.position.v[axis] = fwrap(target.v[axis], 0, 4);
+		tsr->player.can_jump = false;
+		tsr->player.is_jumping = true;
+		tsr->player.velocity.y += 0.3;
 	}
+	if (tsr->player.is_jumping && tsr->player.velocity.y < 0)
+		tsr->player.is_jumping = false;
+	else if (tsr->player.is_jumping && tsr->player.velocity.y > 0
+		&& !mbx_btn(tsr->mbx, MBX_KEY_SPACE))
+		tsr->player.velocity.y *= 0.7;
 }
 
 void	player_movement(t_tsr *tsr)
 {
-	const double	speed = 0.15;
-	const double	accel = 0.8;
-	t_vec3			mv;
+	t_vec3		mv;
 
 	mv = vec3_zero();
 	if (mbx_btn(tsr->mbx, MBX_KEY_W))
@@ -87,12 +78,18 @@ void	player_movement(t_tsr *tsr)
 		mv = vec3_add(mv, tsr->player.right);
 	if (mbx_btn(tsr->mbx, MBX_KEY_A))
 		mv = vec3_sub(mv, tsr->player.right);
-	if (mbx_btn(tsr->mbx, MBX_KEY_SPACE))
-		mv = vec3_add(mv, tsr->player.up);
-	if (mbx_btn(tsr->mbx, MBX_KEY_LSHIFT))
-		mv = vec3_sub(mv, tsr->player.up);
-	mv = vec3_mult_d(vec3_normalize(mv), speed);
+	mv = vec3_normalize(mv);
+	if (tsr->player.godmode)
+	{
+		if (mbx_btn(tsr->mbx, MBX_KEY_SPACE))
+			mv = vec3_add(mv, tsr->player.up);
+		if (mbx_btn(tsr->mbx, MBX_KEY_LSHIFT))
+			mv = vec3_sub(mv, tsr->player.up);
+	}
+	mv = vec3_mult_d(mv, tsr->player.speed);
 	tsr->player.velocity = vec3_len_move_towards(tsr->player.velocity,
-			mv, accel * tsr->mbx->dt);
-	update_player_chunk(tsr);
+			mv, tsr->player.speed * 4 * tsr->mbx->dt);
+	if (!tsr->player.godmode)
+		parkour_movement(tsr);
+	player_collision(tsr);
 }

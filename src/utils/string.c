@@ -32,15 +32,17 @@ int	tsr_strcmp(const char *s1, const char *s2)
 	return (s1[i] - s2[i]);
 }
 
-char	*tsr_strcat(char *dst, const char *src)
+char	*tsr_strcpy(char *dst, const char *src)
 {
-	const size_t	i = tsr_strlen(dst);
-	size_t			j;
+	size_t	i;
 
-	j = tsr_strlen(src);
-	dst[i + j] = 0;
-	while (j--)
-		dst[i + j] = src[j];
+	i = 0;
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = 0;
 	return (dst);
 }
 

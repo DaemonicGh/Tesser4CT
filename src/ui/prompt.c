@@ -55,26 +55,20 @@ bool	prompt_update(t_tsr *tsr)
 
 void	prompt_draw(t_tsr *tsr)
 {
-	const t_vec2i	scale = vec2i(2, 2);
-	const t_vec2i	pos = vec2i_add(tsr->ui.prompt.position, vec2i(
+	const t_vec2i	scale = vec2i_i(2);
+	const t_vec2i	pos = vec2i_add(
+			vec2i_add(tsr->ui.prompt.position, vec2i(10, 8)), vec2i(
 				sin(tsr->ui.prompt.shake * 64) * tsr->ui.prompt.shake * 4, 0));
-	const t_vec2ix3	ele_pos = vec2ix3(
-			vec2i_add(tsr->ui.prompt.position, vec2i(0, -20)),
-			vec2i_add(tsr->ui.prompt.position, vec2i(0, 20)),
-			vec2i_add(pos, vec2i(-4, -4)));
+	const t_vec2i	ele_pos = vec2i_add(tsr->ui.prompt.position, vec2i(0, -14));
 
 	if (!tsr->ui.prompt.visible)
 		return ;
 	mbx_set_text_scaled(tsr->ui.target, tsr->ui.prompt.message,
-		vec2ix2(ele_pos.p1, scale), tsr->textures.font_small);
-	if (tsr->ui.prompt.is_error)
-	{
-		mbx_set_rect(tsr->ui.target, ele_pos.p3,
-			vec2i(166, 18), color_rgba(0xAA0000BB));
-	}
-	else
-		mbx_set_rect(tsr->ui.target, ele_pos.p3,
-			vec2i(166, 18), color_rgba(0xBB));
+		vec2ix2(ele_pos, scale), tsr->textures.font_small);
+	mbx_set_subregion_scaled(tsr->ui.target, tsr->textures.gui.bar,
+		vec2ix3(tsr->ui.prompt.position, vec2i(0,
+				tsr->textures.gui.bar->subsize.y * tsr->ui.prompt.is_error),
+			tsr->textures.gui.bar->subsize), vec2_vi(scale));
 	mbx_set_text_scaled(tsr->ui.target,
 		tsr->ui.prompt.buffer + max(tsr->ui.prompt.cursor - 16, 0),
 		vec2ix2(pos, scale), tsr->textures.font_small);

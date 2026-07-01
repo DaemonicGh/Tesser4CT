@@ -12,12 +12,7 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-
-#include "mbx.h"
+#include "tsr_core.h"
 
 typedef enum e_tsr_report_status
 {
@@ -64,10 +59,19 @@ int
 tsr_strcmp(const char *s1, const char *s2);
 
 char
-*tsr_strcat(char *dst, const char *src);
+*tsr_strcpy(char *dst, const char *src);
 
 char
 *tsr_strdup(const char *src);
 
 char
 tsr_tolower(char c);
+
+t_vec3
+get_as_vec3(t_mlem_value object, t_mlem_string key, t_vec3 fallback);
+
+t_mbx_region
+*load_region(t_tsr *tsr, const char *path);
+
+t_mbx_atlas
+*load_atlas(t_tsr *tsr, const char *path, t_vec2i subsize);

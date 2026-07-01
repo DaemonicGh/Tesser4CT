@@ -12,7 +12,7 @@
 
 #include "tsr.h"
 
-static bool
+bool
 	cast_shadows(t_tsr *tsr, t_tsr_ray *ray)
 {
 	const t_vec3	dir = tsr->world_data.skylight;
@@ -30,14 +30,14 @@ static bool
 		i++;
 	}
 	shadow_ray = setup_ray(tsr, position, ray->chunk, dir);
-	shadow_ray.lifetime = SHADOW_RAY_LIFETIME;
-	while (true)
+	shadow_ray.lifetime = tsr->extras.shadow_distance;
+	while (shadow_ray.lifetime)
 	{
 		trace_ray(tsr, &shadow_ray, true);
-		if (shadow_ray.tile_data->transparent)
-			continue ;
-		return (!shadow_ray.tile_data->skybox);
+		if (!shadow_ray.tile_data->transparent)
+			break ;
 	}
+	return (!shadow_ray.tile_data->skybox);
 }
 
 static t_tsr_pbr	get_pbr_properties(t_tsr_ray *ray)
@@ -45,7 +45,7 @@ static t_tsr_pbr	get_pbr_properties(t_tsr_ray *ray)
 	t_vec2i			uv;
 	t_mbx_color		col;
 
-	if (~ray->texture->flags & TX_PROPERTY)
+	if (~ray->texture->flags & TX_PBR)
 		return ((t_tsr_pbr){0});
 	uv = vec2i_mult_vd(ray->texture->texture
 		[ray->mipmap]->subregion_size, vec2_add(ray->uv, vec2(0, 2)));
@@ -64,18 +64,19 @@ static t_vec3
 	t_tsr_pbr		pbr;
 	double			diffuse;
 
-	light = vec3_mult_d(tsr->world_data.shadow_color,
-			get_global_illumination(tsr, ray));
+	light = get_global_illumination(tsr, ray);
 	pbr = get_pbr_properties(ray);
 	if (!shadow)
 	{
+		get_normal(tsr, ray);
 		diffuse = fmax(-vec3_dot(ray->normal, tsr->world_data.skylight), 0);
 		if (pbr.specular)
 			pbr.specular *= pow(fmax(0, vec3_dot(vec3_normalize(ray->dir),
 							reflect(tsr->world_data.skylight, ray->normal))),
 					1 + 32 * pbr.f0);
 		light = vec3_add(light, vec3_mult_d(
-					tsr->world.data->skylight_color, diffuse + pbr.specular));
+					tsr->world_data.tiles[tsr->world_data.skybox.type].light,
+					diffuse + pbr.specular));
 	}
 	else if (pbr.emissive)
 		light = vec3_add(light,
@@ -83,16 +84,32 @@ static t_vec3
 	return (light);
 }
 
-void	apply_lighting_effects(
-	t_tsr *restrict tsr, t_tsr_ray *restrict ray, t_mbx_color *restrict col)
+static double	get_dither_ratio(t_vec2i pos)
 {
-	t_vec3		light;
-	bool		shadow;
+	static const int	matrix[8][8] = {
+	{0, 32, 8, 40, 2, 34, 10, 42},
+	{48, 16, 56, 24, 50, 18, 58, 26},
+	{12, 44, 4, 36, 14, 46, 6, 38},
+	{60, 28, 52, 20, 62, 30, 54, 22},
+	{3, 35, 11, 43, 1, 33, 9, 41},
+	{51, 19, 59, 27, 49, 17, 57, 25},
+	{15, 47, 7, 39, 13, 45, 5, 37},
+	{63, 31, 55, 23, 61, 29, 53, 21}};
 
-	get_normal(tsr, ray);
+	return (matrix[pos.y % 8][pos.x % 8] * 0.00015);
+}
+
+void	apply_lighting_effects(
+	t_tsr *restrict tsr, t_tsr_ray *restrict ray,
+	t_vec2i frag_pos, t_mbx_color *restrict col)
+{
+	const double	dither = get_dither_ratio(frag_pos);
+	t_vec3			light;
+	bool			shadow;
+
 	shadow = cast_shadows(tsr, ray);
 	light = get_shadow_modifiers(tsr, ray, shadow);
-	col->r = min(col->r * sqrt(light.x), 255);
-	col->g = min(col->g * sqrt(light.y), 255);
-	col->b = min(col->b * sqrt(light.z), 255);
+	col->r *= fclamp(sqrt(light.r) + dither, 0, 1);
+	col->g *= fclamp(sqrt(light.g) + dither, 0, 1);
+	col->b *= fclamp(sqrt(light.b) + dither, 0, 1);
 }

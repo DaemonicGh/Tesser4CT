@@ -10,34 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "modules/mbx_drawing.h"
-#include "modules/mbx_structs.h"
+#include "modules/mbx_constants.h"
 #include "tsr.h"
 #include "tsr_core.h"
-#include "tsr_utils.h"
-#include "tsr_world.h"
 
-static void	set_hotbar_offset(t_tsr *tsr)
+void	set_hotbar_offset(
+	t_tsr_hotbar *hotbar, double target, t_vec2 limits)
 {
-	const double	diff
-		= tsr->player.hotbar_tile.type - tsr->ui.hotbar.offset;
+	const double	span = limits.y - limits.x;
+	const double	diff = target - hotbar->offset;
 	double			delta;
 
-	if (fabs(diff) < tsr->world.data->tile_count / 2.)
+	if (fabs(diff) < span / 2)
 		delta = 0.2 * diff;
 	else
-		delta = 0.2 * fsign(diff)
-			* (fabs(diff) - (tsr->world.data->tile_count - 1));
+		delta = 0.2 * fsign(diff) * (fabs(diff) - span);
 	if (fabs(delta) < 0.01)
 	{
-		tsr->ui.hotbar.offset = tsr->player.hotbar_tile.type;
+		hotbar->offset = target;
 		return ;
 	}
-	tsr->ui.hotbar.delta += delta;
-	tsr->ui.hotbar.delta *= 0.5;
-	tsr->ui.hotbar.offset = fwrap(
-			tsr->ui.hotbar.offset + tsr->ui.hotbar.delta,
-			1, tsr->world.data->tile_count);
+	hotbar->delta += delta;
+	hotbar->delta *= 0.5;
+	hotbar->offset = fwrap(
+			hotbar->offset + hotbar->delta, limits.x, limits.y);
 }
 
 static void	setter(
@@ -53,6 +49,8 @@ static void	setter(
 
 static void	set_light_color(t_tsr *tsr, t_vec3 normal, bool skybox)
 {
+	const t_vec3	sky_color = tsr->world_data.tiles
+	[tsr->world_data.skybox.type].light;
 	static t_vec3	light;
 	double			diffuse;
 
@@ -61,8 +59,8 @@ static void	set_light_color(t_tsr *tsr, t_vec3 normal, bool skybox)
 		diffuse = 1;
 	else
 		diffuse = fmax(vec3_dot(normal, tsr->world_data.skylight), 0);
-	light = vec3_add(tsr->world_data.shadow_color,
-			vec3_mult_d(tsr->world_data.skylight_color, diffuse + 0.2));
+	light = vec3_add(tsr->world_data.ambient_color,
+			vec3_mult_d(sky_color, diffuse + 0.2));
 	light = vec3_exec2(fmin, vec3_exec(sqrt, light), vec3_d(1));
 }
 
@@ -98,18 +96,20 @@ static void	draw_iso_tile(t_tsr *tsr, t_vec2i pos, t_tsr_tile tile)
 			vec2_mult_d(vec2(0.8125, -0.375), 16. / texture->subsize.y)));
 }
 
-static void	draw_name(t_tsr *tsr)
+static void	draw_focused(t_tsr *tsr)
 {
 	const char	dirs[6] = "WEDUNS";
 	char		name[70];
 	size_t		len;
 
+	mbx_set_region(tsr->ui.target, tsr->textures.gui.hotbar_selection,
+		vec2i(302, 319));
 	len = snprintf(name, 70, "%.64s [%c%.1i]",
 			tsr->world_data.tiles[tsr->player.hotbar_tile.type].name,
 			dirs[tsr->player.hotbar_tile.rotation >> 2],
 			tsr->player.hotbar_tile.rotation & 3);
 	mbx_set_text(tsr->ui.target, name,
-		vec2i(320 - len * 2.5, 310), tsr->textures.font_small);
+		vec2i(320 - len * 2.5, 312), tsr->textures.font_small);
 }
 
 void	draw_hotbar(t_tsr *tsr)
@@ -117,7 +117,8 @@ void	draw_hotbar(t_tsr *tsr)
 	double		off;
 	int			i;
 
-	set_hotbar_offset(tsr);
+	set_hotbar_offset(&tsr->ui.hotbar, tsr->player.hotbar_tile.type,
+		vec2(1, tsr->world_data.tile_count));
 	tsr->ui.target->pipeline.set = setter;
 	i = -6;
 	while (i <= 6)
@@ -125,13 +126,13 @@ void	draw_hotbar(t_tsr *tsr)
 		off = i - tsr->ui.hotbar.offset + (int)(tsr->ui.hotbar.offset);
 		draw_iso_tile(tsr,
 			vec2i(320 + 32 * off, 336 - 32 * (cos(off * off / 20.65) - 1)),
-			tsr_tile_r(wrap((int)(tsr->ui.hotbar.offset) + i,
+			tsr_tile_r(tsr, wrap((int)(tsr->ui.hotbar.offset) + i,
 					1, tsr->world.data->tile_count),
 				tsr->player.hotbar_tile.rotation));
 		i++;
 	}
 	tsr->ui.target->pipeline = tsr->mbx->settings.default_pipeline;
-	mbx_set_region(tsr->ui.target, tsr->textures.hotbar_selection,
-		vec2i(302, 319));
-	draw_name(tsr);
+	if (!tsr->player.on_toolbar
+		|| tsr->player.hotbar_tool == TOOL_SET_LIMIT)
+		draw_focused(tsr);
 }

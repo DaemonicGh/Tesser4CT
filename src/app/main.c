@@ -10,34 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
 #include <pthread.h>
-#include <unistd.h>
-#include "modules/mbx_utils.h"
 #include "tsr.h"
-#include "tsr_utils.h"
-
-static void	prepare_next_render(t_tsr *tsr)
-{
-	t_mbx_region	*tmp;
-
-	tsr->rendering.current_job = 0;
-	tsr->rendering.job_region_count = vec2i(
-			tsr->mbx->vp->size.x / RENDER_JOB_REGION_W,
-			tsr->mbx->vp->size.y / RENDER_JOB_REGION_H);
-	tsr->rendering.job_count = (tsr->rendering.job_region_count.x
-			* tsr->rendering.job_region_count.y);
-	tmp = tsr->rendering.target;
-	tsr->rendering.target = tsr->rendering.swap_target;
-	tsr->rendering.swap_target = tmp;
-	tsr->mbx->viewport = tsr->rendering.swap_target;
-	tsr->rendering.data.camera = tsr->camera;
-	if (tsr->rendering.data.world.chunks != tsr->world.chunks)
-		free(tsr->rendering.data.world.chunks);
-	tsr->rendering.data.world = tsr->world;
-	clear_light(tsr);
-	tsr->rendering.data.frag_shader = tsr->rendering.frag_shader;
-}
 
 static void	init_state(t_tsr *tsr)
 {
@@ -69,14 +43,13 @@ static void	update_state(t_tsr *tsr)
 		tsr_update_setting_menu(tsr);
 }
 
-/*if (tsr->rendering.threads_waiting == tsr->rendering.thread_count
-		&& tsr->mbx->spf > 0.015 && tsr->mbx->frames_elapsed > 5)
-		tsr_report(STATUS_WARNING, "Main took longer than rendering");*/
 void	main_update(t_mbx *mbx, void *data)
 {
 	t_tsr			*tsr;
 
 	tsr = data;
+	tsr->ui.cursor = vec2_round(vec2_div(tsr->mbx->cursor,
+				vec2i_truediv(tsr->mbx->vp->size, tsr->ui.target->size)));
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);
 	prepare_next_render(tsr);
 	pthread_barrier_wait(&tsr->rendering.wait_barrier);

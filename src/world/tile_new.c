@@ -12,30 +12,35 @@
 
 #include "tsr.h"
 
-t_tsr_tile	tsr_tile(t_tsr_tile_id id, uint8_t face, uint8_t roll)
+t_tsr_tile	tsr_tile(
+	t_tsr *tsr, t_tsr_tile_id id, uint8_t face, uint8_t roll)
 {
 	return ((t_tsr_tile){
 		.type = id,
 		.rotation = face << 2 | roll,
-		.light = 0
+		.light = vec3_zero(),
+		.timer = tsr->mbx->now
 	});
 }
 
-t_tsr_tile	tsr_tile_r(t_tsr_tile_id id, uint8_t rotation)
+t_tsr_tile	tsr_tile_r(
+	t_tsr *tsr, t_tsr_tile_id id, uint8_t rotation)
 {
 	return ((t_tsr_tile){
 		.type = id,
 		.rotation = rotation,
-		.light = 0
+		.light = vec3_zero(),
+		.timer = tsr->mbx->now
 	});
 }
 
 t_tsr_tile	tsr_tile_l(
-	t_tsr_tile_id id, uint8_t rotation, uint8_t light)
+	t_tsr *tsr, t_tsr_tile_id id, uint8_t rotation, t_vec3 light)
 {
 	return ((t_tsr_tile){
 		.type = id,
 		.rotation = rotation,
-		.light = light
+		.light = light,
+		.timer = tsr->mbx->now
 	});
 }
